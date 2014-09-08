@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
@@ -23,55 +29,65 @@ public class Terrain {
 	private AlphaMapManipulator manipulator = new AlphaMapManipulator();
 
 	public Terrain(AssetManager assetManager, Node rootNode, Camera camera,
-			int size) throws Exception {
+			int size, BulletAppState bulletAppState) {
 		createMaterials(assetManager);
 
-		FlatHeightMap heightmap = new FlatHeightMap(size);
-//		HillHeightMap heightmap = new HillHeightMap(size, 1000, 10f, 100f);
+		AbstractHeightMap heightmap = new FlatHeightMap(size);
+		try {
+			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
+			heightmap.normalizeTerrain(50f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		int patchSize = 129;
 		terrain = new TerrainQuad("my terrain", patchSize, size + 1,
 				heightmap.getHeightMap());
+		terrain.setShadowMode(ShadowMode.Receive);
 
 		terrain.setMaterial(mat_terrain);
 		terrain.setLocalTranslation(0, -100, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
 		rootNode.attachChild(terrain);
 
-		/** 5. The LOD (level of detail) depends on were the camera is: */
 		TerrainLodControl control = new TerrainLodControl(terrain, camera);
 		terrain.addControl(control);
+
+		CollisionShape sceneShape = CollisionShapeFactory
+				.createMeshShape((Node) terrain);
+		RigidBodyControl terrainBodyControl = new RigidBodyControl(sceneShape,
+				0);
+		bulletAppState.getPhysicsSpace().add(terrainBodyControl);
+		terrain.addControl(terrainBodyControl);
 	}
 
 	private void createMaterials(AssetManager assetManager) {
-		/** 1. Create terrain material and load four textures into it. */
 		mat_terrain = new Material(assetManager,
-				"Common/MatDefs/Terrain/Terrain.j3md");
+				"Common/MatDefs/Terrain/TerrainLighting.j3md");
+		mat_terrain.setBoolean("useTriPlanarMapping", false);
+		mat_terrain.setBoolean("WardIso", true);
+		mat_terrain.setFloat("Shininess", 0);
 
-		/** 1.1) Add ALPHA map (for red-blue-green coded splat textures) */
 		alphaMap = assetManager.loadTexture("red.jpg");
-		mat_terrain.setTexture("Alpha", alphaMap);
+		mat_terrain.setTexture("AlphaMap", alphaMap);
 
-		/** 1.2) Add GRASS texture into the red layer (Tex1). */
 		Texture grass = assetManager
 				.loadTexture("Textures/Terrain/splat/grass.jpg");
 		grass.setWrap(WrapMode.Repeat);
-		mat_terrain.setTexture("Tex1", grass);
-		mat_terrain.setFloat("Tex1Scale", 64f);
+		mat_terrain.setTexture("DiffuseMap", grass);
+		mat_terrain.setFloat("DiffuseMap_0_scale", 64f);
 
-		/** 1.3) Add DIRT texture into the green layer (Tex2) */
 		Texture dirt = assetManager
 				.loadTexture("Textures/Terrain/splat/dirt.jpg");
 		dirt.setWrap(WrapMode.Repeat);
-		mat_terrain.setTexture("Tex2", dirt);
-		mat_terrain.setFloat("Tex2Scale", 32f);
+		mat_terrain.setTexture("DiffuseMap_1", dirt);
+		mat_terrain.setFloat("DiffuseMap_1_scale", 32f);
 
-		/** 1.4) Add ROAD texture into the blue layer (Tex3) */
 		Texture rock = assetManager
 				.loadTexture("Textures/Terrain/splat/road.jpg");
 		rock.setWrap(WrapMode.Repeat);
-		mat_terrain.setTexture("Tex3", rock);
-		mat_terrain.setFloat("Tex3Scale", 128f);
+		mat_terrain.setTexture("DiffuseMap_2", rock);
+		mat_terrain.setFloat("DiffuseMap_2_scale", 128f);
 	}
 
 	public TerrainQuad getTerrain() {
@@ -97,7 +113,7 @@ public class Terrain {
 
 		int hillCenterX = Math.round(position.x);
 		int hillCenterY = Math.round(position.y);
-		
+
 		int intRadius = Math.round(terrain.getTerrainSize() * radius);
 		System.out.println(intRadius);
 		int intRadiusSquared = intRadius * intRadius;
