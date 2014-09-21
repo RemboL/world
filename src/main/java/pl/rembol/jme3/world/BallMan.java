@@ -90,25 +90,25 @@ public class BallMan {
 
 		Geometry mainBallGeometry = new Geometry("mainBall", mainBallSphere);
 		mainBallGeometry.setMaterial(skinMaterial);
-		mainBallGeometry.setShadowMode(ShadowMode.Cast);
+		mainBallGeometry.setShadowMode(ShadowMode.CastAndReceive);
 
 		Geometry leftEyeBallGeometry = new Geometry("leftEyeBall",
 				eyeBallSphere);
 		leftEyeBallGeometry.setMaterial(eyeMaterial);
-		leftEyeBallGeometry.setShadowMode(ShadowMode.Cast);
+		leftEyeBallGeometry.setShadowMode(ShadowMode.Off);
 
 		Geometry rightEyeBallGeometry = new Geometry("rightEyeBall",
 				eyeBallSphere);
 		rightEyeBallGeometry.setMaterial(eyeMaterial);
-		rightEyeBallGeometry.setShadowMode(ShadowMode.Cast);
+		rightEyeBallGeometry.setShadowMode(ShadowMode.Off);
 
 		Geometry leftHandGeometry = new Geometry("leftHand", handBallSphere);
 		leftHandGeometry.setMaterial(skinMaterial);
-		leftHandGeometry.setShadowMode(ShadowMode.Cast);
+		leftHandGeometry.setShadowMode(ShadowMode.CastAndReceive);
 
 		Geometry rightHandGeometry = new Geometry("rightHand", handBallSphere);
 		rightHandGeometry.setMaterial(skinMaterial);
-		rightHandGeometry.setShadowMode(ShadowMode.Cast);
+		rightHandGeometry.setShadowMode(ShadowMode.CastAndReceive);
 
 		mainBody.attachChild(mainBallGeometry);
 

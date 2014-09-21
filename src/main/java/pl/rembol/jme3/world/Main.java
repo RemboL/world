@@ -1,19 +1,19 @@
 package pl.rembol.jme3.world;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.scene.plugins.blender.BlenderModelLoader;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
@@ -38,11 +38,20 @@ public class Main extends SimpleApplication {
 
 	private BulletAppState bulletAppState;
 
+	private DirectionalLight directional;
+
+	private boolean nightDayEffect = false;
+
 	@Override
 	public void simpleInitApp() {
 
+		assetManager.registerLoader(BlenderModelLoader.class, "blend");
+
 		bulletAppState = new BulletAppState();
 		stateManager.attach(bulletAppState);
+
+		// stateManager.attach(new VideoRecorderAppState(new File("video.avi"),
+		// 0.8f));
 
 		initLightAndShadows();
 
@@ -62,17 +71,24 @@ public class Main extends SimpleApplication {
 			ballMen.add(ballMan);
 		}
 
-		// inputManager.addMapping("Shoot", new MouseButtonTrigger(
-		// MouseInput.BUTTON_LEFT));
-		// inputManager.addListener(new ShootListener(cam, terrain), "Shoot");
+		for (int i = 0; i < 20; ++i) {
+			Vector3f position = new Vector3f(
+					(new Random().nextFloat() - .5f) * 150f, -40f
+							+ (new Random().nextFloat() * 10f),
+					(new Random().nextFloat() - .5f) * 150f);
+
+			new Tree(position, terrain, rootNode, assetManager, bulletAppState);
+		}
+
 	}
 
 	private void initLightAndShadows() {
-		DirectionalLight directional = new DirectionalLight();
-		directional.setDirection(new Vector3f(0f, -1f, 0f).normalize());
+		directional = new DirectionalLight();
+		directional.setDirection(new Vector3f(-0f, -1f, 0f).normalize());
+		directional.setColor(ColorRGBA.White.mult(0.7f));
 		rootNode.addLight(directional);
 		AmbientLight ambient = new AmbientLight();
-		ambient.setColor(ColorRGBA.White.mult(1f));
+		ambient.setColor(ColorRGBA.White.mult(0.3f));
 		rootNode.addLight(ambient);
 
 		final int SHADOWMAP_SIZE = 1024;
@@ -91,9 +107,21 @@ public class Main extends SimpleApplication {
 		viewPort.addProcessor(fpp);
 	}
 
+	static int frame = 0;
+
 	@Override
 	public void update() {
 		super.update();
+
+		frame++;
+
+		if (nightDayEffect) {
+			directional.setDirection(new Vector3f(FastMath.sin(FastMath.TWO_PI
+					/ 800 * frame),
+					FastMath.sin(FastMath.TWO_PI / 800 * frame), FastMath
+							.cos(FastMath.TWO_PI / 800 * frame)).normalize());
+		}
+
 		for (BallMan ballMan : ballMen) {
 			ballMan.tick();
 		}

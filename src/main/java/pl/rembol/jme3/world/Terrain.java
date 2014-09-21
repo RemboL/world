@@ -43,7 +43,7 @@ public class Terrain {
 		int patchSize = 129;
 		terrain = new TerrainQuad("my terrain", patchSize, size + 1,
 				heightmap.getHeightMap());
-		terrain.setShadowMode(ShadowMode.Receive);
+		terrain.setShadowMode(ShadowMode.CastAndReceive);
 
 		terrain.setMaterial(mat_terrain);
 		terrain.setLocalTranslation(0, -100, 0);
