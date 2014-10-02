@@ -1,4 +1,4 @@
-package pl.rembol.jme3.world;
+package pl.rembol.jme3.world.terrain;
 
 import java.nio.ByteBuffer;
 

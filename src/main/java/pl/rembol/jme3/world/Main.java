@@ -1,10 +1,16 @@
 package pl.rembol.jme3.world;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.smallobject.Axe;
+import pl.rembol.jme3.world.terrain.Terrain;
+
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -24,8 +30,8 @@ public class Main extends SimpleApplication {
 		Main app = new Main();
 		app.setShowSettings(false);
 		AppSettings settings = new AppSettings(true);
-		settings.put("Width", 1280);
-		settings.put("Height", 720);
+		settings.put("Width", 800);
+		settings.put("Height", 600);
 		settings.put("Title", "My awesome Game");
 		settings.put("VSync", true);
 		settings.put("Samples", 4);
@@ -50,34 +56,39 @@ public class Main extends SimpleApplication {
 		bulletAppState = new BulletAppState();
 		stateManager.attach(bulletAppState);
 
-		// stateManager.attach(new VideoRecorderAppState(new File("video.avi"),
-		// 0.8f));
+		GameState.setBulletAppState(bulletAppState);
+		GameState.setAssetManager(assetManager);
+		GameState.setRootNode(rootNode);
+
+		stateManager.attach(new VideoRecorderAppState(new File("video.avi"),
+				0.9f));
 
 		initLightAndShadows();
 
 		flyCam.setMoveSpeed(50);
-		cam.setLocation(new Vector3f(0f, -40f, -70f));
+		cam.setLocation(new Vector3f(0f, -80f, -70f));
 		cam.setRotation(new Quaternion().fromAngleAxis(0, Vector3f.UNIT_Y));
 
-		Terrain terrain = new Terrain(assetManager, rootNode, cam, 128,
-				bulletAppState);
+		Terrain terrain = new Terrain(cam, 128);
+		GameState.setTerrain(terrain);
 
-		for (int i = 0; i < 20; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			BallMan ballMan = new BallMan(new Vector3f(
-					(new Random().nextFloat() - .5f) * 50f, -40f
+					(new Random().nextFloat() + 1f) * 25f, -40f
 							+ (new Random().nextFloat() * 10f),
-					(new Random().nextFloat() - .5f) * 50f), rootNode,
-					assetManager, bulletAppState);
+					(new Random().nextFloat() - .5f) * 50f));
 			ballMen.add(ballMan);
-		}
+			ballMan.wield(new Axe());
 
-		for (int i = 0; i < 20; ++i) {
 			Vector3f position = new Vector3f(
-					(new Random().nextFloat() - .5f) * 150f, -40f
+					(new Random().nextFloat() - 2f) * 25f, -40f
 							+ (new Random().nextFloat() * 10f),
-					(new Random().nextFloat() - .5f) * 150f);
+					(new Random().nextFloat() - .5f) * 100f);
 
-			new Tree(position, terrain, rootNode, assetManager, bulletAppState);
+			Tree tree = new Tree(position);
+
+			ballMan.attack(tree);
+
 		}
 
 	}
@@ -85,10 +96,10 @@ public class Main extends SimpleApplication {
 	private void initLightAndShadows() {
 		directional = new DirectionalLight();
 		directional.setDirection(new Vector3f(-0f, -1f, 0f).normalize());
-		directional.setColor(ColorRGBA.White.mult(0.7f));
+		directional.setColor(ColorRGBA.White.mult(1f));
 		rootNode.addLight(directional);
 		AmbientLight ambient = new AmbientLight();
-		ambient.setColor(ColorRGBA.White.mult(0.3f));
+		ambient.setColor(ColorRGBA.White.mult(0.5f));
 		rootNode.addLight(ambient);
 
 		final int SHADOWMAP_SIZE = 1024;
@@ -107,7 +118,7 @@ public class Main extends SimpleApplication {
 		viewPort.addProcessor(fpp);
 	}
 
-	static int frame = 0;
+	static int frame = 200;
 
 	@Override
 	public void update() {
@@ -117,9 +128,9 @@ public class Main extends SimpleApplication {
 
 		if (nightDayEffect) {
 			directional.setDirection(new Vector3f(FastMath.sin(FastMath.TWO_PI
-					/ 800 * frame),
-					FastMath.sin(FastMath.TWO_PI / 800 * frame), FastMath
-							.cos(FastMath.TWO_PI / 800 * frame)).normalize());
+					/ 400 * frame),
+					FastMath.sin(FastMath.TWO_PI / 400 * frame) - 0.5f,
+					FastMath.cos(FastMath.TWO_PI / 400 * frame)).normalize());
 		}
 
 		for (BallMan ballMan : ballMen) {

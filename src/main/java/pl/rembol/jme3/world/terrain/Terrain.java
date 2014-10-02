@@ -1,10 +1,11 @@
-package pl.rembol.jme3.world;
+package pl.rembol.jme3.world.terrain;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.rembol.jme3.world.GameState;
+
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -28,14 +29,13 @@ public class Terrain {
 	private Texture alphaMap;
 	private AlphaMapManipulator manipulator = new AlphaMapManipulator();
 
-	public Terrain(AssetManager assetManager, Node rootNode, Camera camera,
-			int size, BulletAppState bulletAppState) {
-		createMaterials(assetManager);
+	public Terrain(Camera camera, int size) {
+		createMaterials(GameState.getAssetManager());
 
 		AbstractHeightMap heightmap = new FlatHeightMap(size);
 		try {
 			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
-			heightmap.normalizeTerrain(50f);
+			heightmap.normalizeTerrain(20f);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -48,7 +48,7 @@ public class Terrain {
 		terrain.setMaterial(mat_terrain);
 		terrain.setLocalTranslation(0, -100, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
-		rootNode.attachChild(terrain);
+		GameState.getRootNode().attachChild(terrain);
 
 		TerrainLodControl control = new TerrainLodControl(terrain, camera);
 		terrain.addControl(control);
@@ -57,7 +57,7 @@ public class Terrain {
 				.createMeshShape((Node) terrain);
 		RigidBodyControl terrainBodyControl = new RigidBodyControl(sceneShape,
 				0);
-		bulletAppState.getPhysicsSpace().add(terrainBodyControl);
+		GameState.getBulletAppState().getPhysicsSpace().add(terrainBodyControl);
 		terrain.addControl(terrainBodyControl);
 	}
 
