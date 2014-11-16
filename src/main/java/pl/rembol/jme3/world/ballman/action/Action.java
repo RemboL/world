@@ -8,6 +8,7 @@ public abstract class Action {
 	private boolean isStarted = false;
 
 	protected void start(BallMan ballMan) {
+		frame = 0;
 	}
 
 	public void act(BallMan ballMan) {
@@ -15,9 +16,9 @@ public abstract class Action {
 			isStarted = true;
 			start(ballMan);
 		}
-		frame++;
-
 		doAct(ballMan);
+
+		frame++;
 	}
 
 	abstract protected void doAct(BallMan ballMan);

@@ -3,6 +3,8 @@ package pl.rembol.jme3.world.ballman.action;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.BallMan;
 
+import com.jme3.animation.LoopMode;
+
 public class MoveTowardsTargetAction extends Action {
 
 	private Tree target;
@@ -27,6 +29,10 @@ public class MoveTowardsTargetAction extends Action {
 		}
 
 		return false;
+	}
+
+	protected void start(BallMan ballMan) {
+		ballMan.setAnimation("walk", LoopMode.Loop);
 	}
 
 }

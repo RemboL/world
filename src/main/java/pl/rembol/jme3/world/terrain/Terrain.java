@@ -35,7 +35,7 @@ public class Terrain {
 		AbstractHeightMap heightmap = new FlatHeightMap(size);
 		try {
 			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
-			heightmap.normalizeTerrain(20f);
+			heightmap.normalizeTerrain(1f);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,7 +46,7 @@ public class Terrain {
 		terrain.setShadowMode(ShadowMode.CastAndReceive);
 
 		terrain.setMaterial(mat_terrain);
-		terrain.setLocalTranslation(0, -100, 0);
+		terrain.setLocalTranslation(0, 0, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
 		GameState.getRootNode().attachChild(terrain);
 

@@ -12,8 +12,7 @@ public class Log extends SmallObject {
 
 	public Log(Vector3f position) {
 
-		node = (Node) GameState.getAssetManager().loadModel("log.blend")
-				.clone();
+		node = (Node) GameState.getAssetManager().loadModel("log/log.mesh.xml");
 		node.setShadowMode(ShadowMode.Cast);
 		GameState.getRootNode().attachChild(node);
 		node.setLocalTranslation(position);
