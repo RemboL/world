@@ -12,9 +12,10 @@ public class Log extends SmallObject {
 
 	public Log(Vector3f position) {
 
-		node = (Node) GameState.getAssetManager().loadModel("log/log.mesh.xml");
+		node = (Node) GameState.get().getAssetManager()
+				.loadModel("log/log.mesh.xml");
 		node.setShadowMode(ShadowMode.Cast);
-		GameState.getRootNode().attachChild(node);
+		GameState.get().getRootNode().attachChild(node);
 		node.setLocalTranslation(position);
 
 		control = new RigidBodyControl(1f);
@@ -27,7 +28,7 @@ public class Log extends SmallObject {
 						.nextRandomFloat() * 10 - 5f, FastMath
 						.nextRandomFloat() * 10 - 5f));
 
-		GameState.getBulletAppState().getPhysicsSpace().add(control);
+		GameState.get().getBulletAppState().getPhysicsSpace().add(control);
 
 	}
 

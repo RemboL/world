@@ -12,14 +12,14 @@ public class Axe extends SmallObject {
 	public Axe() {
 
 		node = BlenderLoaderHelper.rewriteDiffuseToAmbient((Node) GameState
-				.getAssetManager().loadModel("axe.blend"));
+				.get().getAssetManager().loadModel("axe.blend"));
 		node.setShadowMode(ShadowMode.Cast);
-		GameState.getRootNode().attachChild(node);
+		GameState.get().getRootNode().attachChild(node);
 
 		control = new RigidBodyControl(1f);
 		node.addControl(control);
 
-		GameState.getBulletAppState().getPhysicsSpace().add(control);
+		GameState.get().getBulletAppState().getPhysicsSpace().add(control);
 
 	}
 

@@ -22,16 +22,16 @@ public abstract class SmallObject {
 	public void detach() {
 		Vector3f itemPosition = node.getWorldTranslation();
 		node.getParent().detachChild(node);
-		GameState.getRootNode().attachChild(node);
+		GameState.get().getRootNode().attachChild(node);
 		node.setLocalTranslation(itemPosition);
 		node.addControl(control);
-		GameState.getBulletAppState().getPhysicsSpace().add(control);
+		GameState.get().getBulletAppState().getPhysicsSpace().add(control);
 	}
 
 	public void attach(Node parent) {
 		node.removeControl(control);
 		node.setLocalTranslation(getHandlePosition());
-		GameState.getBulletAppState().getPhysicsSpace().remove(control);
+		GameState.get().getBulletAppState().getPhysicsSpace().remove(control);
 
 		parent.attachChild(node);
 	}

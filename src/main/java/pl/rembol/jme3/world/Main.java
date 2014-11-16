@@ -1,26 +1,30 @@
 package pl.rembol.jme3.world;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.interfaces.Tickable;
 import pl.rembol.jme3.world.smallobject.Axe;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.plugins.blender.BlenderModelLoader;
+import com.jme3.scene.shape.Line;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
@@ -58,12 +62,27 @@ public class Main extends SimpleApplication {
 		stateManager.attach(bulletAppState);
 		// bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
-		GameState.setBulletAppState(bulletAppState);
-		GameState.setAssetManager(assetManager);
-		GameState.setRootNode(rootNode);
+		GameState.get().setBulletAppState(bulletAppState);
+		GameState.get().setAssetManager(assetManager);
+		GameState.get().setRootNode(rootNode);
 
-//		 stateManager.attach(new VideoRecorderAppState(new File("video.avi"),
-//		 0.9f));
+		Geometry cursor = new Geometry("cursor", new Line(
+				Vector3f.UNIT_X.mult(10f), Vector3f.UNIT_X.mult(-10f)));
+		cursor.setMaterial(new Material(assetManager,
+				"Common/MatDefs/Misc/Unshaded.j3md"));
+		cursor.setLocalTranslation(settings.getWidth() / 2,
+				settings.getHeight() / 2, 0);
+		this.guiNode.attachChild(cursor);
+		cursor = new Geometry("cursor", new Line(Vector3f.UNIT_Y.mult(10f),
+				Vector3f.UNIT_Y.mult(-10f)));
+		cursor.setMaterial(new Material(assetManager,
+				"Common/MatDefs/Misc/Unshaded.j3md"));
+		cursor.setLocalTranslation(settings.getWidth() / 2,
+				settings.getHeight() / 2, 0);
+		this.guiNode.attachChild(cursor);
+
+		// stateManager.attach(new VideoRecorderAppState(new File("video.avi"),
+		// 0.9f));
 
 		initLightAndShadows();
 
@@ -72,7 +91,7 @@ public class Main extends SimpleApplication {
 		cam.setRotation(new Quaternion().fromAngleAxis(0, Vector3f.UNIT_Y));
 
 		Terrain terrain = new Terrain(cam, 128);
-		GameState.setTerrain(terrain);
+		GameState.get().setTerrain(terrain);
 
 		for (int i = 0; i < 5; ++i) {
 			BallMan ballMan = new BallMan(new Vector2f(
@@ -85,10 +104,12 @@ public class Main extends SimpleApplication {
 					(new Random().nextFloat() - 2f) * 5f,
 					(new Random().nextFloat() + i - 3f) * 10f));
 
-			ballMan.attack(tree);
+			// ballMan.attack(tree);
 
 			tickables.add(ballMan);
 		}
+
+		initKeys();
 
 	}
 
@@ -118,6 +139,17 @@ public class Main extends SimpleApplication {
 	}
 
 	static int frame = 200;
+
+	private void initKeys() {
+		inputManager.addMapping("select", new MouseButtonTrigger(
+				MouseInput.BUTTON_LEFT));
+		inputManager.addListener(new LeftClickListener(getCamera()), "select");
+
+		inputManager.addMapping("defaultAction", new MouseButtonTrigger(
+				MouseInput.BUTTON_RIGHT));
+		inputManager.addListener(new RightClickListener(getCamera()),
+				"defaultAction");
+	}
 
 	@Override
 	public void update() {

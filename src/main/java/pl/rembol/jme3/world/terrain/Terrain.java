@@ -30,7 +30,7 @@ public class Terrain {
 	private AlphaMapManipulator manipulator = new AlphaMapManipulator();
 
 	public Terrain(Camera camera, int size) {
-		createMaterials(GameState.getAssetManager());
+		createMaterials(GameState.get().getAssetManager());
 
 		AbstractHeightMap heightmap = new FlatHeightMap(size);
 		try {
@@ -48,7 +48,7 @@ public class Terrain {
 		terrain.setMaterial(mat_terrain);
 		terrain.setLocalTranslation(0, 0, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
-		GameState.getRootNode().attachChild(terrain);
+		GameState.get().getRootNode().attachChild(terrain);
 
 		TerrainLodControl control = new TerrainLodControl(terrain, camera);
 		terrain.addControl(control);
@@ -57,7 +57,8 @@ public class Terrain {
 				.createMeshShape((Node) terrain);
 		RigidBodyControl terrainBodyControl = new RigidBodyControl(sceneShape,
 				0);
-		GameState.getBulletAppState().getPhysicsSpace().add(terrainBodyControl);
+		GameState.get().getBulletAppState().getPhysicsSpace()
+				.add(terrainBodyControl);
 		terrain.addControl(terrainBodyControl);
 	}
 

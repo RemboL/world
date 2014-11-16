@@ -1,16 +1,16 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.interfaces.WithNode;
 
 import com.jme3.animation.LoopMode;
 
 public class MoveTowardsTargetAction extends Action {
 
-	private Tree target;
+	private WithNode target;
 	private float targetDistance;
 
-	public MoveTowardsTargetAction(Tree target, float targetDistance) {
+	public MoveTowardsTargetAction(WithNode target, float targetDistance) {
 		this.target = target;
 		this.targetDistance = targetDistance;
 	}
@@ -23,7 +23,7 @@ public class MoveTowardsTargetAction extends Action {
 
 	@Override
 	public boolean isFinished(BallMan ballMan) {
-		if (ballMan.getLocation().distance(target.getLocation()) < targetDistance) {
+		if (ballMan.getLocation().distance(target.getNode().getWorldTranslation()) < targetDistance) {
 			ballMan.setTargetVelocity(0f);
 			return true;
 		}
