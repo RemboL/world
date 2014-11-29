@@ -45,6 +45,27 @@ public class AlphaMapManipulator {
 
 	}
 
+	public void shiftPixelColor(Texture alphaMap, Vector2f spot, float scale,
+			ColorRGBA channel) {
+		Image image = alphaMap.getImage();
+		ColorRGBA currentColor = new ColorRGBA();
+		float width = image.getWidth();
+		float height = image.getHeight();
+		getPixelColor(currentColor, image, Math.round(spot.x * width),
+				Math.round(spot.y * height));
+		currentColor.interpolate(channel, scale);
+
+		savePixelColor(currentColor, image, Math.round(spot.x * width),
+				Math.round(spot.y * height));
+
+	}
+
+	public void update(Texture alphaMap) {
+		Image image = alphaMap.getImage();
+		image.getData(0).rewind();
+		image.setUpdateNeeded();
+	}
+
 	private void savePixelColor(ColorRGBA color, Image image, int x, int y) {
 		ByteBuffer buf = image.getData(0);
 		int width = image.getWidth();

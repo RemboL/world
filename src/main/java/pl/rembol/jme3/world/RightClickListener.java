@@ -24,30 +24,34 @@ public class RightClickListener implements ActionListener {
 
 	public void onAction(String name, boolean keyPressed, float tpf) {
 		if (name.equals("defaultAction") && !keyPressed) {
-			List<WithDefaultAction> actors = new ArrayList<>();
-			for (Selectable selected : GameState.get().getSelected()) {
-				if (selected instanceof WithDefaultAction) {
-					actors.add(WithDefaultAction.class.cast(selected));
+			if (GameState.get().isCommandNull()) {
+				List<WithDefaultAction> actors = new ArrayList<>();
+				for (Selectable selected : GameState.get().getSelected()) {
+					if (selected instanceof WithDefaultAction) {
+						actors.add(WithDefaultAction.class.cast(selected));
+					}
 				}
-			}
 
-			if (actors.isEmpty()) {
-				System.out.println("no actors to perform default action");
-				return;
-			}
+				if (actors.isEmpty()) {
+					System.out.println("no actors to perform default action");
+					return;
+				}
 
-			Collidable collided = getClosestCollidingObject();
+				Collidable collided = getClosestCollidingObject();
 
-			if (collided != null) {
-				if (collided instanceof Node) {
-					Selectable selectable = GameState.get().getSelectable(
-							Node.class.cast(collided));
-					if (selectable != null) {
-						for (WithDefaultAction actor : actors) {
-							actor.performDefaultAction(selectable);
+				if (collided != null) {
+					if (collided instanceof Node) {
+						Selectable selectable = GameState.get().getSelectable(
+								Node.class.cast(collided));
+						if (selectable != null) {
+							for (WithDefaultAction actor : actors) {
+								actor.performDefaultAction(selectable);
+							}
 						}
 					}
 				}
+			} else {
+				GameState.get().clearCommand();
 			}
 
 		}
@@ -60,7 +64,7 @@ public class RightClickListener implements ActionListener {
 		Float collisionDistance = null;
 		Collidable collided = null;
 
-		for (Collidable collidable : GameState.get().getCollidables()) {
+		for (Collidable collidable : GameState.get().getSelectablesNodes()) {
 			CollisionResults results = new CollisionResults();
 			collidable.collideWith(ray, results);
 

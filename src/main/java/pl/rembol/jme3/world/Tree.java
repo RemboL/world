@@ -24,9 +24,9 @@ public class Tree implements Selectable {
 	private SelectionNode selectionNode;
 
 	public Tree(Vector2f position) {
-		this(new Vector3f(position.x, GameState.get().getTerrain()
+		this(new Vector3f(position.x, GameState.get().getTerrainQuad()
 				.getHeight(new Vector2f(position.x, position.y))
-				+ GameState.get().getTerrain().getLocalTranslation().y,
+				+ GameState.get().getTerrainQuad().getLocalTranslation().y,
 				position.y));
 	}
 

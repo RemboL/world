@@ -27,4 +27,7 @@ public abstract class Action {
 		return false;
 	}
 
+	public void finish() {
+	}
+
 }

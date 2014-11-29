@@ -17,13 +17,14 @@ public class MoveTowardsTargetAction extends Action {
 
 	@Override
 	protected void doAct(BallMan ballMan) {
-		ballMan.lookTorwards(target);
+		ballMan.lookTowards(target);
 		ballMan.setTargetVelocity(5f);
 	}
 
 	@Override
 	public boolean isFinished(BallMan ballMan) {
-		if (ballMan.getLocation().distance(target.getNode().getWorldTranslation()) < targetDistance) {
+		if (ballMan.getLocation().distance(
+				target.getNode().getWorldTranslation()) < targetDistance) {
 			ballMan.setTargetVelocity(0f);
 			return true;
 		}

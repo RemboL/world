@@ -47,9 +47,9 @@ public class BallMan implements Tickable, Selectable, WithDefaultAction {
 	private AnimChannel animationChannel;
 
 	public BallMan(Vector2f position) {
-		this(new Vector3f(position.x, GameState.get().getTerrain()
+		this(new Vector3f(position.x, GameState.get().getTerrainQuad()
 				.getHeight(new Vector2f(position.x, position.y))
-				+ GameState.get().getTerrain().getLocalTranslation().y,
+				+ GameState.get().getTerrainQuad().getLocalTranslation().y,
 				position.y));
 	}
 
@@ -91,6 +91,7 @@ public class BallMan implements Tickable, Selectable, WithDefaultAction {
 			actionQueue.get(0).act(this);
 
 			if (actionQueue.get(0).isFinished(this)) {
+				actionQueue.get(0).finish();
 				actionQueue.remove(0);
 				animationChannel.setAnim("stand");
 			}
@@ -110,7 +111,7 @@ public class BallMan implements Tickable, Selectable, WithDefaultAction {
 		node = (Node) assetManager.loadModel("ballman/ballman.mesh.xml");
 
 		rootNode.attachChild(node);
-		node.setShadowMode(ShadowMode.CastAndReceive);
+		node.setShadowMode(ShadowMode.Cast);
 		animationControl = node.getControl(AnimControl.class);
 		animationChannel = animationControl.createChannel();
 		animationChannel.setAnim("stand");
@@ -141,9 +142,13 @@ public class BallMan implements Tickable, Selectable, WithDefaultAction {
 		addAction(new ChopTreeAction(this.selectionTree));
 	}
 
-	public void lookTorwards(WithNode target) {
-		targetDirection = target.getNode().getWorldTranslation()
-				.subtract(node.getWorldTranslation()).setY(0).normalize();
+	public void lookTowards(WithNode target) {
+		lookTowards(target.getNode().getWorldTranslation());
+	}
+
+	public void lookTowards(Vector3f location) {
+		targetDirection = location.subtract(node.getWorldTranslation()).setY(0)
+				.normalize();
 	}
 
 	public void setTargetVelocity(float targetVelocity) {
@@ -189,4 +194,5 @@ public class BallMan implements Tickable, Selectable, WithDefaultAction {
 			addAction(new MoveTowardsTargetAction(target, 5f));
 		}
 	}
+
 }
