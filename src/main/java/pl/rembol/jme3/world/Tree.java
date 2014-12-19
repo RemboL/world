@@ -22,20 +22,23 @@ public class Tree implements Selectable {
 	private int maxHp = 1000;
 	private boolean destroyed = false;
 	private SelectionNode selectionNode;
+	private GameRunningAppState appState;
 
-	public Tree(Vector2f position) {
-		this(new Vector3f(position.x, GameState.get().getTerrainQuad()
-				.getHeight(new Vector2f(position.x, position.y))
-				+ GameState.get().getTerrainQuad().getLocalTranslation().y,
-				position.y));
+	public Tree(Vector2f position, GameRunningAppState appState) {
+		this(
+				new Vector3f(position.x, appState.getTerrainQuad().getHeight(
+						new Vector2f(position.x, position.y))
+						+ appState.getTerrainQuad().getLocalTranslation().y,
+						position.y), appState);
 	}
 
-	public Tree(Vector3f position) {
+	public Tree(Vector3f position, GameRunningAppState appState) {
+		this.appState = appState;
 
-		tree = BlenderLoaderHelper.rewriteDiffuseToAmbient((Node) GameState
-				.get().getAssetManager().loadModel("tree.blend"));
+		tree = BlenderLoaderHelper.rewriteDiffuseToAmbient((Node) appState
+				.getAssetManager().loadModel("tree.blend"));
 		tree.setShadowMode(ShadowMode.Cast);
-		GameState.get().getRootNode().attachChild(tree);
+		appState.getRootNode().attachChild(tree);
 		tree.setLocalTranslation(position);
 
 		control = new BetterCharacterControl(1.5f, 5f, 0);
@@ -44,7 +47,7 @@ public class Tree implements Selectable {
 		control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
 				0f, new Random().nextFloat() - .5f).normalize());
 
-		GameState.get().getBulletAppState().getPhysicsSpace().add(control);
+		appState.getBulletAppState().getPhysicsSpace().add(control);
 
 		GameState.get().register(this);
 	}
@@ -66,7 +69,7 @@ public class Tree implements Selectable {
 	private void destroy() {
 		System.out.println("TIMBEEER!!!");
 		GameState.get().unregister(this);
-		GameState.get().getBulletAppState().getPhysicsSpace().remove(control);
+		appState.getBulletAppState().getPhysicsSpace().remove(control);
 		tree.getParent().detachChild(tree);
 		this.destroyed = true;
 	}
@@ -81,7 +84,7 @@ public class Tree implements Selectable {
 
 	public void getChoppedBy(BallMan ballMan) {
 		new Log(tree.getWorldTranslation().add(ballMan.getLocation()).mult(.5f)
-				.add(Vector3f.UNIT_Y.mult(2f)));
+				.add(Vector3f.UNIT_Y.mult(2f)), appState);
 
 		substractHp(FastMath.nextRandomInt(50, 100));
 	}
@@ -94,7 +97,7 @@ public class Tree implements Selectable {
 	@Override
 	public void select() {
 		if (selectionNode == null) {
-			selectionNode = new SelectionNode(GameState.get().getAssetManager());
+			selectionNode = new SelectionNode(appState.getAssetManager());
 			tree.attachChild(selectionNode);
 			selectionNode.setLocalTranslation(0, 10, 0);
 		}

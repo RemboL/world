@@ -1,5 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.interfaces.WithNode;
 
@@ -32,7 +33,8 @@ public class MoveTowardsTargetAction extends Action {
 		return false;
 	}
 
-	protected void start(BallMan ballMan) {
+	@Override
+	protected void start(BallMan ballMan, GameRunningAppState appState) {
 		ballMan.setAnimation("walk", LoopMode.Loop);
 	}
 

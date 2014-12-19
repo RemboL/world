@@ -3,7 +3,7 @@ package pl.rembol.jme3.world.terrain;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.GameRunningAppState;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -29,9 +29,12 @@ public class Terrain {
 	private Texture alphaMap;
 	private AlphaMapManipulator manipulator = new AlphaMapManipulator();
 	private RigidBodyControl terrainBodyControl;
+	private GameRunningAppState appState;
 
-	public Terrain(Camera camera, int size) {
-		createMaterials(GameState.get().getAssetManager());
+	public Terrain(Camera camera, int size, GameRunningAppState appState) {
+		this.appState = appState;
+
+		createMaterials(appState.getAssetManager());
 
 		AbstractHeightMap heightmap = new FlatHeightMap(size);
 		try {
@@ -49,7 +52,7 @@ public class Terrain {
 		terrain.setMaterial(mat_terrain);
 		terrain.setLocalTranslation(0, 0, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
-		GameState.get().getRootNode().attachChild(terrain);
+		appState.getRootNode().attachChild(terrain);
 
 		TerrainLodControl control = new TerrainLodControl(terrain, camera);
 		terrain.addControl(control);
@@ -57,8 +60,7 @@ public class Terrain {
 		CollisionShape sceneShape = CollisionShapeFactory
 				.createMeshShape((Node) terrain);
 		terrainBodyControl = new RigidBodyControl(sceneShape, 0);
-		GameState.get().getBulletAppState().getPhysicsSpace()
-				.add(terrainBodyControl);
+		appState.getBulletAppState().getPhysicsSpace().add(terrainBodyControl);
 		terrain.addControl(terrainBodyControl);
 	}
 
@@ -129,8 +131,6 @@ public class Terrain {
 
 	public void smoothenTerrain(Vector2f start, Vector2f end, int border,
 			float maxDiff) {
-
-		System.out.println(getAlphaMapPosition(start));
 
 		terrain.setLocked(false);
 
@@ -270,11 +270,10 @@ public class Terrain {
 	private void resetTerrain() {
 		CollisionShape sceneShape = CollisionShapeFactory
 				.createMeshShape((Node) terrain);
-		GameState.get().getBulletAppState().getPhysicsSpace()
+		appState.getBulletAppState().getPhysicsSpace()
 				.remove(terrainBodyControl);
 		terrainBodyControl = new RigidBodyControl(sceneShape, 0);
-		GameState.get().getBulletAppState().getPhysicsSpace()
-				.add(terrainBodyControl);
+		appState.getBulletAppState().getPhysicsSpace().add(terrainBodyControl);
 	}
 
 	private void addSmoothHillHeightMap(Vector2f position, float radius) {
@@ -287,7 +286,6 @@ public class Terrain {
 		int hillCenterY = Math.round(position.y);
 
 		int intRadius = Math.round(terrain.getTerrainSize() * radius);
-		System.out.println(intRadius);
 		int intRadiusSquared = intRadius * intRadius;
 
 		List<Vector2f> positions = new ArrayList<>();

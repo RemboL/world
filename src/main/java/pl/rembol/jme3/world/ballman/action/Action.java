@@ -1,5 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 
 public abstract class Action {
@@ -7,14 +8,14 @@ public abstract class Action {
 	protected int frame = 0;
 	private boolean isStarted = false;
 
-	protected void start(BallMan ballMan) {
+	protected void start(BallMan ballMan, GameRunningAppState appState) {
 		frame = 0;
 	}
 
-	public void act(BallMan ballMan) {
+	public void act(BallMan ballMan, GameRunningAppState appState) {
 		if (!isStarted) {
 			isStarted = true;
-			start(ballMan);
+			start(ballMan, appState);
 		}
 		doAct(ballMan);
 

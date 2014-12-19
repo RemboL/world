@@ -1,5 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 
 import com.jme3.animation.LoopMode;
@@ -65,7 +66,8 @@ public class MoveTowardsLocationAction extends Action {
 		return end;
 	}
 
-	protected void start(BallMan ballMan) {
+	@Override
+	protected void start(BallMan ballMan, GameRunningAppState appState) {
 		ballMan.setAnimation("walk", LoopMode.Loop);
 	}
 

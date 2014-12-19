@@ -4,18 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.controls.TimeToLiveControl;
+import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.Shovel;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.animation.LoopMode;
+import com.jme3.asset.AssetManager;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 public class SmoothenTerrainAction extends Action {
 
@@ -51,8 +54,8 @@ public class SmoothenTerrainAction extends Action {
 	}
 
 	@Override
-	protected void start(BallMan ballMan) {
-		ballMan.wield(new Shovel());
+	protected void start(BallMan ballMan, GameRunningAppState appState) {
+		ballMan.wield(new Shovel(appState));
 		resetAnimation(ballMan);
 
 		minX = start.x - border;
@@ -61,17 +64,19 @@ public class SmoothenTerrainAction extends Action {
 		maxY = end.y + border;
 
 		for (int i = 0; i < 10; ++i) {
-			particleEmitters.add(createParticleEmiter());
+			particleEmitters.add(createParticleEmiter(
+					appState.getAssetManager(), appState.getRootNode()));
 		}
 	}
 
-	private ParticleEmitter createParticleEmiter() {
+	private ParticleEmitter createParticleEmiter(AssetManager assetManager,
+			Node rootNode) {
 		ParticleEmitter emitter = new ParticleEmitter("Debris",
 				ParticleMesh.Type.Triangle, 20);
-		Material dustMaterial = new Material(GameState.get().getAssetManager(),
+		Material dustMaterial = new Material(assetManager,
 				"Common/MatDefs/Misc/Particle.j3md");
-		dustMaterial.setTexture("Texture", GameState.get().getAssetManager()
-				.loadTexture("Effects/Explosion/flame.png"));
+		dustMaterial.setTexture("Texture",
+				assetManager.loadTexture("Effects/Explosion/flame.png"));
 		emitter.setMaterial(dustMaterial);
 		emitter.setImagesX(2);
 		emitter.setImagesY(2);
@@ -86,7 +91,7 @@ public class SmoothenTerrainAction extends Action {
 		emitter.setStartSize(1f);
 		emitter.setEndSize(4f);
 		emitter.getParticleInfluencer().setVelocityVariation(2f);
-		GameState.get().getRootNode().attachChild(emitter);
+		rootNode.attachChild(emitter);
 		emitter.setLocalTranslation(start.x,
 				terrain.getTerrain().getHeight(start), start.y);
 		return emitter;
@@ -126,10 +131,8 @@ public class SmoothenTerrainAction extends Action {
 	public void finish() {
 		for (ParticleEmitter emitter : particleEmitters) {
 			emitter.setParticlesPerSec(0f);
-			GameState.get().addSpatialToBeDetached(
-					emitter,
-					System.currentTimeMillis()
-							+ DUST_PARTICLE_HIGH_LIFE_IN_SECONDS * 1000);
+			emitter.addControl(new TimeToLiveControl(
+					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS));
 		}
 
 	}

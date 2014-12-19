@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.smallobject;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.GameRunningAppState;
 
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.FastMath;
@@ -10,12 +10,13 @@ import com.jme3.scene.Node;
 
 public class Log extends SmallObject {
 
-	public Log(Vector3f position) {
+	public Log(Vector3f position, GameRunningAppState appState) {
 
-		node = (Node) GameState.get().getAssetManager()
-				.loadModel("log/log.mesh.xml");
+		super(appState);
+
+		node = (Node) appState.getAssetManager().loadModel("log/log.mesh.xml");
 		node.setShadowMode(ShadowMode.Cast);
-		GameState.get().getRootNode().attachChild(node);
+		appState.getRootNode().attachChild(node);
 		node.setLocalTranslation(position);
 
 		control = new RigidBodyControl(1f);
@@ -28,7 +29,7 @@ public class Log extends SmallObject {
 						.nextRandomFloat() * 10 - 5f, FastMath
 						.nextRandomFloat() * 10 - 5f));
 
-		GameState.get().getBulletAppState().getPhysicsSpace().add(control);
+		appState.getBulletAppState().getPhysicsSpace().add(control);
 
 	}
 
