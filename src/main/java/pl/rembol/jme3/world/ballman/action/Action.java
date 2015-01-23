@@ -12,17 +12,17 @@ public abstract class Action {
 		frame = 0;
 	}
 
-	public void act(BallMan ballMan, GameRunningAppState appState) {
+	public void act(BallMan ballMan, GameRunningAppState appState, float tpf) {
 		if (!isStarted) {
 			isStarted = true;
 			start(ballMan, appState);
 		}
-		doAct(ballMan);
+		doAct(ballMan, tpf);
 
 		frame++;
 	}
 
-	abstract protected void doAct(BallMan ballMan);
+	abstract protected void doAct(BallMan ballMan, float tpf);
 
 	public boolean isFinished(BallMan ballMan) {
 		return false;

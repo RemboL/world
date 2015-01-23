@@ -1,5 +1,6 @@
 package pl.rembol.jme3.world.smallobject;
 
+import pl.rembol.jme3.controls.TimeToLiveControl;
 import pl.rembol.jme3.world.GameRunningAppState;
 
 import com.jme3.bullet.control.RigidBodyControl;
@@ -31,6 +32,7 @@ public abstract class SmallObject {
 		node.setLocalTranslation(itemPosition);
 		node.addControl(control);
 		appState.getBulletAppState().getPhysicsSpace().add(control);
+		node.addControl(new TimeToLiveControl(1));
 	}
 
 	public void attach(Node parent) {

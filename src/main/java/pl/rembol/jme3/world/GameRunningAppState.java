@@ -95,6 +95,7 @@ public class GameRunningAppState extends AbstractAppState {
 					(new Random().nextFloat() + i - 3f) * 10f), this);
 
 		}
+
 		initKeys(app.getInputManager());
 	}
 
@@ -113,6 +114,9 @@ public class GameRunningAppState extends AbstractAppState {
 
 		inputManager.addMapping("flatten", new KeyTrigger(KeyInput.KEY_F));
 		inputManager.addListener(new CommandKeysListener(), "flatten");
+
+		inputManager.addMapping("buildHouse", new KeyTrigger(KeyInput.KEY_B));
+		inputManager.addListener(new CommandKeysListener(), "buildHouse");
 
 	}
 

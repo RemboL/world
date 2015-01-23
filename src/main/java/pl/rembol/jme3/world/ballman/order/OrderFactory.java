@@ -14,6 +14,7 @@ public class OrderFactory {
 	public OrderFactory() {
 		registerOrder("move", MoveOrder.class);
 		registerOrder("flatten", SmoothenTerrainOrder.class);
+		registerOrder("buildHouse", BuildHouseOrder.class);
 	}
 
 	public void registerOrder(String command, Class<? extends Order> orderClass) {

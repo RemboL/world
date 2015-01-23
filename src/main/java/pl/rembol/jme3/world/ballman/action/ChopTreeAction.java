@@ -1,7 +1,9 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.smallobject.Axe;
 
 import com.jme3.animation.LoopMode;
 
@@ -27,7 +29,12 @@ public class ChopTreeAction extends Action {
 	}
 
 	@Override
-	protected void doAct(BallMan ballMan) {
+	protected void start(BallMan ballMan, GameRunningAppState appState) {
+		ballMan.wield(new Axe(appState));
+	}
+
+	@Override
+	protected void doAct(BallMan ballMan, float tpf) {
 		if (!waitForAnimationToFinish) {
 			if (animationEnded()) {
 				resetAnimation(ballMan);

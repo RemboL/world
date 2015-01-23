@@ -28,7 +28,7 @@ public class MoveTowardsLocationAction extends Action {
 	}
 
 	@Override
-	protected void doAct(BallMan ballMan) {
+	protected void doAct(BallMan ballMan, float tpf) {
 		ballMan.lookTowards(getClosest(ballMan.getLocation()));
 		ballMan.setTargetVelocity(5f);
 	}

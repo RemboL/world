@@ -8,7 +8,7 @@ import com.jme3.input.controls.ActionListener;
 public class CommandKeysListener implements ActionListener {
 
 	private static final List<String> COMMANDS = Arrays.asList("move",
-			"flatten");
+			"flatten", "buildHouse");
 
 	@Override
 	public void onAction(String name, boolean keyPressed, float tpf) {

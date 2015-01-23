@@ -31,7 +31,8 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 
-public class BallMan extends AbstractControl implements Selectable, WithDefaultAction {
+public class BallMan extends AbstractControl implements Selectable,
+		WithDefaultAction {
 
 	private Node node;
 	private Node selectionNode;
@@ -49,10 +50,7 @@ public class BallMan extends AbstractControl implements Selectable, WithDefaultA
 	private GameRunningAppState appState;
 
 	public BallMan(Vector2f position, GameRunningAppState appState) {
-		this(new Vector3f(position.x, appState.getTerrainQuad()
-				.getHeight(new Vector2f(position.x, position.y))
-				+ appState.getTerrainQuad().getLocalTranslation().y,
-				position.y), appState);
+		this(appState.getTerrain().getGroundPosition(position), appState);
 	}
 
 	public BallMan(Vector3f position, GameRunningAppState appState) {
@@ -63,9 +61,9 @@ public class BallMan extends AbstractControl implements Selectable, WithDefaultA
 				new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
 		control = new BetterCharacterControl(1.5f, 3f, 1);
-		
+
 		node.addControl(this);
-		
+
 		appState.getBulletAppState().getPhysicsSpace().add(control);
 
 		node.addControl(control);
@@ -88,7 +86,8 @@ public class BallMan extends AbstractControl implements Selectable, WithDefaultA
 	}
 
 	private void initNode(Node rootNode) {
-		node = (Node) appState.getAssetManager().loadModel("ballman/ballman.mesh.xml");
+		node = (Node) appState.getAssetManager().loadModel(
+				"ballman/ballman.mesh.xml");
 
 		rootNode.attachChild(node);
 		node.setShadowMode(ShadowMode.Cast);
@@ -176,9 +175,9 @@ public class BallMan extends AbstractControl implements Selectable, WithDefaultA
 	}
 
 	@Override
-	protected void controlUpdate(float paramFloat) {
+	protected void controlUpdate(float tpf) {
 		if (!actionQueue.isEmpty()) {
-			actionQueue.get(0).act(this, appState);
+			actionQueue.get(0).act(this, appState, tpf);
 
 			if (actionQueue.get(0).isFinished(this)) {
 				actionQueue.get(0).finish();

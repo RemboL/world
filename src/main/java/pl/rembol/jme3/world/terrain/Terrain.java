@@ -12,6 +12,7 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
@@ -311,5 +312,17 @@ public class Terrain {
 		terrain.adjustHeight(positions, heights);
 		terrain.setLocked(true);
 
+	}
+
+	public Vector3f getGroundPosition(Vector2f position) {
+		return new Vector3f(position.x, terrain.getHeight(new Vector2f(
+				position.x, position.y)) + terrain.getLocalTranslation().y,
+				position.y);
+	}
+
+	public Vector3f getGroundPosition(Vector3f position) {
+		return new Vector3f(position.x, terrain.getHeight(new Vector2f(
+				position.x, position.z)) + terrain.getLocalTranslation().y,
+				position.z);
 	}
 }
