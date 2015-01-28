@@ -9,6 +9,7 @@ import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.action.Action;
 import pl.rembol.jme3.world.ballman.action.ChopTreeAction;
+import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.world.interfaces.WithDefaultAction;
 import pl.rembol.jme3.world.interfaces.WithNode;
@@ -172,6 +173,12 @@ public class BallMan extends AbstractControl implements Selectable,
 		} else {
 			addAction(new MoveTowardsTargetAction(target, 5f));
 		}
+	}
+
+	@Override
+	public void performDefaultAction(Vector2f target) {
+		actionQueue.clear();
+		addAction(new MoveTowardsLocationAction(target, 1f));
 	}
 
 	@Override

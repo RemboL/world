@@ -2,7 +2,15 @@ package pl.rembol.jme3.world;
 
 import java.util.Random;
 
+import pl.rembol.jme3.input.CommandKeysListener;
+import pl.rembol.jme3.input.ModifierKeysManager;
+import pl.rembol.jme3.input.MouseClickListener;
+import pl.rembol.jme3.input.RtsCamera;
+import pl.rembol.jme3.input.state.InputStateManager;
+import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.ballman.order.OrderFactory;
+import pl.rembol.jme3.world.hud.HudManager;
 import pl.rembol.jme3.world.smallobject.Axe;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -13,10 +21,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
@@ -29,6 +33,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 
 public class GameRunningAppState extends AbstractAppState {
@@ -43,11 +48,31 @@ public class GameRunningAppState extends AbstractAppState {
 
 	private Node rootNode;
 
+	private Node guiNode;
+
 	private Camera camera;
+
+	private RtsCamera rtsCamera;
 
 	int frame = 200;
 
 	private Terrain terrain;
+
+	private OrderFactory orderFactory;
+
+	private InputStateManager inputStateManager;
+
+	private ModifierKeysManager modifierKeysManager;
+
+	private SelectionManager selectionManager;
+
+	private HudManager hudManager;
+
+	private AppSettings settings;
+
+	public GameRunningAppState(AppSettings settings) {
+		this.settings = settings;
+	}
 
 	@Override
 	public void update(float tpf) {
@@ -77,7 +102,20 @@ public class GameRunningAppState extends AbstractAppState {
 
 		this.rootNode = simpleApp.getRootNode();
 
+		this.guiNode = simpleApp.getGuiNode();
+
 		this.camera = app.getCamera();
+
+		this.hudManager = new HudManager(guiNode, settings, assetManager);
+
+		this.rtsCamera = new RtsCamera(camera);
+
+		this.orderFactory = new OrderFactory(this);
+
+		this.inputStateManager = new InputStateManager(this, orderFactory);
+
+		this.selectionManager = new SelectionManager(this);
+		GameState.get().setSelectionManager(selectionManager);
 
 		terrain = new Terrain(camera, 128, this);
 		GameState.get().setTerrain(terrain);
@@ -96,27 +134,21 @@ public class GameRunningAppState extends AbstractAppState {
 
 		}
 
-		initKeys(app.getInputManager());
+		initKeys(app.getInputManager(), guiNode);
 	}
 
-	private void initKeys(InputManager inputManager) {
-		inputManager.addMapping("select", new MouseButtonTrigger(
-				MouseInput.BUTTON_LEFT));
-		inputManager.addListener(new LeftClickListener(camera), "select");
+	private void initKeys(InputManager inputManager, Node guiNode) {
+		MouseClickListener mouseClickListener = new MouseClickListener(camera,
+				guiNode, inputManager, inputStateManager);
+		CommandKeysListener commandKeysListener = new CommandKeysListener(
+				inputStateManager);
 
-		inputManager.addMapping("defaultAction", new MouseButtonTrigger(
-				MouseInput.BUTTON_RIGHT));
-		inputManager.addListener(new RightClickListener(camera),
-				"defaultAction");
+		mouseClickListener.registerInput();
+		commandKeysListener.registerInput(inputManager);
+		modifierKeysManager = new ModifierKeysManager();
+		modifierKeysManager.registerInput(inputManager);
 
-		inputManager.addMapping("move", new KeyTrigger(KeyInput.KEY_M));
-		inputManager.addListener(new CommandKeysListener(), "move");
-
-		inputManager.addMapping("flatten", new KeyTrigger(KeyInput.KEY_F));
-		inputManager.addListener(new CommandKeysListener(), "flatten");
-
-		inputManager.addMapping("buildHouse", new KeyTrigger(KeyInput.KEY_B));
-		inputManager.addListener(new CommandKeysListener(), "buildHouse");
+		rtsCamera.registerInput(inputManager);
 
 	}
 
@@ -163,6 +195,18 @@ public class GameRunningAppState extends AbstractAppState {
 
 	public Terrain getTerrain() {
 		return terrain;
+	}
+
+	public ModifierKeysManager getModifierKeysManager() {
+		return modifierKeysManager;
+	}
+
+	public SelectionManager getSelectionManager() {
+		return selectionManager;
+	}
+
+	public HudManager getHudManager() {
+		return hudManager;
 	}
 
 }

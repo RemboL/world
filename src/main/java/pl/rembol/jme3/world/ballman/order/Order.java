@@ -3,6 +3,7 @@ package pl.rembol.jme3.world.ballman.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.selection.Selectable;
 
@@ -10,6 +11,8 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
 public abstract class Order {
+
+	protected GameRunningAppState appState;
 
 	protected List<BallMan> selected = new ArrayList<>();
 
@@ -27,6 +30,10 @@ public abstract class Order {
 		for (BallMan ballMan : selected) {
 			doPerform(ballMan, target);
 		}
+	}
+
+	public void setAppState(GameRunningAppState appState) {
+		this.appState = appState;
 	}
 
 	protected abstract void doPerform(BallMan ballMan, Vector2f location);
