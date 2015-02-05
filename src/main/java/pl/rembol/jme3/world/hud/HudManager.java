@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.hud;
 
+import java.util.List;
+
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
@@ -18,6 +20,11 @@ public class HudManager {
 	}
 
 	public void setSelectionText(String text) {
-		selectionBox.setText(text);
+		statusBar.setText(text);
+	}
+
+	public void setSelectionText(List<String> text) {
+		statusBar.setText(text);
+
 	}
 }

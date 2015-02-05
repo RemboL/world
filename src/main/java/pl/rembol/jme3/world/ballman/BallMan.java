@@ -1,6 +1,7 @@
 package pl.rembol.jme3.world.ballman;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -8,7 +9,7 @@ import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.action.Action;
-import pl.rembol.jme3.world.ballman.action.ChopTreeAction;
+import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.world.interfaces.WithDefaultAction;
@@ -99,7 +100,7 @@ public class BallMan extends AbstractControl implements Selectable,
 
 	public void wield(SmallObject item) {
 		if (wielded != null) {
-			drop();
+			dropAndDestroy();
 		}
 
 		item.attach(node.getControl(SkeletonControl.class).getAttachmentsNode(
@@ -109,6 +110,10 @@ public class BallMan extends AbstractControl implements Selectable,
 
 	}
 
+	public SmallObject getWieldedObject() {
+		return wielded;
+	}
+
 	public void drop() {
 		if (wielded != null) {
 			wielded.detach();
@@ -116,10 +121,17 @@ public class BallMan extends AbstractControl implements Selectable,
 		}
 	}
 
+	public void dropAndDestroy() {
+		if (wielded != null) {
+			wielded.detach(0);
+			wielded = null;
+		}
+	}
+
 	public void attack(Tree tree) {
 		this.selectionTree = tree;
-		addAction(new MoveTowardsTargetAction(this.selectionTree, 5));
-		addAction(new ChopTreeAction(this.selectionTree));
+		// addAction(new ChopTreeAction(this.selectionTree));
+		addAction(new GatherResourcesAction(appState, this.selectionTree));
 	}
 
 	public void lookTowards(WithNode target) {
@@ -141,6 +153,10 @@ public class BallMan extends AbstractControl implements Selectable,
 
 	public void addAction(Action action) {
 		actionQueue.add(action);
+	}
+
+	public void addActionOnStart(Action action) {
+		actionQueue.add(0, action);
 	}
 
 	public void setAnimation(String animationName, LoopMode loopMode) {
@@ -171,24 +187,27 @@ public class BallMan extends AbstractControl implements Selectable,
 		if (target instanceof Tree) {
 			attack(Tree.class.cast(target));
 		} else {
-			addAction(new MoveTowardsTargetAction(target, 5f));
+			addAction(new MoveTowardsTargetAction(appState, target, 5f));
 		}
 	}
 
 	@Override
 	public void performDefaultAction(Vector2f target) {
 		actionQueue.clear();
-		addAction(new MoveTowardsLocationAction(target, 1f));
+		addAction(new MoveTowardsLocationAction(appState, target, 1f));
 	}
 
 	@Override
 	protected void controlUpdate(float tpf) {
 		if (!actionQueue.isEmpty()) {
-			actionQueue.get(0).act(this, appState, tpf);
 
-			if (actionQueue.get(0).isFinished(this)) {
-				actionQueue.get(0).finish();
-				actionQueue.remove(0);
+			Action action = actionQueue.get(0);
+
+			action.act(this, tpf);
+
+			if (action.isFinished(this)) {
+				action.finish();
+				actionQueue.remove(action);
 				animationChannel.setAnim("stand");
 			}
 		}
@@ -205,6 +224,11 @@ public class BallMan extends AbstractControl implements Selectable,
 	@Override
 	protected void controlRender(RenderManager paramRenderManager,
 			ViewPort paramViewPort) {
+	}
+
+	@Override
+	public List<String> getStatusText() {
+		return Arrays.asList("BallMan");
 	}
 
 }

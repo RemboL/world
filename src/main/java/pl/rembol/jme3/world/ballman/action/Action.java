@@ -7,15 +7,21 @@ public abstract class Action {
 
 	protected int frame = 0;
 	private boolean isStarted = false;
+	protected GameRunningAppState appState;
 
-	protected void start(BallMan ballMan, GameRunningAppState appState) {
+	public Action(GameRunningAppState appState) {
+		this.appState = appState;
+
+	}
+
+	protected void start(BallMan ballMan) {
 		frame = 0;
 	}
 
-	public void act(BallMan ballMan, GameRunningAppState appState, float tpf) {
+	public void act(BallMan ballMan, float tpf) {
 		if (!isStarted) {
 			isStarted = true;
-			start(ballMan, appState);
+			start(ballMan);
 		}
 		doAct(ballMan, tpf);
 

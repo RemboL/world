@@ -1,14 +1,14 @@
 package pl.rembol.jme3.world;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
-import pl.rembol.jme3.world.smallobject.Log;
 
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
@@ -64,6 +64,8 @@ public class Tree implements Selectable {
 
 	protected void substractHp(int hp) {
 		setHp(this.hp - hp);
+
+		appState.getSelectionManager().updateSelectionText();
 	}
 
 	private void destroy() {
@@ -83,10 +85,7 @@ public class Tree implements Selectable {
 	}
 
 	public void getChoppedBy(BallMan ballMan) {
-		new Log(tree.getWorldTranslation().add(ballMan.getLocation()).mult(.5f)
-				.add(Vector3f.UNIT_Y.mult(2f)), appState);
-
-		substractHp(FastMath.nextRandomInt(50, 100));
+		substractHp(1);
 	}
 
 	@Override
@@ -109,6 +108,11 @@ public class Tree implements Selectable {
 			tree.detachChild(selectionNode);
 			selectionNode = null;
 		}
+	}
+
+	@Override
+	public List<String> getStatusText() {
+		return Arrays.asList("Tree", "Resources left: " + hp);
 	}
 
 }

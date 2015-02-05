@@ -13,12 +13,11 @@ public class BuildHouseOrder extends Order {
 
 	@Override
 	protected void doPerform(BallMan ballMan, Vector2f location) {
-		ballMan.addAction(new MoveTowardsLocationAction(location, 10f));
-		ballMan.addAction(new SmoothenTerrainAction(GameState.get()
+		ballMan.addAction(new MoveTowardsLocationAction(appState, location, 10f));
+		ballMan.addAction(new SmoothenTerrainAction(appState, GameState.get()
 				.getTerrain(), location.add(new Vector2f(-5f, -5f)), location
 				.add(new Vector2f(5f, 5f)), 5));
-		ballMan.addAction(new BuildHouseAction(GameState.get().getTerrain(),
-				location));
+		ballMan.addAction(new BuildHouseAction(appState, location));
 	}
 
 	@Override

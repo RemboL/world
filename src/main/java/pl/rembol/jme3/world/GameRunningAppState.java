@@ -13,6 +13,7 @@ import pl.rembol.jme3.world.ballman.order.OrderFactory;
 import pl.rembol.jme3.world.hud.HudManager;
 import pl.rembol.jme3.world.smallobject.Axe;
 import pl.rembol.jme3.world.terrain.Terrain;
+import pl.rembol.jme3.world.warehouse.Warehouse;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -70,6 +71,8 @@ public class GameRunningAppState extends AbstractAppState {
 
 	private AppSettings settings;
 
+	private Warehouse warehouse;
+
 	public GameRunningAppState(AppSettings settings) {
 		this.settings = settings;
 	}
@@ -96,7 +99,7 @@ public class GameRunningAppState extends AbstractAppState {
 		SimpleApplication simpleApp = (SimpleApplication) app;
 		bulletAppState = new BulletAppState();
 		stateManager.attach(bulletAppState);
-		// bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+		// bulletAppState.setDebugEnabled(true);
 
 		this.assetManager = app.getAssetManager();
 
@@ -121,6 +124,10 @@ public class GameRunningAppState extends AbstractAppState {
 		GameState.get().setTerrain(terrain);
 
 		initLightAndShadows(app.getViewPort());
+
+		terrain.smoothenTerrain(new Vector2f(25f, -5f), new Vector2f(35f, 5f),
+				5, 20f);
+		warehouse = new Warehouse(new Vector2f(30f, 0f), this);
 
 		for (int i = 0; i < 5; ++i) {
 			BallMan ballMan = new BallMan(new Vector2f(
@@ -207,6 +214,10 @@ public class GameRunningAppState extends AbstractAppState {
 
 	public HudManager getHudManager() {
 		return hudManager;
+	}
+
+	public Warehouse getClosestWarehouse(Vector3f location) {
+		return warehouse;
 	}
 
 }

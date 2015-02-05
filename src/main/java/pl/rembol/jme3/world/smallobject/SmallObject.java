@@ -25,14 +25,18 @@ public abstract class SmallObject {
 		return node;
 	}
 
-	public void detach() {
+	public void detach(int timeToLive) {
 		Vector3f itemPosition = node.getWorldTranslation();
 		node.getParent().detachChild(node);
 		appState.getRootNode().attachChild(node);
 		node.setLocalTranslation(itemPosition);
 		node.addControl(control);
 		appState.getBulletAppState().getPhysicsSpace().add(control);
-		node.addControl(new TimeToLiveControl(1));
+		node.addControl(new TimeToLiveControl(timeToLive, appState));
+	}
+
+	public void detach() {
+		detach(1);
 	}
 
 	public void attach(Node parent) {

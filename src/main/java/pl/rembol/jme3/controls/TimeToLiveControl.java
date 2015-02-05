@@ -1,5 +1,7 @@
 package pl.rembol.jme3.controls;
 
+import pl.rembol.jme3.world.GameRunningAppState;
+
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -13,9 +15,12 @@ import com.jme3.scene.control.AbstractControl;
 public class TimeToLiveControl extends AbstractControl {
 
 	private float timeToLive;
+	private GameRunningAppState state;
 
-	public TimeToLiveControl(float timeToLiveInSeconds) {
+	public TimeToLiveControl(float timeToLiveInSeconds,
+			GameRunningAppState state) {
 		this.timeToLive = timeToLiveInSeconds;
+		this.state = state;
 	}
 
 	@Override
@@ -28,6 +33,7 @@ public class TimeToLiveControl extends AbstractControl {
 
 		if (timeToLive < 0) {
 			spatial.getParent().detachChild(spatial);
+			state.getBulletAppState().getPhysicsSpace().remove(spatial);
 		}
 	}
 

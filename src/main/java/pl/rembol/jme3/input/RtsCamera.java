@@ -2,8 +2,10 @@ package pl.rembol.jme3.input;
 
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -202,6 +204,11 @@ public class RtsCamera implements AnalogListener {
 
 		registerKey(inputManager, ZOOM_IN, KeyInput.KEY_INSERT);
 		registerKey(inputManager, ZOOM_OUT, KeyInput.KEY_PGUP);
+
+		inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(
+				MouseInput.AXIS_WHEEL, false));
+		inputManager.addMapping(ZOOM_OUT, new MouseAxisTrigger(
+				MouseInput.AXIS_WHEEL, true));
 	}
 
 	private void registerKey(InputManager inputManager, String name, int key) {

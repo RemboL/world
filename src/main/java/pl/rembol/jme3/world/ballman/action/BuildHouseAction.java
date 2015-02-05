@@ -48,18 +48,19 @@ public class BuildHouseAction extends Action {
 
 	private Vector2f position;
 
-	public BuildHouseAction(Terrain terrain, Vector2f position) {
-		this.terrain = terrain;
+	public BuildHouseAction(GameRunningAppState appState, Vector2f position) {
+		super(appState);
+		this.terrain = appState.getTerrain();
 		this.position = position;
 	}
 
 	@Override
-	protected void start(BallMan ballMan, GameRunningAppState appState) {
+	protected void start(BallMan ballMan) {
 		ballMan.wield(new Hammer(appState));
 		resetAnimation(ballMan);
 
-		constructionSite = new ConstructionSite(new House(position, appState, true),
-				appState, 15f);
+		constructionSite = new ConstructionSite(new House(position, appState,
+				true), appState, 15f);
 
 		minX = position.getX() - constructionSite.getBuilding().getWidth() - 5;
 		maxX = position.getX() + constructionSite.getBuilding().getWidth() + 5;
@@ -138,7 +139,7 @@ public class BuildHouseAction extends Action {
 		for (ParticleEmitter emitter : particleEmitters) {
 			emitter.setParticlesPerSec(0f);
 			emitter.addControl(new TimeToLiveControl(
-					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS));
+					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS, appState));
 		}
 
 	}

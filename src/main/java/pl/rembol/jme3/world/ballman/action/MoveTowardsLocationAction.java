@@ -14,14 +14,17 @@ public class MoveTowardsLocationAction extends Action {
 
 	private float targetDistance;
 
-	public MoveTowardsLocationAction(Vector2f rectangleStart,
-			Vector2f rectangleEnd, float targetDistance) {
+	public MoveTowardsLocationAction(GameRunningAppState appState,
+			Vector2f rectangleStart, Vector2f rectangleEnd, float targetDistance) {
+		super(appState);
 		this.rectangleStart = rectangleStart;
 		this.rectangleEnd = rectangleEnd;
 		this.targetDistance = targetDistance;
 	}
 
-	public MoveTowardsLocationAction(Vector2f point, float targetDistance) {
+	public MoveTowardsLocationAction(GameRunningAppState appState,
+			Vector2f point, float targetDistance) {
+		super(appState);
 		this.rectangleStart = point;
 		this.rectangleEnd = point;
 		this.targetDistance = targetDistance;
@@ -67,7 +70,7 @@ public class MoveTowardsLocationAction extends Action {
 	}
 
 	@Override
-	protected void start(BallMan ballMan, GameRunningAppState appState) {
+	protected void start(BallMan ballMan) {
 		ballMan.setAnimation("walk", LoopMode.Loop);
 	}
 

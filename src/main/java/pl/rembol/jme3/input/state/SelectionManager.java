@@ -26,13 +26,13 @@ public class SelectionManager {
 		updateSelectionText();
 	}
 
-	private void updateSelectionText() {
+	public void updateSelectionText() {
 
 		if (selected.size() == 0) {
 			appState.getHudManager().setSelectionText("");
 		} else if (selected.size() == 1) {
 			appState.getHudManager().setSelectionText(
-					selected.get(0).getNode().getName());
+					selected.get(0).getStatusText());
 		} else {
 			appState.getHudManager().setSelectionText(
 					"selected " + selected.size() + " units");

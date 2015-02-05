@@ -10,6 +10,8 @@ import com.jme3.scene.Node;
 
 public class Log extends SmallObject {
 
+	private int resources = 5;
+
 	public Log(Vector3f position, GameRunningAppState appState) {
 
 		super(appState);
@@ -31,6 +33,16 @@ public class Log extends SmallObject {
 
 		appState.getBulletAppState().getPhysicsSpace().add(control);
 
+	}
+
+	public Log(Vector3f location, GameRunningAppState appState, int chopCounter) {
+		this(location, appState);
+
+		resources = chopCounter;
+	}
+
+	public int getResourceCount() {
+		return resources;
 	}
 
 }

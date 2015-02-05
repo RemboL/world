@@ -11,7 +11,9 @@ public class MoveTowardsTargetAction extends Action {
 	private WithNode target;
 	private float targetDistance;
 
-	public MoveTowardsTargetAction(WithNode target, float targetDistance) {
+	public MoveTowardsTargetAction(GameRunningAppState appState,
+			WithNode target, float targetDistance) {
+		super(appState);
 		this.target = target;
 		this.targetDistance = targetDistance;
 	}
@@ -34,7 +36,7 @@ public class MoveTowardsTargetAction extends Action {
 	}
 
 	@Override
-	protected void start(BallMan ballMan, GameRunningAppState appState) {
+	protected void start(BallMan ballMan) {
 		ballMan.setAnimation("walk", LoopMode.Loop);
 	}
 

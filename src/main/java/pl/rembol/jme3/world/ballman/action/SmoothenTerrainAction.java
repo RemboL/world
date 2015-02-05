@@ -45,8 +45,11 @@ public class SmoothenTerrainAction extends Action {
 	private float maxY;
 	private Random random = new Random();
 
-	public SmoothenTerrainAction(Terrain terrain, Vector2f start, Vector2f end,
-			int border) {
+	private GameRunningAppState appState;
+
+	public SmoothenTerrainAction(GameRunningAppState appState, Terrain terrain,
+			Vector2f start, Vector2f end, int border) {
+		super(appState);
 		this.terrain = terrain;
 		this.start = start;
 		this.end = end;
@@ -54,7 +57,7 @@ public class SmoothenTerrainAction extends Action {
 	}
 
 	@Override
-	protected void start(BallMan ballMan, GameRunningAppState appState) {
+	protected void start(BallMan ballMan) {
 		ballMan.wield(new Shovel(appState));
 		resetAnimation(ballMan);
 
@@ -132,7 +135,7 @@ public class SmoothenTerrainAction extends Action {
 		for (ParticleEmitter emitter : particleEmitters) {
 			emitter.setParticlesPerSec(0f);
 			emitter.addControl(new TimeToLiveControl(
-					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS));
+					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS, appState));
 		}
 
 	}
