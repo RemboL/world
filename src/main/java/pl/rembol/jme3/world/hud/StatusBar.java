@@ -23,7 +23,7 @@ public class StatusBar {
 		framePosition = new Vector2f(settings.getWidth() / 2 - 200, 0);
 
 		Picture frame = new Picture("Status Bar");
-		frame.setImage(assetManager, "status_bar.png", true);
+		frame.setImage(assetManager, "interface/status_bar.png", true);
 		frame.move(framePosition.x, framePosition.y, -2);
 		frame.setWidth(400);
 		frame.setHeight(120);

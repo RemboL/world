@@ -11,12 +11,12 @@ public class MoveOrder extends Order {
 
 	@Override
 	protected void doPerform(BallMan ballMan, Vector2f location) {
-		ballMan.addAction(new MoveTowardsLocationAction(appState, location, 5f));
+		ballMan.setAction(new MoveTowardsLocationAction(appState, location, 5f));
 	}
 
 	@Override
 	protected void doPerform(BallMan ballMan, Selectable target) {
-		ballMan.addAction(new MoveTowardsTargetAction(appState, target, 5f));
+		ballMan.setAction(new MoveTowardsTargetAction(appState, target, 5f));
 	}
 
 }

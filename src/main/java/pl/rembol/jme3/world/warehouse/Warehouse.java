@@ -19,6 +19,7 @@ import com.jme3.scene.Node;
 
 public class Warehouse implements Selectable, Building {
 
+	private static final float SCALE = 5f;
 	private RigidBodyControl control;
 	private Node house;
 	private SelectionNode selectionNode;
@@ -51,7 +52,7 @@ public class Warehouse implements Selectable, Building {
 
 		house.setLocalTranslation(position);
 
-		house.setLocalScale(5f);
+		house.setLocalScale(SCALE);
 
 		control = new RigidBodyControl(0f);
 		house.addControl(control);
@@ -86,6 +87,7 @@ public class Warehouse implements Selectable, Building {
 			selectionNode = new SelectionNode(appState.getAssetManager());
 			house.attachChild(selectionNode);
 			selectionNode.setLocalTranslation(0, 10, 0);
+			selectionNode.setLocalScale(1 / SCALE);
 		}
 	}
 

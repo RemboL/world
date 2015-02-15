@@ -45,8 +45,6 @@ public class SmoothenTerrainAction extends Action {
 	private float maxY;
 	private Random random = new Random();
 
-	private GameRunningAppState appState;
-
 	public SmoothenTerrainAction(GameRunningAppState appState, Terrain terrain,
 			Vector2f start, Vector2f end, int border) {
 		super(appState);

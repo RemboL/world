@@ -17,21 +17,20 @@ public class CommandKeysListener implements ActionListener {
 
 	@Override
 	public void onAction(String name, boolean keyPressed, float tpf) {
-		inputStateManager.issueCommand(name);
+		inputStateManager.type(name);
 	}
 
 	public void registerInput(InputManager inputManager) {
-		inputManager.addMapping(InputStateManager.M, new KeyTrigger(
-				KeyInput.KEY_M));
-		inputManager.addListener(this, InputStateManager.M);
+		bindKeyToCommand(inputManager, InputStateManager.B, KeyInput.KEY_B);
+		bindKeyToCommand(inputManager, InputStateManager.C, KeyInput.KEY_C);
+		bindKeyToCommand(inputManager, InputStateManager.F, KeyInput.KEY_F);
+		bindKeyToCommand(inputManager, InputStateManager.M, KeyInput.KEY_M);
+	}
 
-		inputManager.addMapping(InputStateManager.F, new KeyTrigger(
-				KeyInput.KEY_F));
-		inputManager.addListener(this, InputStateManager.F);
-
-		inputManager.addMapping(InputStateManager.B, new KeyTrigger(
-				KeyInput.KEY_B));
-		inputManager.addListener(this, InputStateManager.B);
+	private void bindKeyToCommand(InputManager inputManager, String command,
+			int key) {
+		inputManager.addMapping(command, new KeyTrigger(key));
+		inputManager.addListener(this, command);
 	}
 
 }

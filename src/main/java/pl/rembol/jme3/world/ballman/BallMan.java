@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import pl.rembol.jme3.player.Player;
+import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Tree;
@@ -34,7 +36,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 
 public class BallMan extends AbstractControl implements Selectable,
-		WithDefaultAction {
+		WithDefaultAction, WithOwner {
 
 	private Node node;
 	private Node selectionNode;
@@ -50,6 +52,7 @@ public class BallMan extends AbstractControl implements Selectable,
 	private AnimControl animationControl;
 	private AnimChannel animationChannel;
 	private GameRunningAppState appState;
+	private Player owner;
 
 	public BallMan(Vector2f position, GameRunningAppState appState) {
 		this(appState.getTerrain().getGroundPosition(position), appState);
@@ -151,6 +154,11 @@ public class BallMan extends AbstractControl implements Selectable,
 		return node.getWorldTranslation();
 	}
 
+	public void setAction(Action action) {
+		actionQueue.clear();
+		actionQueue.add(action);
+	}
+
 	public void addAction(Action action) {
 		actionQueue.add(action);
 	}
@@ -228,7 +236,23 @@ public class BallMan extends AbstractControl implements Selectable,
 
 	@Override
 	public List<String> getStatusText() {
-		return Arrays.asList("BallMan");
+		return Arrays.asList("BallMan", "owner: " + owner.getName());
+	}
+
+	@Override
+	public Player getOwner() {
+		return owner;
+	}
+
+	@Override
+	public void setOwner(Player player) {
+		this.owner = player;
+		updateColor();
+	}
+
+	@Override
+	public String[] getGeometriesWithChangeableColor() {
+		return new String[] { "skin" };
 	}
 
 }

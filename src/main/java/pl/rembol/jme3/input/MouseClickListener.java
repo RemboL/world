@@ -1,7 +1,9 @@
 package pl.rembol.jme3.input;
 
 import pl.rembol.jme3.input.state.InputStateManager;
+import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.hud.ActionButton;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.collision.Collidable;
@@ -16,6 +18,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 public class MouseClickListener implements ActionListener {
 
@@ -31,8 +34,12 @@ public class MouseClickListener implements ActionListener {
 
 	private InputStateManager inputStateManager;
 
-	public MouseClickListener(Camera cam, Node guiNode,
-			InputManager inputManager, InputStateManager inputStateManager) {
+	private GameRunningAppState appState;
+
+	public MouseClickListener(GameRunningAppState appState, Camera cam,
+			Node guiNode, InputManager inputManager,
+			InputStateManager inputStateManager) {
+		this.appState = appState;
 		this.cam = cam;
 		this.guiNode = guiNode;
 		this.inputManager = inputManager;
@@ -44,22 +51,48 @@ public class MouseClickListener implements ActionListener {
 		if ((name.equals(InputStateManager.LEFT_CLICK) || name
 				.equals(InputStateManager.RIGHT_CLICK)) && !keyPressed) {
 
+			ActionButton button = getActionButtonClick();
+			if (button != null) {
+				inputStateManager.type(button.getCommandKey());
+				return;
+			}
+
 			Collidable collided = getClosestCollidingObject();
 
 			if (collidedWithNode(collided)) {
 				Selectable selectable = GameState.get().getSelectable(
 						Node.class.cast(collided));
-				inputStateManager.issueCommand(name, selectable);
+				inputStateManager.click(name, selectable);
 			} else {
 				Vector3f collisionWithTerrain = getCollisionWithTerrain();
 				if (collisionWithTerrain != null) {
-					inputStateManager.issueCommand(name, new Vector2f(
+					inputStateManager.click(name, new Vector2f(
 							collisionWithTerrain.x, collisionWithTerrain.z));
 				}
 
 			}
 		}
 
+	}
+
+	private ActionButton getActionButtonClick() {
+		for (Spatial button : appState.getHudManager().getActionButtonNode()
+				.getChildren()) {
+
+			Vector2f click2d = inputManager.getCursorPosition();
+
+			Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
+					button.getWorldTranslation().y);
+			Vector2f buttonEnd = buttonStart.add(new Vector2f(
+					ActionButton.SIZE, ActionButton.SIZE));
+
+			if (buttonStart.x <= click2d.x && buttonStart.y <= click2d.y
+					&& buttonEnd.x > click2d.x && buttonEnd.y > click2d.y) {
+				return ActionButton.class.cast(button);
+			}
+		}
+
+		return null;
 	}
 
 	private boolean collidedWithNode(Collidable collided) {
@@ -106,7 +139,6 @@ public class MouseClickListener implements ActionListener {
 
 	private Vector3f getCollisionWithTerrain() {
 		Ray ray = getClickRay();
-		System.out.println("ray: " + ray);
 
 		CollisionResults results = new CollisionResults();
 		GameState.get().getTerrainQuad().collideWith(ray, results);

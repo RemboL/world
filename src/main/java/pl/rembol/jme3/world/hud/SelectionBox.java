@@ -16,7 +16,7 @@ public class SelectionBox {
 			AssetManager assetManager) {
 
 		frame = new Picture("Selection Box");
-		frame.setImage(assetManager, "selection_box.png", true);
+		frame.setImage(assetManager, "interface/selection_box.png", true);
 		frame.move(0, 0, -2);
 		frame.setWidth(200);
 		frame.setHeight(200);

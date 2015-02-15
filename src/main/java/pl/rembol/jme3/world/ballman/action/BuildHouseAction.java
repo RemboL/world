@@ -59,8 +59,9 @@ public class BuildHouseAction extends Action {
 		ballMan.wield(new Hammer(appState));
 		resetAnimation(ballMan);
 
-		constructionSite = new ConstructionSite(new House(position, appState,
-				true), appState, 15f);
+		House house = new House(position, appState, true);
+		house.setOwner(ballMan.getOwner());
+		constructionSite = new ConstructionSite(house, appState, 15f);
 
 		minX = position.getX() - constructionSite.getBuilding().getWidth() - 5;
 		maxX = position.getX() + constructionSite.getBuilding().getWidth() + 5;

@@ -37,11 +37,11 @@ public class Main extends SimpleApplication {
 
 		assetManager.registerLoader(BlenderModelLoader.class, "blend");
 
-		 stateManager.attach(new VideoRecorderAppState(new File("video.avi"),
-		 0.9f));
+//		 stateManager.attach(new VideoRecorderAppState(new File("video.avi"),
+//		 0.9f));
 
 
-		cam.setLocation(new Vector3f(0f, 20f, -70f));
+		cam.setLocation(new Vector3f(0f, 20f, -20f));
 		cam.setRotation(new Quaternion().fromAngleAxis(0, Vector3f.UNIT_Y));
 
 		this.getStateManager().attach(new GameRunningAppState(settings));

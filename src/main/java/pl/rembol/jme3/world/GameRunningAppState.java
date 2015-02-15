@@ -8,8 +8,10 @@ import pl.rembol.jme3.input.MouseClickListener;
 import pl.rembol.jme3.input.RtsCamera;
 import pl.rembol.jme3.input.state.InputStateManager;
 import pl.rembol.jme3.input.state.SelectionManager;
+import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.order.OrderFactory;
+import pl.rembol.jme3.world.house.House;
 import pl.rembol.jme3.world.hud.HudManager;
 import pl.rembol.jme3.world.smallobject.Axe;
 import pl.rembol.jme3.world.terrain.Terrain;
@@ -73,6 +75,8 @@ public class GameRunningAppState extends AbstractAppState {
 
 	private Warehouse warehouse;
 
+	private Player activePlayer;
+
 	public GameRunningAppState(AppSettings settings) {
 		this.settings = settings;
 	}
@@ -102,37 +106,32 @@ public class GameRunningAppState extends AbstractAppState {
 		// bulletAppState.setDebugEnabled(true);
 
 		this.assetManager = app.getAssetManager();
-
 		this.rootNode = simpleApp.getRootNode();
-
 		this.guiNode = simpleApp.getGuiNode();
-
 		this.camera = app.getCamera();
-
-		this.hudManager = new HudManager(guiNode, settings, assetManager);
-
+		this.hudManager = new HudManager(guiNode, settings, assetManager, this);
 		this.rtsCamera = new RtsCamera(camera);
-
 		this.orderFactory = new OrderFactory(this);
-
 		this.inputStateManager = new InputStateManager(this, orderFactory);
-
 		this.selectionManager = new SelectionManager(this);
-		GameState.get().setSelectionManager(selectionManager);
 
+		GameState.get().setSelectionManager(selectionManager);
 		terrain = new Terrain(camera, 128, this);
 		GameState.get().setTerrain(terrain);
-
 		initLightAndShadows(app.getViewPort());
 
 		terrain.smoothenTerrain(new Vector2f(25f, -5f), new Vector2f(35f, 5f),
 				5, 20f);
 		warehouse = new Warehouse(new Vector2f(30f, 0f), this);
 
+		activePlayer = new Player("RemboL");
+		Player enemy = new Player("bad guy", ColorRGBA.Red);
+
 		for (int i = 0; i < 5; ++i) {
 			BallMan ballMan = new BallMan(new Vector2f(
 					(new Random().nextFloat() + 2f) * 5f,
 					(new Random().nextFloat() + i - 3f) * 10f), this);
+			ballMan.setOwner(activePlayer);
 
 			ballMan.wield(new Axe(this));
 
@@ -141,12 +140,19 @@ public class GameRunningAppState extends AbstractAppState {
 
 		}
 
+		BallMan ballMan = new BallMan(new Vector2f(50f, -10f), this);
+		ballMan.setOwner(enemy);
+		terrain.smoothenTerrain(new Vector2f(45f, 5f), new Vector2f(55f, 15f),
+				5, 20f);
+		House house = new House(new Vector2f(50f, 10f), this);
+		house.setOwner(enemy);
+
 		initKeys(app.getInputManager(), guiNode);
 	}
 
 	private void initKeys(InputManager inputManager, Node guiNode) {
-		MouseClickListener mouseClickListener = new MouseClickListener(camera,
-				guiNode, inputManager, inputStateManager);
+		MouseClickListener mouseClickListener = new MouseClickListener(this,
+				camera, guiNode, inputManager, inputStateManager);
 		CommandKeysListener commandKeysListener = new CommandKeysListener(
 				inputStateManager);
 
@@ -178,7 +184,7 @@ public class GameRunningAppState extends AbstractAppState {
 
 		FogFilter fog = new FogFilter();
 		fog.setFogColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-		fog.setFogDistance(200f);
+		fog.setFogDistance(400f);
 		fog.setFogDensity(1.5f);
 		fpp.addFilter(fog);
 		viewPort.addProcessor(fpp);
@@ -218,6 +224,14 @@ public class GameRunningAppState extends AbstractAppState {
 
 	public Warehouse getClosestWarehouse(Vector3f location) {
 		return warehouse;
+	}
+
+	public InputStateManager getInputStateManager() {
+		return inputStateManager;
+	}
+
+	public Player getActivePlayer() {
+		return activePlayer;
 	}
 
 }

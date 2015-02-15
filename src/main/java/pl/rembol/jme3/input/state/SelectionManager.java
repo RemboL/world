@@ -3,10 +3,18 @@ package pl.rembol.jme3.input.state;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.GameRunningAppState;
+import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.house.House;
 import pl.rembol.jme3.world.selection.Selectable;
 
 public class SelectionManager {
+
+	public static enum SelectionType {
+		UNIT, HOUSE;
+	}
 
 	private List<Selectable> selected = new ArrayList<>();
 	private GameRunningAppState appState;
@@ -24,6 +32,7 @@ public class SelectionManager {
 		}
 
 		updateSelectionText();
+		appState.getHudManager().updateActionButtons();
 	}
 
 	public void updateSelectionText() {
@@ -52,6 +61,7 @@ public class SelectionManager {
 		doDeselect(selectable);
 
 		updateSelectionText();
+		appState.getHudManager().updateActionButtons();
 	}
 
 	private void clearSelection() {
@@ -74,6 +84,26 @@ public class SelectionManager {
 
 	public List<Selectable> getSelected() {
 		return selected;
+	}
+
+	public SelectionType getSelectionType() {
+		if (!selected.isEmpty()) {
+			if (selected.stream().allMatch(
+					selectedUnit -> BallMan.class.isInstance(selectedUnit)
+							&& WithOwner.class.cast(selectedUnit).getOwner()
+									.equals(appState.getActivePlayer()))) {
+				return SelectionType.UNIT;
+			}
+
+			if (selected.stream().allMatch(
+					selectedUnit -> House.class.isInstance(selectedUnit)
+							&& WithOwner.class.cast(selectedUnit).getOwner()
+									.equals(appState.getActivePlayer()))) {
+				return SelectionType.HOUSE;
+			}
+		}
+
+		return null;
 	}
 
 }

@@ -12,7 +12,7 @@ public class SmoothenTerrainOrder extends Order {
 
 	@Override
 	protected void doPerform(BallMan ballMan, Vector2f location) {
-		ballMan.addAction(new MoveTowardsLocationAction(appState, location, 10f));
+		ballMan.setAction(new MoveTowardsLocationAction(appState, location, 10f));
 		ballMan.addAction(new SmoothenTerrainAction(appState, GameState.get()
 				.getTerrain(), location.add(new Vector2f(-5f, -5f)), location
 				.add(new Vector2f(5f, 5f)), 5));

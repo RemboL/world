@@ -52,7 +52,6 @@ public class OrderFactory {
 				Order order = orderClass.getConstructor().newInstance();
 				order.setSelected(selected);
 				order.setAppState(appState);
-				System.out.println("producing order " + order);
 				return order;
 			} catch (NoSuchMethodException | SecurityException
 					| InstantiationException | IllegalAccessException

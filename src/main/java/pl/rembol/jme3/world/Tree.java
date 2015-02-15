@@ -35,7 +35,7 @@ public class Tree implements Selectable {
 	public Tree(Vector3f position, GameRunningAppState appState) {
 		this.appState = appState;
 
-		tree = BlenderLoaderHelper.rewriteDiffuseToAmbient((Node) appState
+		tree = ModelHelper.rewriteDiffuseToAmbient((Node) appState
 				.getAssetManager().loadModel("tree.blend"));
 		tree.setShadowMode(ShadowMode.Cast);
 		appState.getRootNode().attachChild(tree);

@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.smallobject;
 
-import pl.rembol.jme3.world.BlenderLoaderHelper;
+import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.GameRunningAppState;
 
 import com.jme3.bullet.control.RigidBodyControl;
@@ -13,7 +13,7 @@ public class Hammer extends SmallObject {
 
 		super(appState);
 
-		node = BlenderLoaderHelper.rewriteDiffuseToAmbient((Node) appState
+		node = ModelHelper.rewriteDiffuseToAmbient((Node) appState
 				.getAssetManager().loadModel("hammer/hammer.blend"));
 		node.setShadowMode(ShadowMode.Cast);
 		appState.getRootNode().attachChild(node);
