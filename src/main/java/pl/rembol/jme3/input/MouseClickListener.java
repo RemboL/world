@@ -18,7 +18,10 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.Trigger;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -27,7 +30,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 @Component
-public class MouseClickListener implements ActionListener {
+public class MouseClickListener implements ActionListener, AnalogListener {
 
 	public static final String LEFT_CLICK = "input_leftClick";
 
@@ -48,6 +51,15 @@ public class MouseClickListener implements ActionListener {
 	@Autowired
 	private Terrain terrain;
 
+	@Autowired
+	private DragSelectionManager dragSelectionManager;
+
+	private boolean isButtonDown = false;
+
+	private Vector2f dragStartPosition;
+
+	private boolean isDragged = false;
+
 	@PostConstruct
 	public void registerInput() {
 		inputManager.addMapping(InputStateManager.LEFT_CLICK,
@@ -57,33 +69,68 @@ public class MouseClickListener implements ActionListener {
 		inputManager.addMapping(InputStateManager.RIGHT_CLICK,
 				new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		inputManager.addListener(this, InputStateManager.RIGHT_CLICK);
+
+		inputManager.addMapping(InputStateManager.MOUSE_MOVE, new Trigger[] {
+				new MouseAxisTrigger(MouseInput.AXIS_X, false),
+				new MouseAxisTrigger(MouseInput.AXIS_X, true),
+				new MouseAxisTrigger(MouseInput.AXIS_Y, false),
+				new MouseAxisTrigger(MouseInput.AXIS_Y, true) });
+		inputManager.addListener(this, InputStateManager.MOUSE_MOVE);
 	}
 
+	@Override
+	public void onAnalog(String name, float value, float tpf) {
+		if (isButtonDown
+				&& dragStartPosition != null
+				&& dragStartPosition.distance(inputManager.getCursorPosition()) > 5f) {
+			isDragged = true;
+		}
+	}
+
+	@Override
 	public void onAction(String name, boolean keyPressed, float tpf) {
+
+		if (name.equals(InputStateManager.LEFT_CLICK) && keyPressed) {
+			isButtonDown = true;
+			dragStartPosition = inputManager.getCursorPosition().clone();
+			isDragged = false;
+			dragSelectionManager.start();
+		}
 
 		if ((name.equals(InputStateManager.LEFT_CLICK) || name
 				.equals(InputStateManager.RIGHT_CLICK)) && !keyPressed) {
+			if (!isDragged) {
+				dragSelectionManager.cancel();
 
-			ActionButton button = getActionButtonClick();
-			if (button != null) {
-				inputStateManager.type(button.getCommandKey());
-				return;
-			}
-
-			Collidable collided = getClosestCollidingObject();
-
-			if (collidedWithNode(collided)) {
-				Selectable selectable = GameState.get().getSelectable(
-						Node.class.cast(collided));
-				inputStateManager.click(name, selectable);
-			} else {
-				Vector3f collisionWithTerrain = getCollisionWithTerrain();
-				if (collisionWithTerrain != null) {
-					inputStateManager.click(name, new Vector2f(
-							collisionWithTerrain.x, collisionWithTerrain.z));
+				ActionButton button = getActionButtonClick();
+				if (button != null) {
+					inputStateManager.type(button.getCommandKey());
+					return;
 				}
 
+				Collidable collided = getClosestCollidingObject();
+
+				if (collidedWithNode(collided)) {
+					Selectable selectable = GameState.get().getSelectable(
+							Node.class.cast(collided));
+					inputStateManager.click(name, selectable);
+				} else {
+					Vector3f collisionWithTerrain = getCollisionWithTerrain();
+					if (collisionWithTerrain != null) {
+						inputStateManager
+								.click(name, new Vector2f(
+										collisionWithTerrain.x,
+										collisionWithTerrain.z));
+					}
+
+				}
+			} else if (name.equals(InputStateManager.LEFT_CLICK)) {
+				dragSelectionManager.confirm();
 			}
+
+			isButtonDown = false;
+			dragStartPosition = null;
+			isDragged = false;
 		}
 
 	}

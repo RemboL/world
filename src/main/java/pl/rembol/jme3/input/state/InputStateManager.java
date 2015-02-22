@@ -32,6 +32,8 @@ public class InputStateManager {
 
 	public static final String LEFT_CLICK = "command_leftClick";
 
+	public static final String MOUSE_MOVE = "command_mouseMove";
+
 	private InputState currentState = InputState.DEFAULT;
 
 	private Order<?> currentOrder = null;

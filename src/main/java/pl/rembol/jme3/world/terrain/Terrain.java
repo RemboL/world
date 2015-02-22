@@ -66,6 +66,7 @@ public class Terrain {
 		terrain.setMaterial(mat_terrain);
 		terrain.setLocalTranslation(0, 0, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
+
 		rootNode.attachChild(terrain);
 
 		TerrainLodControl control = new TerrainLodControl(terrain, camera);

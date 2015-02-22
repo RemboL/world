@@ -6,9 +6,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jme3.math.Vector3f;
+
 import pl.rembol.jme3.input.ModifierKeysManager;
 import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.GameRunningAppState;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.house.House;
@@ -38,7 +41,7 @@ public class SelectionManager {
 	private ModifierKeysManager modifierKeysManager;
 
 	public void select(Selectable selectable) {
-		if (modifierKeysManager.isControlPressed()) {
+		if (modifierKeysManager.isShiftPressed()) {
 			switchSelection(selectable);
 		} else {
 			clearSelection();
@@ -124,6 +127,29 @@ public class SelectionManager {
 	private boolean isOwnedByActivePlayer(Selectable selectedUnit) {
 		return WithOwner.class.cast(selectedUnit).getOwner()
 				.equals(appState.getActivePlayer());
+	}
+
+	public void dragSelect(Vector3f dragStart, Vector3f dragStop) {
+
+		List<Selectable> dragSelected = GameState.get()
+				.getSelectableByPosition(dragStart, dragStop);
+
+		if (modifierKeysManager.isShiftPressed()) {
+			for (Selectable selectable : dragSelected) {
+				if (!selected.contains(selectable)) {
+					doSelect(selectable);
+				}
+			}
+		} else {
+			clearSelection();
+
+			for (Selectable selectable : dragSelected) {
+				doSelect(selectable);
+			}
+		}
+
+		updateSelectionText();
+		actionBox.updateActionButtons();
 	}
 
 }

@@ -15,6 +15,7 @@ import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.warehouse.Warehouse;
 
 import com.jme3.collision.Collidable;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 public class GameState {
@@ -87,6 +88,27 @@ public class GameState {
 				.map(selectable -> Warehouse.class.cast(selectable))
 				.filter(warehouse -> warehouse.getOwner().equals(player))
 				.filter(warehouse -> warehouse.isConstructed())
+				.collect(Collectors.toList());
+	}
+
+	public List<Selectable> getSelectableByPosition(Vector3f start,
+			Vector3f stop) {
+		float minX = Math.min(start.x, stop.x);
+		float maxX = Math.max(start.x, stop.x);
+		float minZ = Math.min(start.z, stop.z);
+		float maxZ = Math.max(start.z, stop.z);
+
+		return selectables
+				.values()
+				.stream()
+				.filter(selectable -> selectable.getNode()
+						.getWorldTranslation().x >= minX)
+				.filter(selectable -> selectable.getNode()
+						.getWorldTranslation().x <= maxX)
+				.filter(selectable -> selectable.getNode()
+						.getWorldTranslation().z > minZ)
+				.filter(selectable -> selectable.getNode()
+						.getWorldTranslation().z <= maxZ)
 				.collect(Collectors.toList());
 	}
 }
