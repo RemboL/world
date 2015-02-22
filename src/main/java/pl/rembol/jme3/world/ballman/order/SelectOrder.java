@@ -1,24 +1,29 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import pl.rembol.jme3.world.ballman.BallMan;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.math.Vector2f;
 
-public class SelectOrder extends Order {
+public class SelectOrder extends Order<Selectable> {
+
+	@Autowired
+	private SelectionManager selectionManager;
 
 	@Override
 	public void perform(Selectable target) {
-		appState.getSelectionManager().select(target);
+		selectionManager.select(target);
 	}
 
 	@Override
-	protected void doPerform(BallMan ballMan, Vector2f location) {
+	protected void doPerform(Selectable ballMan, Vector2f location) {
 		// doNothing
 	}
 
 	@Override
-	protected void doPerform(BallMan ballMan, Selectable target) {
+	protected void doPerform(Selectable ballMan, Selectable target) {
 		// doNothing
 	}
 

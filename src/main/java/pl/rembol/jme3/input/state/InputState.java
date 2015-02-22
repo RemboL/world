@@ -4,6 +4,8 @@ public enum InputState {
 
 	DEFAULT,
 
-	ISSUE_ORDER;
+	ISSUE_ORDER,
+
+	ISSUE_ORDER_IMMEDIATELY;
 
 }

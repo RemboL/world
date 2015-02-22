@@ -1,27 +1,31 @@
 package pl.rembol.jme3.world.smallobject;
 
-import pl.rembol.jme3.world.ModelHelper;
-import pl.rembol.jme3.world.GameRunningAppState;
+import org.springframework.context.ApplicationContext;
 
+import pl.rembol.jme3.world.ModelHelper;
+
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 
 public class Hammer extends SmallObject {
 
-	public Hammer(GameRunningAppState appState) {
+	public Hammer(ApplicationContext applicationContext) {
 
-		super(appState);
+		super(applicationContext);
 
-		node = ModelHelper.rewriteDiffuseToAmbient((Node) appState
-				.getAssetManager().loadModel("hammer/hammer.blend"));
+		node = ModelHelper.rewriteDiffuseToAmbient((Node) applicationContext
+				.getBean(AssetManager.class).loadModel("hammer/hammer.blend"));
 		node.setShadowMode(ShadowMode.Cast);
-		appState.getRootNode().attachChild(node);
+		applicationContext.getBean("rootNode", Node.class).attachChild(node);
 
 		control = new RigidBodyControl(1f);
 		node.addControl(control);
 
-		appState.getBulletAppState().getPhysicsSpace().add(control);
+		applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
+				.add(control);
 
 	}
 

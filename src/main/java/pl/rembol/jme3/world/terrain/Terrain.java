@@ -3,9 +3,11 @@ package pl.rembol.jme3.world.terrain;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.rembol.jme3.world.GameRunningAppState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -23,6 +25,7 @@ import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 
+@Component
 public class Terrain {
 
 	private TerrainQuad terrain;
@@ -30,12 +33,22 @@ public class Terrain {
 	private Texture alphaMap;
 	private AlphaMapManipulator manipulator = new AlphaMapManipulator();
 	private RigidBodyControl terrainBodyControl;
-	private GameRunningAppState appState;
 
-	public Terrain(Camera camera, int size, GameRunningAppState appState) {
-		this.appState = appState;
+	@Autowired
+	private AssetManager assetManager;
 
-		createMaterials(appState.getAssetManager());
+	@Autowired
+	private Node rootNode;
+
+	@Autowired
+	private BulletAppState bulletAppState;
+
+	@Autowired
+	private Camera camera;
+
+	public void init(int size) {
+
+		createMaterials();
 
 		AbstractHeightMap heightmap = new FlatHeightMap(size);
 		try {
@@ -53,7 +66,7 @@ public class Terrain {
 		terrain.setMaterial(mat_terrain);
 		terrain.setLocalTranslation(0, 0, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
-		appState.getRootNode().attachChild(terrain);
+		rootNode.attachChild(terrain);
 
 		TerrainLodControl control = new TerrainLodControl(terrain, camera);
 		terrain.addControl(control);
@@ -61,11 +74,11 @@ public class Terrain {
 		CollisionShape sceneShape = CollisionShapeFactory
 				.createMeshShape((Node) terrain);
 		terrainBodyControl = new RigidBodyControl(sceneShape, 0);
-		appState.getBulletAppState().getPhysicsSpace().add(terrainBodyControl);
+		bulletAppState.getPhysicsSpace().add(terrainBodyControl);
 		terrain.addControl(terrainBodyControl);
 	}
 
-	private void createMaterials(AssetManager assetManager) {
+	private void createMaterials() {
 		mat_terrain = new Material(assetManager,
 				"Common/MatDefs/Terrain/TerrainLighting.j3md");
 		mat_terrain.setBoolean("useTriPlanarMapping", false);
@@ -271,10 +284,9 @@ public class Terrain {
 	private void resetTerrain() {
 		CollisionShape sceneShape = CollisionShapeFactory
 				.createMeshShape((Node) terrain);
-		appState.getBulletAppState().getPhysicsSpace()
-				.remove(terrainBodyControl);
+		bulletAppState.getPhysicsSpace().remove(terrainBodyControl);
 		terrainBodyControl = new RigidBodyControl(sceneShape, 0);
-		appState.getBulletAppState().getPhysicsSpace().add(terrainBodyControl);
+		bulletAppState.getPhysicsSpace().add(terrainBodyControl);
 	}
 
 	private void addSmoothHillHeightMap(Vector2f position, float radius) {

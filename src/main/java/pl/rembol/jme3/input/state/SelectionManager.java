@@ -3,13 +3,20 @@ package pl.rembol.jme3.input.state;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import pl.rembol.jme3.input.ModifierKeysManager;
 import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.house.House;
+import pl.rembol.jme3.world.hud.ActionBox;
+import pl.rembol.jme3.world.hud.StatusBar;
 import pl.rembol.jme3.world.selection.Selectable;
 
+@Component
 public class SelectionManager {
 
 	public static enum SelectionType {
@@ -17,14 +24,21 @@ public class SelectionManager {
 	}
 
 	private List<Selectable> selected = new ArrayList<>();
+
+	@Autowired
 	private GameRunningAppState appState;
 
-	public SelectionManager(GameRunningAppState appState) {
-		this.appState = appState;
-	}
+	@Autowired
+	private ActionBox actionBox;
+
+	@Autowired
+	private StatusBar statusBar;
+
+	@Autowired
+	private ModifierKeysManager modifierKeysManager;
 
 	public void select(Selectable selectable) {
-		if (appState.getModifierKeysManager().isControlPressed()) {
+		if (modifierKeysManager.isControlPressed()) {
 			switchSelection(selectable);
 		} else {
 			clearSelection();
@@ -32,19 +46,17 @@ public class SelectionManager {
 		}
 
 		updateSelectionText();
-		appState.getHudManager().updateActionButtons();
+		actionBox.updateActionButtons();
 	}
 
 	public void updateSelectionText() {
 
 		if (selected.size() == 0) {
-			appState.getHudManager().setSelectionText("");
+			statusBar.setText("");
 		} else if (selected.size() == 1) {
-			appState.getHudManager().setSelectionText(
-					selected.get(0).getStatusText());
+			statusBar.setText(selected.get(0).getStatusText());
 		} else {
-			appState.getHudManager().setSelectionText(
-					"selected " + selected.size() + " units");
+			statusBar.setText("selected " + selected.size() + " units");
 		}
 
 	}
@@ -61,7 +73,7 @@ public class SelectionManager {
 		doDeselect(selectable);
 
 		updateSelectionText();
-		appState.getHudManager().updateActionButtons();
+		actionBox.updateActionButtons();
 	}
 
 	private void clearSelection() {
@@ -90,20 +102,28 @@ public class SelectionManager {
 		if (!selected.isEmpty()) {
 			if (selected.stream().allMatch(
 					selectedUnit -> BallMan.class.isInstance(selectedUnit)
-							&& WithOwner.class.cast(selectedUnit).getOwner()
-									.equals(appState.getActivePlayer()))) {
+							&& isOwnedByActivePlayer(selectedUnit))) {
 				return SelectionType.UNIT;
 			}
 
 			if (selected.stream().allMatch(
 					selectedUnit -> House.class.isInstance(selectedUnit)
-							&& WithOwner.class.cast(selectedUnit).getOwner()
-									.equals(appState.getActivePlayer()))) {
+							&& isOwnedByActivePlayer(selectedUnit)
+							&& isNotUnderConstruction(selectedUnit))) {
 				return SelectionType.HOUSE;
 			}
 		}
 
 		return null;
+	}
+
+	private boolean isNotUnderConstruction(Selectable selectedUnit) {
+		return selectedUnit.getNode().getControl(ConstructionSite.class) == null;
+	}
+
+	private boolean isOwnedByActivePlayer(Selectable selectedUnit) {
+		return WithOwner.class.cast(selectedUnit).getOwner()
+				.equals(appState.getActivePlayer());
 	}
 
 }

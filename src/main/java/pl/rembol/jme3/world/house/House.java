@@ -3,15 +3,19 @@ package pl.rembol.jme3.world.house;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.player.WithOwner;
-import pl.rembol.jme3.world.ModelHelper;
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
+import pl.rembol.jme3.world.terrain.Terrain;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -21,32 +25,31 @@ import com.jme3.scene.Node;
 
 public class House implements Selectable, Building, WithOwner {
 
-	private static final float SCALE = 5f;
 	private RigidBodyControl control;
 	private Node house;
 	private SelectionNode selectionNode;
-	private GameRunningAppState appState;
 	private Player owner;
+	private ApplicationContext applicationContext;
 
-	public House(Vector2f position, GameRunningAppState appState) {
-		this(position, appState, false);
+	public House(ApplicationContext applicationContext, Vector2f position) {
+		this(applicationContext, position, false);
 	}
 
-	public House(Vector2f position, GameRunningAppState appState,
+	public House(ApplicationContext applicationContext, Vector2f position,
 			boolean startUnderGround) {
-		this(appState.getTerrain().getGroundPosition(position), appState,
-				startUnderGround);
+		this(applicationContext, applicationContext.getBean(Terrain.class)
+				.getGroundPosition(position), startUnderGround);
 	}
 
-	public House(Vector3f position, GameRunningAppState appState,
+	public House(ApplicationContext applicationContext, Vector3f position,
 			boolean startUnderGround) {
-		this.appState = appState;
+		this.applicationContext = applicationContext;
 
-		house = (Node) appState.getAssetManager().loadModel(
-				"house2/house2.scene");
+		house = (Node) applicationContext.getBean(AssetManager.class)
+				.loadModel("house2/house2.scene");
 
 		house.setShadowMode(ShadowMode.Cast);
-		appState.getRootNode().attachChild(house);
+		applicationContext.getBean("rootNode", Node.class).attachChild(house);
 
 		if (startUnderGround) {
 			position.subtract(Vector3f.UNIT_Y.mult(getHeight()));
@@ -54,13 +57,14 @@ public class House implements Selectable, Building, WithOwner {
 
 		house.setLocalTranslation(position);
 
-		house.setLocalScale(SCALE);
+		house.setLocalScale(getWidth());
 		ModelHelper.setColorToGeometry(house, ColorRGBA.Black, "");
 
 		control = new RigidBodyControl(0f);
 		house.addControl(control);
 
-		appState.getBulletAppState().getPhysicsSpace().add(control);
+		applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
+				.add(control);
 
 		GameState.get().register(this);
 	}
@@ -87,10 +91,10 @@ public class House implements Selectable, Building, WithOwner {
 	@Override
 	public void select() {
 		if (selectionNode == null) {
-			selectionNode = new SelectionNode(appState.getAssetManager());
+			selectionNode = new SelectionNode(
+					applicationContext.getBean(AssetManager.class));
 			house.attachChild(selectionNode);
-			selectionNode.setLocalScale(1/SCALE);
-			selectionNode.setLocalTranslation(0, getHeight() / SCALE, 0);
+			selectionNode.setLocalTranslation(0, .1f, 0);
 		}
 	}
 
@@ -104,7 +108,14 @@ public class House implements Selectable, Building, WithOwner {
 
 	@Override
 	public List<String> getStatusText() {
-		return Arrays.asList("House", "owner: " + owner.getName());
+		if (isConstructed()) {
+			return Arrays.asList("House", //
+					"owner: " + owner.getName());
+		} else {
+			return Arrays.asList("House", //
+					"owner: " + owner.getName(), //
+					"Under construction");
+		}
 	}
 
 	@Override
@@ -121,6 +132,11 @@ public class House implements Selectable, Building, WithOwner {
 	@Override
 	public String[] getGeometriesWithChangeableColor() {
 		return new String[] { "hay" };
+	}
+
+	@Override
+	public void finish() {
+		owner.updateHousingLimit();
 	}
 
 }

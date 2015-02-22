@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import pl.rembol.jme3.controls.TimeToLiveControl;
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.Shovel;
 import pl.rembol.jme3.world.terrain.Terrain;
@@ -28,7 +29,6 @@ public class SmoothenTerrainAction extends Action {
 
 	private static final int ANIMATION_LENGTH = 45 * 1000 / 30;
 
-	private Terrain terrain;
 	private Vector2f start;
 	private Vector2f end;
 	private int border;
@@ -45,18 +45,26 @@ public class SmoothenTerrainAction extends Action {
 	private float maxY;
 	private Random random = new Random();
 
-	public SmoothenTerrainAction(GameRunningAppState appState, Terrain terrain,
-			Vector2f start, Vector2f end, int border) {
-		super(appState);
-		this.terrain = terrain;
+	@Autowired
+	private AssetManager assetManager;
+
+	@Autowired
+	private Node rootNode;
+
+	@Autowired
+	private Terrain terrain;
+
+	public SmoothenTerrainAction init(Vector2f start, Vector2f end, int border) {
 		this.start = start;
 		this.end = end;
 		this.border = border;
+
+		return this;
 	}
 
 	@Override
 	protected void start(BallMan ballMan) {
-		ballMan.wield(new Shovel(appState));
+		ballMan.wield(new Shovel(applicationContext));
 		resetAnimation(ballMan);
 
 		minX = start.x - border;
@@ -65,13 +73,11 @@ public class SmoothenTerrainAction extends Action {
 		maxY = end.y + border;
 
 		for (int i = 0; i < 10; ++i) {
-			particleEmitters.add(createParticleEmiter(
-					appState.getAssetManager(), appState.getRootNode()));
+			particleEmitters.add(createParticleEmiter());
 		}
 	}
 
-	private ParticleEmitter createParticleEmiter(AssetManager assetManager,
-			Node rootNode) {
+	private ParticleEmitter createParticleEmiter() {
 		ParticleEmitter emitter = new ParticleEmitter("Debris",
 				ParticleMesh.Type.Triangle, 20);
 		Material dustMaterial = new Material(assetManager,
@@ -130,12 +136,16 @@ public class SmoothenTerrainAction extends Action {
 
 	@Override
 	public void finish() {
+		stop();
+	}
+
+	@Override
+	public void stop() {
 		for (ParticleEmitter emitter : particleEmitters) {
 			emitter.setParticlesPerSec(0f);
-			emitter.addControl(new TimeToLiveControl(
-					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS, appState));
+			emitter.addControl(new TimeToLiveControl(applicationContext,
+					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS));
 		}
-
 	}
 
 	private boolean animationEnded() {

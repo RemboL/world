@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.Axe;
@@ -31,21 +30,24 @@ public class ChopTreeAction extends Action {
 	 */
 	private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-	public ChopTreeAction(GameRunningAppState appState, Tree tree) {
-		super(appState);
+	public ChopTreeAction init(Tree tree) {
 		this.tree = tree;
+
+		return this;
 	}
 
 	@Override
 	protected void start(BallMan ballMan) {
 		assertDistance(ballMan);
-		ballMan.wield(new Axe(appState));
+		ballMan.wield(new Axe(applicationContext));
 	}
 
 	private void assertDistance(BallMan ballMan) {
 		if (!isCloseEnough(ballMan)) {
-			ballMan.addActionOnStart(new MoveTowardsTargetAction(appState,
-					tree, REQUIRED_DISTANCE));
+			ballMan.addActionOnStart(applicationContext
+					.getAutowireCapableBeanFactory()
+					.createBean(MoveTowardsTargetAction.class)
+					.init(tree, REQUIRED_DISTANCE));
 		}
 	}
 
@@ -63,7 +65,8 @@ public class ChopTreeAction extends Action {
 			if (animationHit()) {
 				hit = true;
 				tree.getChoppedBy(ballMan);
-				chopCounter++;
+				// chopCounter++;
+				chopCounter += 5;
 			}
 
 			if (actionFinished()) {
@@ -86,7 +89,8 @@ public class ChopTreeAction extends Action {
 	public boolean isFinished(BallMan ballMan) {
 		if (actionFinished() && animationEnded()) {
 
-			ballMan.wield(new Log(ballMan.getLocation(), appState, chopCounter));
+			ballMan.wield(new Log(applicationContext, ballMan.getLocation(),
+					chopCounter));
 			return true;
 		}
 		return false;

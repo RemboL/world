@@ -2,17 +2,15 @@ package pl.rembol.jme3.world;
 
 import java.util.Random;
 
-import pl.rembol.jme3.input.CommandKeysListener;
-import pl.rembol.jme3.input.ModifierKeysManager;
-import pl.rembol.jme3.input.MouseClickListener;
-import pl.rembol.jme3.input.RtsCamera;
-import pl.rembol.jme3.input.state.InputStateManager;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+
 import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.ballman.order.OrderFactory;
 import pl.rembol.jme3.world.house.House;
-import pl.rembol.jme3.world.hud.HudManager;
 import pl.rembol.jme3.world.smallobject.Axe;
 import pl.rembol.jme3.world.terrain.Terrain;
 import pl.rembol.jme3.world.warehouse.Warehouse;
@@ -37,7 +35,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
-import com.jme3.terrain.geomipmap.TerrainQuad;
 
 public class GameRunningAppState extends AbstractAppState {
 
@@ -51,31 +48,17 @@ public class GameRunningAppState extends AbstractAppState {
 
 	private Node rootNode;
 
-	private Node guiNode;
-
-	private Camera camera;
-
-	private RtsCamera rtsCamera;
-
 	int frame = 200;
 
 	private Terrain terrain;
 
-	private OrderFactory orderFactory;
-
-	private InputStateManager inputStateManager;
-
-	private ModifierKeysManager modifierKeysManager;
-
 	private SelectionManager selectionManager;
-
-	private HudManager hudManager;
 
 	private AppSettings settings;
 
-	private Warehouse warehouse;
-
 	private Player activePlayer;
+
+	private ApplicationContext applicationContext;
 
 	public GameRunningAppState(AppSettings settings) {
 		this.settings = settings;
@@ -101,68 +84,99 @@ public class GameRunningAppState extends AbstractAppState {
 	@Override
 	public void initialize(AppStateManager stateManager, Application app) {
 		SimpleApplication simpleApp = (SimpleApplication) app;
+
 		bulletAppState = new BulletAppState();
 		stateManager.attach(bulletAppState);
 		// bulletAppState.setDebugEnabled(true);
 
-		this.assetManager = app.getAssetManager();
-		this.rootNode = simpleApp.getRootNode();
-		this.guiNode = simpleApp.getGuiNode();
-		this.camera = app.getCamera();
-		this.hudManager = new HudManager(guiNode, settings, assetManager, this);
-		this.rtsCamera = new RtsCamera(camera);
-		this.orderFactory = new OrderFactory(this);
-		this.inputStateManager = new InputStateManager(this, orderFactory);
-		this.selectionManager = new SelectionManager(this);
+		ConfigurableApplicationContext parentApplicationContext = initializeParentApplicationContext(simpleApp);
 
-		GameState.get().setSelectionManager(selectionManager);
-		terrain = new Terrain(camera, 128, this);
-		GameState.get().setTerrain(terrain);
-		initLightAndShadows(app.getViewPort());
+		applicationContext = new ClassPathXmlApplicationContext(
+				new String[] { "/app-ctx.xml" }, parentApplicationContext);
 
+		terrain = applicationContext.getBean(Terrain.class);
+		terrain.init(128);
 		terrain.smoothenTerrain(new Vector2f(25f, -5f), new Vector2f(35f, 5f),
 				5, 20f);
-		warehouse = new Warehouse(new Vector2f(30f, 0f), this);
 
-		activePlayer = new Player("RemboL");
-		Player enemy = new Player("bad guy", ColorRGBA.Red);
+		this.assetManager = app.getAssetManager();
+		this.rootNode = simpleApp.getRootNode();
+
+		this.selectionManager = applicationContext
+				.getBean(SelectionManager.class);
+
+		GameState.get().setSelectionManager(selectionManager);
+		initLightAndShadows(app.getViewPort());
+
+		activePlayer = applicationContext.getAutowireCapableBeanFactory()
+				.createBean(Player.class);
+		activePlayer.setName("RemboL");
+		activePlayer.setColor(ColorRGBA.Yellow);
+		activePlayer.setActive(true);
+		activePlayer.addWood(500);
+
+		Player enemy = applicationContext.getAutowireCapableBeanFactory()
+				.createBean(Player.class);
+		enemy.setName("bad guy");
+		enemy.setColor(ColorRGBA.Red);
+
+		Warehouse warehouse = applicationContext
+				.getAutowireCapableBeanFactory().createBean(Warehouse.class)
+				.init(new Vector2f(30f, 0f));
+		warehouse.setOwner(activePlayer);
 
 		for (int i = 0; i < 5; ++i) {
-			BallMan ballMan = new BallMan(new Vector2f(
+			BallMan ballMan = new BallMan(applicationContext, new Vector2f(
 					(new Random().nextFloat() + 2f) * 5f,
-					(new Random().nextFloat() + i - 3f) * 10f), this);
+					(new Random().nextFloat() + i - 3f) * 10f));
 			ballMan.setOwner(activePlayer);
 
-			ballMan.wield(new Axe(this));
+			ballMan.wield(new Axe(applicationContext));
 
-			new Tree(new Vector2f((new Random().nextFloat() - 2f) * 5f,
-					(new Random().nextFloat() + i - 3f) * 10f), this);
+			applicationContext
+					.getAutowireCapableBeanFactory()
+					.createBean(Tree.class)
+					.init(new Vector2f((new Random().nextFloat() - 2f) * 5f,
+							(new Random().nextFloat() + i - 3f) * 10f));
 
 		}
 
-		BallMan ballMan = new BallMan(new Vector2f(50f, -10f), this);
+		BallMan ballMan = new BallMan(applicationContext, new Vector2f(50f,
+				-10f));
 		ballMan.setOwner(enemy);
 		terrain.smoothenTerrain(new Vector2f(45f, 5f), new Vector2f(55f, 15f),
 				5, 20f);
-		House house = new House(new Vector2f(50f, 10f), this);
+		House house = new House(applicationContext, new Vector2f(50f, 10f));
 		house.setOwner(enemy);
 
-		initKeys(app.getInputManager(), guiNode);
 	}
 
-	private void initKeys(InputManager inputManager, Node guiNode) {
-		MouseClickListener mouseClickListener = new MouseClickListener(this,
-				camera, guiNode, inputManager, inputStateManager);
-		CommandKeysListener commandKeysListener = new CommandKeysListener(
-				inputStateManager);
+	private ConfigurableApplicationContext initializeParentApplicationContext(
+			SimpleApplication simpleApp) {
+		ConfigurableApplicationContext parentApplicationContext = new GenericApplicationContext();
 
-		mouseClickListener.registerInput();
-		commandKeysListener.registerInput(inputManager);
-		modifierKeysManager = new ModifierKeysManager();
-		modifierKeysManager.registerInput(inputManager);
+		parentApplicationContext.getBeanFactory()
+				.registerSingleton(AssetManager.class.getSimpleName(),
+						simpleApp.getAssetManager());
+		parentApplicationContext.getBeanFactory().registerSingleton(
+				GameRunningAppState.class.getSimpleName(), this);
+		parentApplicationContext.getBeanFactory().registerSingleton("guiNode",
+				simpleApp.getGuiNode());
+		parentApplicationContext.getBeanFactory().registerSingleton("rootNode",
+				simpleApp.getRootNode());
+		parentApplicationContext.getBeanFactory().registerSingleton(
+				AppSettings.class.getSimpleName(), settings);
+		parentApplicationContext.getBeanFactory().registerSingleton(
+				Camera.class.getSimpleName(), simpleApp.getCamera());
+		parentApplicationContext.getBeanFactory()
+				.registerSingleton(InputManager.class.getSimpleName(),
+						simpleApp.getInputManager());
+		parentApplicationContext.getBeanFactory().registerSingleton(
+				BulletAppState.class.getSimpleName(), bulletAppState);
 
-		rtsCamera.registerInput(inputManager);
+		parentApplicationContext.refresh();
 
+		return parentApplicationContext;
 	}
 
 	private void initLightAndShadows(ViewPort viewPort) {
@@ -188,46 +202,6 @@ public class GameRunningAppState extends AbstractAppState {
 		fog.setFogDensity(1.5f);
 		fpp.addFilter(fog);
 		viewPort.addProcessor(fpp);
-	}
-
-	public AssetManager getAssetManager() {
-		return assetManager;
-	}
-
-	public BulletAppState getBulletAppState() {
-		return bulletAppState;
-	}
-
-	public Node getRootNode() {
-		return rootNode;
-	}
-
-	public TerrainQuad getTerrainQuad() {
-		return terrain.getTerrain();
-	}
-
-	public Terrain getTerrain() {
-		return terrain;
-	}
-
-	public ModifierKeysManager getModifierKeysManager() {
-		return modifierKeysManager;
-	}
-
-	public SelectionManager getSelectionManager() {
-		return selectionManager;
-	}
-
-	public HudManager getHudManager() {
-		return hudManager;
-	}
-
-	public Warehouse getClosestWarehouse(Vector3f location) {
-		return warehouse;
-	}
-
-	public InputStateManager getInputStateManager() {
-		return inputStateManager;
 	}
 
 	public Player getActivePlayer() {

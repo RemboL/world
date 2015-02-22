@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.interfaces.WithNode;
 
@@ -11,11 +10,11 @@ public class MoveTowardsTargetAction extends Action {
 	private WithNode target;
 	private float targetDistance;
 
-	public MoveTowardsTargetAction(GameRunningAppState appState,
-			WithNode target, float targetDistance) {
-		super(appState);
+	public MoveTowardsTargetAction init(WithNode target, float targetDistance) {
 		this.target = target;
 		this.targetDistance = targetDistance;
+
+		return this;
 	}
 
 	@Override

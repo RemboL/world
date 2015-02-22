@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import pl.rembol.jme3.controls.TimeToLiveControl;
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.house.House;
@@ -30,8 +31,6 @@ public class BuildHouseAction extends Action {
 
 	private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-	private Terrain terrain;
-
 	private long animationStart;
 
 	private final List<ParticleEmitter> particleEmitters = new ArrayList<>();
@@ -44,39 +43,57 @@ public class BuildHouseAction extends Action {
 	private float maxY;
 	private Random random = new Random();
 
+	private boolean isFinished = false;
+
 	private ConstructionSite constructionSite;
 
 	private Vector2f position;
 
-	public BuildHouseAction(GameRunningAppState appState, Vector2f position) {
-		super(appState);
-		this.terrain = appState.getTerrain();
+	@Autowired
+	private Terrain terrain;
+
+	@Autowired
+	private AssetManager assetManager;
+
+	@Autowired
+	private Node rootNode;
+
+	public BuildHouseAction init(Vector2f position) {
 		this.position = position;
+
+		return this;
 	}
 
 	@Override
 	protected void start(BallMan ballMan) {
-		ballMan.wield(new Hammer(appState));
-		resetAnimation(ballMan);
+		if (ballMan.getOwner().retrieveResources(100, 0)) {
+			ballMan.wield(new Hammer(applicationContext));
+			resetAnimation(ballMan);
 
-		House house = new House(position, appState, true);
-		house.setOwner(ballMan.getOwner());
-		constructionSite = new ConstructionSite(house, appState, 15f);
+			House house = new House(applicationContext, position, true);
+			house.setOwner(ballMan.getOwner());
+			constructionSite = new ConstructionSite(applicationContext, house,
+					15f);
 
-		minX = position.getX() - constructionSite.getBuilding().getWidth() - 5;
-		maxX = position.getX() + constructionSite.getBuilding().getWidth() + 5;
-		minY = position.getY() - constructionSite.getBuilding().getWidth() - 5;
-		maxY = position.getY() + constructionSite.getBuilding().getWidth() + 5;
+			minX = position.getX() - constructionSite.getBuilding().getWidth()
+					- 5;
+			maxX = position.getX() + constructionSite.getBuilding().getWidth()
+					+ 5;
+			minY = position.getY() - constructionSite.getBuilding().getWidth()
+					- 5;
+			maxY = position.getY() + constructionSite.getBuilding().getWidth()
+					+ 5;
 
-		for (int i = 0; i < 10; ++i) {
-			particleEmitters.add(createParticleEmiter(
-					appState.getAssetManager(), appState.getRootNode()));
+			for (int i = 0; i < 10; ++i) {
+				particleEmitters.add(createParticleEmiter());
+			}
+		} else {
+			isFinished = true;
 		}
 
 	}
 
-	private ParticleEmitter createParticleEmiter(AssetManager assetManager,
-			Node rootNode) {
+	private ParticleEmitter createParticleEmiter() {
 		ParticleEmitter emitter = new ParticleEmitter("Debris",
 				ParticleMesh.Type.Triangle, 20);
 		Material dustMaterial = new Material(assetManager,
@@ -114,33 +131,38 @@ public class BuildHouseAction extends Action {
 
 	@Override
 	protected void doAct(BallMan ballMan, float tpf) {
-
-		constructionSite.addBuildProgress(tpf);
-
-		for (ParticleEmitter emitter : particleEmitters) {
-			randomizeEmitterLocation(emitter);
+		if (constructionSite != null && constructionSite.isFinished()) {
+			isFinished = true;
 		}
+		if (!isFinished) {
+			constructionSite.addBuildProgress(tpf);
 
-		if (animationEnded()) {
-			resetAnimation(ballMan);
-		}
-		if (animationHit()) {
-			hit = true;
+			for (ParticleEmitter emitter : particleEmitters) {
+				randomizeEmitterLocation(emitter);
+			}
+
+			if (animationEnded()) {
+				resetAnimation(ballMan);
+			}
+			if (animationHit()) {
+				hit = true;
+			}
+
 		}
 
 	}
 
 	@Override
 	public boolean isFinished(BallMan ballMan) {
-		return constructionSite != null && constructionSite.isFinished();
+		return isFinished;
 	}
 
 	@Override
 	public void finish() {
 		for (ParticleEmitter emitter : particleEmitters) {
 			emitter.setParticlesPerSec(0f);
-			emitter.addControl(new TimeToLiveControl(
-					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS, appState));
+			emitter.addControl(new TimeToLiveControl(applicationContext,
+					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS));
 		}
 
 	}

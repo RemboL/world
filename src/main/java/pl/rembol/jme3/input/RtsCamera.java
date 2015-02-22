@@ -1,5 +1,10 @@
 package pl.rembol.jme3.input;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -11,6 +16,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 
+@Component
 public class RtsCamera implements AnalogListener {
 
 	private static final String MOVE_FORWARD = "rtsCamera_moveForward";
@@ -33,8 +39,6 @@ public class RtsCamera implements AnalogListener {
 
 	private static final String ZOOM_OUT = "rtsCamera_zoomOut";
 
-	private Camera cam;
-
 	private float rotation = 0f;
 
 	private float cameraSpeed = 30f;
@@ -49,19 +53,27 @@ public class RtsCamera implements AnalogListener {
 
 	private Vector3f cameraCenter;
 
-	public RtsCamera(Camera cam) {
-		this.cam = cam;
-		cameraCenter = cam.getLocation().clone();
+	@Autowired
+	private Camera camera;
+
+	@Autowired
+	private InputManager inputManager;
+
+	@PostConstruct
+	public void init() {
+		cameraCenter = camera.getLocation().clone();
 
 		updateCamera();
+
+		registerInput();
 	}
 
 	private void updateCamera() {
 		Quaternion rotationQuaternion = new Quaternion().fromAngleAxis(
 				rotation, Vector3f.UNIT_Y).mult(
 				new Quaternion().fromAngleAxis(tilt, Vector3f.UNIT_X));
-		cam.setRotation(rotationQuaternion);
-		cam.setLocation(cameraCenter.subtract(rotationQuaternion
+		camera.setRotation(rotationQuaternion);
+		camera.setLocation(cameraCenter.subtract(rotationQuaternion
 				.mult(Vector3f.UNIT_Z.mult(zoomOut))));
 	}
 
@@ -190,20 +202,20 @@ public class RtsCamera implements AnalogListener {
 		}
 	}
 
-	public void registerInput(InputManager inputManager) {
-		registerKey(inputManager, MOVE_FORWARD, KeyInput.KEY_UP);
-		registerKey(inputManager, MOVE_BACKWARD, KeyInput.KEY_DOWN);
-		registerKey(inputManager, MOVE_LEFT, KeyInput.KEY_LEFT);
-		registerKey(inputManager, MOVE_RIGHT, KeyInput.KEY_RIGHT);
+	public void registerInput() {
+		registerKey(MOVE_FORWARD, KeyInput.KEY_UP);
+		registerKey(MOVE_BACKWARD, KeyInput.KEY_DOWN);
+		registerKey(MOVE_LEFT, KeyInput.KEY_LEFT);
+		registerKey(MOVE_RIGHT, KeyInput.KEY_RIGHT);
 
-		registerKey(inputManager, ROTATE_LEFT, KeyInput.KEY_DELETE);
-		registerKey(inputManager, ROTATE_RIGHT, KeyInput.KEY_PGDN);
+		registerKey(ROTATE_LEFT, KeyInput.KEY_DELETE);
+		registerKey(ROTATE_RIGHT, KeyInput.KEY_PGDN);
 
-		registerKey(inputManager, TILT_UP, KeyInput.KEY_HOME);
-		registerKey(inputManager, TILT_DOWN, KeyInput.KEY_END);
+		registerKey(TILT_UP, KeyInput.KEY_HOME);
+		registerKey(TILT_DOWN, KeyInput.KEY_END);
 
-		registerKey(inputManager, ZOOM_IN, KeyInput.KEY_INSERT);
-		registerKey(inputManager, ZOOM_OUT, KeyInput.KEY_PGUP);
+		registerKey(ZOOM_IN, KeyInput.KEY_INSERT);
+		registerKey(ZOOM_OUT, KeyInput.KEY_PGUP);
 
 		inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(
 				MouseInput.AXIS_WHEEL, false));
@@ -211,7 +223,7 @@ public class RtsCamera implements AnalogListener {
 				MouseInput.AXIS_WHEEL, true));
 	}
 
-	private void registerKey(InputManager inputManager, String name, int key) {
+	private void registerKey(String name, int key) {
 		inputManager.addMapping(name, new KeyTrigger(key));
 		inputManager.addListener(this, name);
 	}

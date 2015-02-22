@@ -3,6 +3,11 @@ package pl.rembol.jme3.world.hud;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -11,6 +16,7 @@ import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
 
+@Component
 public class StatusBar {
 
 	private static final int LINES = 3;
@@ -18,8 +24,17 @@ public class StatusBar {
 
 	private Vector2f framePosition;
 
-	public StatusBar(Node guiNode, AppSettings settings,
-			AssetManager assetManager) {
+	@Autowired
+	private Node guiNode;
+
+	@Autowired
+	private AppSettings settings;
+
+	@Autowired
+	private AssetManager assetManager;
+
+	@PostConstruct
+	public void init() {
 		framePosition = new Vector2f(settings.getWidth() / 2 - 200, 0);
 
 		Picture frame = new Picture("Status Bar");

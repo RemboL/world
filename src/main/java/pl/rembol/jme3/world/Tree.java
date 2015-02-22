@@ -4,10 +4,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
+import pl.rembol.jme3.world.terrain.Terrain;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -22,23 +28,34 @@ public class Tree implements Selectable {
 	private int maxHp = 1000;
 	private boolean destroyed = false;
 	private SelectionNode selectionNode;
-	private GameRunningAppState appState;
 
-	public Tree(Vector2f position, GameRunningAppState appState) {
-		this(
-				new Vector3f(position.x, appState.getTerrainQuad().getHeight(
-						new Vector2f(position.x, position.y))
-						+ appState.getTerrainQuad().getLocalTranslation().y,
-						position.y), appState);
+	@Autowired
+	private Terrain terrain;
+
+	@Autowired
+	private AssetManager assetManager;
+
+	@Autowired
+	private Node rootNode;
+
+	@Autowired
+	private BulletAppState bulletAppState;
+
+	@Autowired
+	private SelectionManager selectionManager;
+
+	public void init(Vector2f position) {
+		init(new Vector3f(position.x, terrain.getTerrain().getHeight(
+				new Vector2f(position.x, position.y))
+				+ terrain.getTerrain().getLocalTranslation().y, position.y));
 	}
 
-	public Tree(Vector3f position, GameRunningAppState appState) {
-		this.appState = appState;
+	public void init(Vector3f position) {
 
-		tree = ModelHelper.rewriteDiffuseToAmbient((Node) appState
-				.getAssetManager().loadModel("tree.blend"));
+		tree = ModelHelper.rewriteDiffuseToAmbient((Node) assetManager
+				.loadModel("tree.blend"));
 		tree.setShadowMode(ShadowMode.Cast);
-		appState.getRootNode().attachChild(tree);
+		rootNode.attachChild(tree);
 		tree.setLocalTranslation(position);
 
 		control = new BetterCharacterControl(1.5f, 5f, 0);
@@ -47,7 +64,7 @@ public class Tree implements Selectable {
 		control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
 				0f, new Random().nextFloat() - .5f).normalize());
 
-		appState.getBulletAppState().getPhysicsSpace().add(control);
+		bulletAppState.getPhysicsSpace().add(control);
 
 		GameState.get().register(this);
 	}
@@ -65,13 +82,13 @@ public class Tree implements Selectable {
 	protected void substractHp(int hp) {
 		setHp(this.hp - hp);
 
-		appState.getSelectionManager().updateSelectionText();
+		selectionManager.updateSelectionText();
 	}
 
 	private void destroy() {
 		System.out.println("TIMBEEER!!!");
 		GameState.get().unregister(this);
-		appState.getBulletAppState().getPhysicsSpace().remove(control);
+		bulletAppState.getPhysicsSpace().remove(control);
 		tree.getParent().detachChild(tree);
 		this.destroyed = true;
 	}
@@ -96,9 +113,11 @@ public class Tree implements Selectable {
 	@Override
 	public void select() {
 		if (selectionNode == null) {
-			selectionNode = new SelectionNode(appState.getAssetManager());
+			selectionNode = new SelectionNode(
+					assetManager);
 			tree.attachChild(selectionNode);
-			selectionNode.setLocalTranslation(0, 10, 0);
+			selectionNode.setLocalScale(2f);
+			selectionNode.setLocalTranslation(0, .1f, 0);
 		}
 	}
 

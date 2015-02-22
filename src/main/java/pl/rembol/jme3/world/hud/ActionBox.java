@@ -2,24 +2,40 @@ package pl.rembol.jme3.world.hud;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import pl.rembol.jme3.input.state.Command;
-import pl.rembol.jme3.world.GameRunningAppState;
+import pl.rembol.jme3.input.state.InputStateManager;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
 
+@Component
 public class ActionBox {
 
-	private GameRunningAppState appState;
 	private Picture frame;
 	private Node buttonsNode;
 
-	public ActionBox(Node guiNode, AppSettings settings,
-			AssetManager assetManager, GameRunningAppState appState) {
+	@Autowired
+	private Node guiNode;
 
-		this.appState = appState;
+	@Autowired
+	private AppSettings settings;
+
+	@Autowired
+	private AssetManager assetManager;
+
+	@Autowired
+	private InputStateManager inputStateManager;
+
+	@PostConstruct
+	public void init() {
+
 		frame = new Picture("Action Box");
 		frame.setImage(assetManager, "interface/action_box.png", true);
 		frame.move(settings.getWidth() - 200, 0, -2);
@@ -35,7 +51,7 @@ public class ActionBox {
 
 	public void updateActionButtons() {
 		clearButtons();
-		List<Command> availableCommands = appState.getInputStateManager()
+		List<Command> availableCommands = inputStateManager
 				.getAvailableCommands();
 		for (Command command : availableCommands) {
 			createActionButton(command);
@@ -43,7 +59,7 @@ public class ActionBox {
 	}
 
 	private void createActionButton(Command command) {
-		Picture button = new ActionButton(command, appState.getAssetManager());
+		Picture button = new ActionButton(command, assetManager);
 		buttonsNode.attachChild(button);
 	}
 

@@ -1,6 +1,10 @@
 package pl.rembol.jme3.world.building;
 
-import pl.rembol.jme3.world.GameRunningAppState;
+import org.springframework.context.ApplicationContext;
+
+import pl.rembol.jme3.input.state.SelectionManager;
+import pl.rembol.jme3.world.hud.ActionBox;
+import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -16,13 +20,16 @@ public class ConstructionSite extends AbstractControl {
 
 	private Vector3f finishedPosition;
 	private Vector3f startingPosition;
+	private ApplicationContext applicationContext;
 
-	public ConstructionSite(Building building, GameRunningAppState appState,
-			float buildingTimeInSeconds) {
+	public ConstructionSite(ApplicationContext applicationContext,
+			Building building, float buildingTimeInSeconds) {
+		this.applicationContext = applicationContext;
+
 		this.building = building;
 		this.buildingTimeInSeconds = buildingTimeInSeconds;
-		finishedPosition = appState.getTerrain().getGroundPosition(
-				building.getNode().getLocalTranslation());
+		finishedPosition = applicationContext.getBean(Terrain.class)
+				.getGroundPosition(building.getNode().getLocalTranslation());
 		startingPosition = finishedPosition.subtract(Vector3f.UNIT_Y
 				.mult(building.getHeight()));
 		building.getNode().addControl(this);
@@ -54,14 +61,24 @@ public class ConstructionSite extends AbstractControl {
 	@Override
 	protected void controlUpdate(float tpf) {
 		if (finished) {
-			building.getNode().setLocalTranslation(finishedPosition);
-			building.getNode().removeControl(this);
+			finishBuilding();
 		} else {
 
 			building.getNode().setLocalTranslation(
 					startingPosition.clone().interpolate(finishedPosition,
 							progress / buildingTimeInSeconds));
 		}
+	}
+
+	private void finishBuilding() {
+		building.getNode().setLocalTranslation(finishedPosition);
+		building.getNode().removeControl(this);
+
+		building.finish();
+
+		applicationContext.getBean(SelectionManager.class)
+				.updateSelectionText();
+		applicationContext.getBean(ActionBox.class).updateActionButtons();
 	}
 
 }

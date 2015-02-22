@@ -1,7 +1,8 @@
 package pl.rembol.jme3.controls;
 
-import pl.rembol.jme3.world.GameRunningAppState;
+import org.springframework.context.ApplicationContext;
 
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -16,12 +17,12 @@ import com.jme3.scene.control.AbstractControl;
 public class TimeToLiveControl extends AbstractControl {
 
 	private float timeToLive;
-	private GameRunningAppState state;
+	private ApplicationContext applicationContext;
 
-	public TimeToLiveControl(float timeToLiveInSeconds,
-			GameRunningAppState state) {
+	public TimeToLiveControl(ApplicationContext applicationContext,
+			float timeToLiveInSeconds) {
+		this.applicationContext = applicationContext;
 		this.timeToLive = timeToLiveInSeconds;
-		this.state = state;
 	}
 
 	@Override
@@ -35,7 +36,8 @@ public class TimeToLiveControl extends AbstractControl {
 		if (timeToLive < 0) {
 			spatial.getParent().detachChild(spatial);
 			if (spatial.getControl(PhysicsControl.class) != null) {
-				state.getBulletAppState().getPhysicsSpace().remove(spatial);
+				applicationContext.getBean(BulletAppState.class)
+						.getPhysicsSpace().remove(spatial);
 			}
 		}
 	}

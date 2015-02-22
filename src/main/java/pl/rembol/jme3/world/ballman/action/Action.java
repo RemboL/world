@@ -1,18 +1,15 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.GameRunningAppState;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import pl.rembol.jme3.world.ballman.BallMan;
 
-public abstract class Action {
+public abstract class Action implements ApplicationContextAware {
 
 	protected int frame = 0;
 	private boolean isStarted = false;
-	protected GameRunningAppState appState;
-
-	public Action(GameRunningAppState appState) {
-		this.appState = appState;
-
-	}
+	protected ApplicationContext applicationContext;
 
 	protected void start(BallMan ballMan) {
 		frame = 0;
@@ -37,4 +34,11 @@ public abstract class Action {
 	public void finish() {
 	}
 
+	public void stop() {
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 }

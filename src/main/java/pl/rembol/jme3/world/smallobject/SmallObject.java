@@ -1,8 +1,10 @@
 package pl.rembol.jme3.world.smallobject;
 
-import pl.rembol.jme3.controls.TimeToLiveControl;
-import pl.rembol.jme3.world.GameRunningAppState;
+import org.springframework.context.ApplicationContext;
 
+import pl.rembol.jme3.controls.TimeToLiveControl;
+
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -11,10 +13,10 @@ public abstract class SmallObject {
 
 	protected RigidBodyControl control;
 	protected Node node;
-	protected GameRunningAppState appState;
+	protected ApplicationContext applicationContext;
 
-	public SmallObject(GameRunningAppState appState) {
-		this.appState = appState;
+	public SmallObject(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 	}
 
 	protected Vector3f getHandlePosition() {
@@ -28,11 +30,11 @@ public abstract class SmallObject {
 	public void detach(int timeToLive) {
 		Vector3f itemPosition = node.getWorldTranslation();
 		node.getParent().detachChild(node);
-		appState.getRootNode().attachChild(node);
+		applicationContext.getBean("rootNode", Node.class).attachChild(node);
 		node.setLocalTranslation(itemPosition);
 		node.addControl(control);
-		appState.getBulletAppState().getPhysicsSpace().add(control);
-		node.addControl(new TimeToLiveControl(timeToLive, appState));
+		applicationContext.getBean(BulletAppState.class).getPhysicsSpace().add(control);
+		node.addControl(new TimeToLiveControl(applicationContext, timeToLive));
 	}
 
 	public void detach() {
@@ -42,7 +44,7 @@ public abstract class SmallObject {
 	public void attach(Node parent) {
 		node.removeControl(control);
 		node.setLocalTranslation(getHandlePosition());
-		appState.getBulletAppState().getPhysicsSpace().remove(control);
+		applicationContext.getBean(BulletAppState.class).getPhysicsSpace().remove(control);
 
 		parent.attachChild(node);
 	}

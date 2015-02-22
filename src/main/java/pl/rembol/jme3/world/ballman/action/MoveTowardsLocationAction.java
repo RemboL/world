@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 
 import com.jme3.animation.LoopMode;
@@ -14,20 +13,21 @@ public class MoveTowardsLocationAction extends Action {
 
 	private float targetDistance;
 
-	public MoveTowardsLocationAction(GameRunningAppState appState,
-			Vector2f rectangleStart, Vector2f rectangleEnd, float targetDistance) {
-		super(appState);
+	public MoveTowardsLocationAction init(Vector2f rectangleStart,
+			Vector2f rectangleEnd, float targetDistance) {
 		this.rectangleStart = rectangleStart;
 		this.rectangleEnd = rectangleEnd;
 		this.targetDistance = targetDistance;
+
+		return this;
 	}
 
-	public MoveTowardsLocationAction(GameRunningAppState appState,
-			Vector2f point, float targetDistance) {
-		super(appState);
+	public MoveTowardsLocationAction init(Vector2f point, float targetDistance) {
 		this.rectangleStart = point;
 		this.rectangleEnd = point;
 		this.targetDistance = targetDistance;
+
+		return this;
 	}
 
 	@Override

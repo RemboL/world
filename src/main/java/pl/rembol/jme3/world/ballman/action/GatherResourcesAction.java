@@ -1,6 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.GameRunningAppState;
+import java.util.Optional;
+
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.Log;
@@ -12,21 +13,30 @@ public class GatherResourcesAction extends Action {
 
 	private Warehouse warehouse;
 
-	public GatherResourcesAction(GameRunningAppState appState, Tree tree) {
-		super(appState);
+	private BallMan ballMan;
+
+	public GatherResourcesAction init(BallMan ballMan, Tree tree) {
+		this.ballMan = ballMan;
 		this.tree = tree;
 
 		warehouse = getClosestWarehouse();
+
+		return this;
 	}
 
 	@Override
 	protected void doAct(BallMan ballMan, float tpf) {
 
-		if (ballMan.getWieldedObject() instanceof Log) {
-			ballMan.addActionOnStart(new ReturnResourcesAction(appState,
-					getClosestWarehouse()));
+		if (ballMan.getWieldedObject() instanceof Log
+				&& getClosestWarehouse() != null) {
+			ballMan.addActionOnStart(applicationContext
+					.getAutowireCapableBeanFactory()
+					.createBean(ReturnResourcesAction.class)
+					.init(getClosestWarehouse()));
 		} else {
-			ballMan.addActionOnStart(new ChopTreeAction(appState, tree));
+			ballMan.addActionOnStart(applicationContext
+					.getAutowireCapableBeanFactory()
+					.createBean(ChopTreeAction.class).init(tree));
 		}
 	}
 
@@ -37,7 +47,11 @@ public class GatherResourcesAction extends Action {
 	private Warehouse getClosestWarehouse() {
 
 		if (warehouse == null) {
-			warehouse = appState.getClosestWarehouse(tree.getLocation());
+			Optional<Warehouse> optional = ballMan.getOwner()
+					.getClosestWarehouse(tree.getLocation());
+			if (optional.isPresent()) {
+				warehouse = optional.get();
+			}
 		}
 
 		return warehouse;

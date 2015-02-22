@@ -4,14 +4,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import pl.rembol.jme3.input.state.SelectionManager.SelectionType;
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.ballman.order.OrderFactory;
+import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.math.Vector2f;
 
+@Component
 public class InputStateManager {
 
 	public static final String M = "command_m";
@@ -22,25 +26,26 @@ public class InputStateManager {
 
 	public static final String C = "command_c";
 
+	public static final String R = "command_r";
+
 	public static final String RIGHT_CLICK = "command_rightClick";
 
 	public static final String LEFT_CLICK = "command_leftClick";
 
 	private InputState currentState = InputState.DEFAULT;
 
-	private Order currentOrder = null;
-
-	private GameRunningAppState appState;
+	private Order<?> currentOrder = null;
 
 	private StateTransitions transitions = new StateTransitions();
 
+	@Autowired
+	private ActionBox actionBox;
+
+	@Autowired
 	private OrderFactory orderFactory;
 
-	public InputStateManager(GameRunningAppState appState,
-			OrderFactory orderFactory) {
-		this.appState = appState;
-		this.orderFactory = orderFactory;
-	}
+	@Autowired
+	private SelectionManager selectionManager;
 
 	public InputState getCurrentState() {
 		return currentState;
@@ -63,7 +68,7 @@ public class InputStateManager {
 						target);
 				break;
 			case InputStateManager.RIGHT_CLICK:
-				if (appState.getSelectionManager().getSelectionType() == SelectionType.UNIT) {
+				if (selectionManager.getSelectionType() == SelectionType.UNIT) {
 					orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
 							.perform(target);
 				}
@@ -71,7 +76,7 @@ public class InputStateManager {
 			}
 		}
 
-		appState.getHudManager().updateActionButtons();
+		actionBox.updateActionButtons();
 	}
 
 	public void click(String command, Vector2f target) {
@@ -91,7 +96,7 @@ public class InputStateManager {
 						target);
 				break;
 			case InputStateManager.RIGHT_CLICK:
-				if (appState.getSelectionManager().getSelectionType() == SelectionType.UNIT) {
+				if (selectionManager.getSelectionType() == SelectionType.UNIT) {
 					orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
 							.perform(target);
 				}
@@ -99,13 +104,13 @@ public class InputStateManager {
 			}
 		}
 
-		appState.getHudManager().updateActionButtons();
+		actionBox.updateActionButtons();
 	}
 
 	public void type(String command) {
 		getTransitionAndChangeState(command);
 
-		appState.getHudManager().updateActionButtons();
+		actionBox.updateActionButtons();
 	}
 
 	private void cancelOrder() {
@@ -129,13 +134,18 @@ public class InputStateManager {
 
 	private Optional<StateTransition> getTransitionAndChangeState(String command) {
 		Optional<StateTransition> transition = transitions.match(currentState,
-				appState.getSelectionManager().getSelectionType(), command);
+				selectionManager.getSelectionType(), command);
 
 		if (transition.isPresent()) {
 			currentState = transition.get().getTargetState();
 			if (currentState == InputState.ISSUE_ORDER) {
 				currentOrder = orderFactory.produceOrder(transition.get()
 						.getOrder());
+			} else if (currentState == InputState.ISSUE_ORDER_IMMEDIATELY) {
+				currentOrder = null;
+				orderFactory.produceOrder(transition.get().getOrder()).perform(
+						Selectable.class.cast(null));
+				currentState = InputState.DEFAULT;
 			} else {
 				currentOrder = null;
 			}
@@ -144,10 +154,9 @@ public class InputStateManager {
 	}
 
 	public List<Command> getAvailableCommands() {
-		appState.getSelectionManager().getSelectionType();
+		selectionManager.getSelectionType();
 		return transitions
-				.match(currentState,
-						appState.getSelectionManager().getSelectionType())
+				.match(currentState, selectionManager.getSelectionType())
 				.stream().map(transition -> transition.getCommandButton())
 				.collect(Collectors.toList());
 	}

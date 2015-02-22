@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.Log;
 import pl.rembol.jme3.world.warehouse.Warehouse;
@@ -10,9 +9,10 @@ public class ReturnResourcesAction extends Action {
 	private float targetDistance = 8;
 	private Warehouse warehouse;
 
-	public ReturnResourcesAction(GameRunningAppState appState, Warehouse target) {
-		super(appState);
+	public ReturnResourcesAction init(Warehouse target) {
 		this.warehouse = target;
+
+		return this;
 	}
 
 	@Override
@@ -37,8 +37,10 @@ public class ReturnResourcesAction extends Action {
 
 	private void assertDistance(BallMan ballMan) {
 		if (!isCloseEnough(ballMan)) {
-			ballMan.addActionOnStart(new MoveTowardsTargetAction(appState,
-					warehouse, 8));
+			ballMan.addActionOnStart(applicationContext
+					.getAutowireCapableBeanFactory()
+					.createBean(MoveTowardsTargetAction.class)
+					.init(warehouse, 8));
 		}
 	}
 

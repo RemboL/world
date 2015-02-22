@@ -9,4 +9,11 @@ public interface Building extends Selectable, WithNode {
 
 	float getWidth();
 
+	default boolean isConstructed() {
+		return getNode().getControl(ConstructionSite.class) == null;
+	}
+
+	default void finish() {
+	}
+
 }
