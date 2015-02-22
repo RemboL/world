@@ -139,4 +139,9 @@ public class House implements Selectable, Building, WithOwner {
 		owner.updateHousingLimit();
 	}
 
+	@Override
+	public String getIconName() {
+		return "house";
+	}
+
 }

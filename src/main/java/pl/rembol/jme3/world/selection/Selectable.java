@@ -11,4 +11,6 @@ public interface Selectable extends WithNode {
 	void deselect();
 
 	List<String> getStatusText();
+
+	String getIconName();
 }

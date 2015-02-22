@@ -4,9 +4,9 @@ public enum Command {
 
 	MOVE(0, 0, "move", InputStateManager.M), //
 	FLATTEN(1, 0, "flatten", InputStateManager.F), //
-	BUILD(2, 0, "build_house", InputStateManager.B), //
+	BUILD(2, 0, "house", InputStateManager.B), //
 	CANCEL(2, 2, "cancel", InputStateManager.C), //
-	RECRUIT(0, 0, "recruit", InputStateManager.R); //
+	RECRUIT(0, 0, "ballman", InputStateManager.R); //
 
 	private int positionX;
 	private int positionY;

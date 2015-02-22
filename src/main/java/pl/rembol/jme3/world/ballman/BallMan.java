@@ -274,4 +274,9 @@ public class BallMan extends AbstractControl implements Selectable,
 		return new String[] { "skin" };
 	}
 
+	@Override
+	public String getIconName() {
+		return "ballman";
+	}
+
 }

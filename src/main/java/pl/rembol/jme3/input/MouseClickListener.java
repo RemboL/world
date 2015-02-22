@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.rembol.jme3.input.state.InputStateManager;
+import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.ActionButton;
+import pl.rembol.jme3.world.hud.SelectionIcon;
+import pl.rembol.jme3.world.hud.StatusBar;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -44,6 +47,12 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 
 	@Autowired
 	private ActionBox actionBox;
+
+	@Autowired
+	private StatusBar statusBar;
+
+	@Autowired
+	private SelectionManager selectionManager;
 
 	@Autowired
 	private Camera camera;
@@ -102,27 +111,25 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 			if (!isDragged) {
 				dragSelectionManager.cancel();
 
-				ActionButton button = getActionButtonClick();
-				if (button != null) {
-					inputStateManager.type(button.getCommandKey());
-					return;
-				}
+				if (!checkActionButtons(name)) {
+					if (!checkSelectionIcons(name)) {
 
-				Collidable collided = getClosestCollidingObject();
+						Collidable collided = getClosestCollidingObject();
 
-				if (collidedWithNode(collided)) {
-					Selectable selectable = GameState.get().getSelectable(
-							Node.class.cast(collided));
-					inputStateManager.click(name, selectable);
-				} else {
-					Vector3f collisionWithTerrain = getCollisionWithTerrain();
-					if (collisionWithTerrain != null) {
-						inputStateManager
-								.click(name, new Vector2f(
+						if (collidedWithNode(collided)) {
+							Selectable selectable = GameState.get()
+									.getSelectable(Node.class.cast(collided));
+							inputStateManager.click(name, selectable);
+						} else {
+							Vector3f collisionWithTerrain = getCollisionWithTerrain();
+							if (collisionWithTerrain != null) {
+								inputStateManager.click(name, new Vector2f(
 										collisionWithTerrain.x,
 										collisionWithTerrain.z));
-					}
+							}
 
+						}
+					}
 				}
 			} else if (name.equals(InputStateManager.LEFT_CLICK)) {
 				dragSelectionManager.confirm();
@@ -133,6 +140,43 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 			isDragged = false;
 		}
 
+	}
+
+	private boolean checkActionButtons(String name) {
+		ActionButton button = getActionButtonClick();
+		if (button != null && name.equals(InputStateManager.LEFT_CLICK)) {
+			inputStateManager.type(button.getCommandKey());
+			return true;
+		}
+		return false;
+	}
+
+	private boolean checkSelectionIcons(String name) {
+		SelectionIcon button = getSelectionIconClick();
+		if (button != null && name.equals(InputStateManager.LEFT_CLICK)) {
+			selectionManager.select(button.getSelectable());
+			return true;
+		}
+		return false;
+	}
+
+	private SelectionIcon getSelectionIconClick() {
+		for (SelectionIcon button : statusBar.getSelectionIcons()) {
+
+			Vector2f click2d = inputManager.getCursorPosition();
+
+			Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
+					button.getWorldTranslation().y);
+			Vector2f buttonEnd = buttonStart.add(new Vector2f(
+					ActionButton.SIZE, ActionButton.SIZE));
+
+			if (buttonStart.x <= click2d.x && buttonStart.y <= click2d.y
+					&& buttonEnd.x > click2d.x && buttonEnd.y > click2d.y) {
+				return button;
+			}
+		}
+
+		return null;
 	}
 
 	private ActionButton getActionButtonClick() {

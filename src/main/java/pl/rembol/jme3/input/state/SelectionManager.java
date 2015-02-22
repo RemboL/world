@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.jme3.math.Vector3f;
-
 import pl.rembol.jme3.input.ModifierKeysManager;
 import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.GameRunningAppState;
@@ -18,6 +16,8 @@ import pl.rembol.jme3.world.house.House;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.StatusBar;
 import pl.rembol.jme3.world.selection.Selectable;
+
+import com.jme3.math.Vector3f;
 
 @Component
 public class SelectionManager {
@@ -59,7 +59,7 @@ public class SelectionManager {
 		} else if (selected.size() == 1) {
 			statusBar.setText(selected.get(0).getStatusText());
 		} else {
-			statusBar.setText("selected " + selected.size() + " units");
+			statusBar.setIcons(selected);
 		}
 
 	}

@@ -148,4 +148,9 @@ public class Warehouse implements Selectable, Building, WithOwner {
 		return new String[] { "Flag" };
 	}
 
+	@Override
+	public String getIconName() {
+		return "warehouse";
+	}
+
 }

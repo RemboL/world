@@ -113,8 +113,7 @@ public class Tree implements Selectable {
 	@Override
 	public void select() {
 		if (selectionNode == null) {
-			selectionNode = new SelectionNode(
-					assetManager);
+			selectionNode = new SelectionNode(assetManager);
 			tree.attachChild(selectionNode);
 			selectionNode.setLocalScale(2f);
 			selectionNode.setLocalTranslation(0, .1f, 0);
@@ -132,6 +131,11 @@ public class Tree implements Selectable {
 	@Override
 	public List<String> getStatusText() {
 		return Arrays.asList("Tree", "Resources left: " + hp);
+	}
+
+	@Override
+	public String getIconName() {
+		return "tree";
 	}
 
 }
