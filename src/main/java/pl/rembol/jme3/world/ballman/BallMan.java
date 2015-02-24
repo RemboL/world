@@ -7,16 +7,20 @@ import java.util.Random;
 
 import org.springframework.context.ApplicationContext;
 
+import pl.rembol.jme3.input.state.SelectionManager;
+import pl.rembol.jme3.particles.SparkParticleEmitter;
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.action.Action;
+import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.world.interfaces.WithDefaultAction;
 import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.SmallObject;
@@ -29,6 +33,7 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -40,13 +45,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 
 public class BallMan extends AbstractControl implements Selectable,
-		WithDefaultAction, WithOwner {
+		WithDefaultAction, WithOwner, Destructable {
 
 	private Node node;
 	private Node selectionNode;
 	private BetterCharacterControl control;
-
-	private Tree selectionTree;
+	private static final int MAX_HP = 50;
+	private int hp = MAX_HP;
 
 	private Vector3f targetDirection;
 	private float targetVelocity = 0;
@@ -70,7 +75,7 @@ public class BallMan extends AbstractControl implements Selectable,
 		node.setLocalRotation(new Quaternion().fromAngleAxis(
 				new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
-		control = new BetterCharacterControl(1.5f, 10f, 1);
+		control = new BetterCharacterControl(1f, 10f, 1);
 
 		node.addControl(this);
 
@@ -88,17 +93,65 @@ public class BallMan extends AbstractControl implements Selectable,
 	}
 
 	@Override
+	public void strike(int strength) {
+		hp -= strength;
+		new SparkParticleEmitter(applicationContext, ColorRGBA.Red, strength,
+				node).emit();
+
+		boolean updateSelection = false;
+		if (selectionNode != null) {
+			updateSelection = true;
+		}
+
+		if (hp <= 0) {
+			destroy();
+		}
+
+		if (updateSelection) {
+			applicationContext.getBean(SelectionManager.class)
+					.updateSelectionText();
+		}
+	}
+
+	private void destroy() {
+		new SparkParticleEmitter(applicationContext, ColorRGBA.Red, 1000,
+				applicationContext.getBean("rootNode", Node.class))
+				.doSetLocalTranslation(node.getLocalTranslation()).emit();
+
+		GameState.get().unregister(this);
+		applicationContext.getBean("rootNode", Node.class).detachChild(node);
+		node.removeControl(this);
+		applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
+				.remove(control);
+	}
+
+	@Override
+	public boolean isDestroyed() {
+		return hp <= 0;
+	}
+
+	@Override
 	public Node getNode() {
 		return node;
+	}
+
+	@Override
+	public float getWidth() {
+		return 1f;
 	}
 
 	public float getWalkSpeed() {
 		return control.getWalkDirection().length();
 	}
 
-	private void initNode(Node rootNode) {
-		node = (Node) applicationContext.getBean(AssetManager.class).loadModel(
+	@Override
+	public Node initNode() {
+		return (Node) applicationContext.getBean(AssetManager.class).loadModel(
 				"ballman/ballman.mesh.xml");
+	}
+
+	private void initNode(Node rootNode) {
+		node = initNode();
 
 		rootNode.attachChild(node);
 		node.setShadowMode(ShadowMode.Cast);
@@ -135,13 +188,6 @@ public class BallMan extends AbstractControl implements Selectable,
 			wielded.detach(0);
 			wielded = null;
 		}
-	}
-
-	public void attack(Tree tree) {
-		this.selectionTree = tree;
-		setAction(applicationContext.getAutowireCapableBeanFactory()
-				.createBean(GatherResourcesAction.class)
-				.init(this, this.selectionTree));
 	}
 
 	public void lookTowards(WithNode target) {
@@ -208,7 +254,15 @@ public class BallMan extends AbstractControl implements Selectable,
 	@Override
 	public void performDefaultAction(Selectable target) {
 		if (target instanceof Tree) {
-			attack(Tree.class.cast(target));
+			setAction(applicationContext.getAutowireCapableBeanFactory()
+					.createBean(GatherResourcesAction.class)
+					.init(this, Tree.class.cast(target)));
+		} else if (WithOwner.class.isInstance(target)
+				&& !WithOwner.class.cast(target).getOwner().equals(owner)
+				&& Destructable.class.isInstance(target)) {
+			setAction(applicationContext.getAutowireCapableBeanFactory()
+					.createBean(AttackAction.class)
+					.init(Destructable.class.cast(target)));
 		} else {
 			setAction(applicationContext.getAutowireCapableBeanFactory()
 					.createBean(MoveTowardsTargetAction.class).init(target, 5f));
@@ -252,7 +306,8 @@ public class BallMan extends AbstractControl implements Selectable,
 
 	@Override
 	public List<String> getStatusText() {
-		return Arrays.asList("BallMan", "owner: " + owner.getName());
+		return Arrays.asList("BallMan", "hp: " + hp + " / " + MAX_HP, "owner: "
+				+ owner.getName());
 	}
 
 	@Override

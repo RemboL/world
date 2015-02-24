@@ -1,25 +1,25 @@
 package pl.rembol.jme3.world.ballman.order;
 
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.house.House;
+import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 
-public class RecruitOrder extends Order<House> {
+public class RecruitOrder extends Order<Building> {
 
 	@Override
-	protected void doPerform(House house, Vector2f location) {
+	protected void doPerform(Building house, Vector2f location) {
 		doPerform(house);
 	}
 
 	@Override
-	protected void doPerform(House house, Selectable target) {
+	protected void doPerform(Building house, Selectable target) {
 		doPerform(house);
 	}
 
-	private void doPerform(House house) {
+	private void doPerform(Building house) {
 		if (house.getOwner().retrieveResources(50, 1)) {
 
 			Vector2f location = new Vector2f(house.getLocation().x,

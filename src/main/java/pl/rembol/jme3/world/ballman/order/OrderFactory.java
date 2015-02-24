@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import pl.rembol.jme3.input.state.SelectionManager;
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.selection.Selectable;
 
 @Component
@@ -22,6 +20,7 @@ public class OrderFactory implements ApplicationContextAware {
 	public static final String ORDER_DEFAULT = "order_default";
 	public static final String ORDER_FLATTEN = "order_flatten";
 	public static final String ORDER_BUILD_HOUSE = "order_buildHouse";
+	public static final String ORDER_BUILD_WAREHOUSE = "order_buildWarehouse";
 	public static final String ORDER_SELECT = "order_select";
 	public static final String ORDER_RECRUIT = "order_recruit";
 
@@ -36,6 +35,7 @@ public class OrderFactory implements ApplicationContextAware {
 		registerOrder(ORDER_DEFAULT, DefaultActionOrder.class);
 		registerOrder(ORDER_FLATTEN, SmoothenTerrainOrder.class);
 		registerOrder(ORDER_BUILD_HOUSE, BuildHouseOrder.class);
+		registerOrder(ORDER_BUILD_WAREHOUSE, BuildWarehouseOrder.class);
 		registerOrder(ORDER_SELECT, SelectOrder.class);
 		registerOrder(ORDER_RECRUIT, RecruitOrder.class);
 	}
@@ -54,11 +54,11 @@ public class OrderFactory implements ApplicationContextAware {
 
 		if (orderClass != null) {
 			try {
-				Order<Selectable> order = (Order<Selectable>) applicationContext.getAutowireCapableBeanFactory().createBean(orderClass);
+				Order<Selectable> order = (Order<Selectable>) applicationContext
+						.getAutowireCapableBeanFactory().createBean(orderClass);
 				order.setSelected(selected);
 				return order;
-			} catch (SecurityException
-					| IllegalArgumentException e) {
+			} catch (SecurityException | IllegalArgumentException e) {
 				e.printStackTrace();
 			}
 		}
@@ -70,7 +70,7 @@ public class OrderFactory implements ApplicationContextAware {
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
-				this.applicationContext = applicationContext;
+		this.applicationContext = applicationContext;
 	}
 
 }

@@ -2,6 +2,7 @@ package pl.rembol.jme3.input.state;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -143,13 +144,35 @@ public class SelectionManager {
 		} else {
 			clearSelection();
 
-			for (Selectable selectable : dragSelected) {
-				doSelect(selectable);
+			List<WithOwner> activePlayerOwned = dragSelected
+					.stream()
+					.filter(selectable -> WithOwner.class
+							.isInstance(selectable))
+					.map(selectable -> WithOwner.class.cast(selectable))
+					.filter(withOwner -> withOwner.getOwner().equals(
+							appState.getActivePlayer()))
+					.collect(Collectors.toList());
+
+			if (!activePlayerOwned.isEmpty()) {
+
+				if (activePlayerOwned.stream().anyMatch(
+						withOwner -> BallMan.class.isInstance(withOwner))) {
+					activePlayerOwned
+							.stream()
+							.filter(withOwner -> BallMan.class
+									.isInstance(withOwner))
+							.map(withOwner -> BallMan.class.cast(withOwner))
+							.forEach(ballMan -> doSelect(ballMan));
+				} else {
+					activePlayerOwned.stream()
+							.map(withOwner -> Selectable.class.cast(withOwner))
+							.forEach(selectable -> doSelect(selectable));
+				}
 			}
+
 		}
 
 		updateSelectionText();
 		actionBox.updateActionButtons();
 	}
-
 }

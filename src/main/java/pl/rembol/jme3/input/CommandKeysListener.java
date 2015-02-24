@@ -31,8 +31,10 @@ public class CommandKeysListener implements ActionListener {
 		bindKeyToCommand(inputManager, InputStateManager.B, KeyInput.KEY_B);
 		bindKeyToCommand(inputManager, InputStateManager.C, KeyInput.KEY_C);
 		bindKeyToCommand(inputManager, InputStateManager.F, KeyInput.KEY_F);
+		bindKeyToCommand(inputManager, InputStateManager.H, KeyInput.KEY_H);
 		bindKeyToCommand(inputManager, InputStateManager.M, KeyInput.KEY_M);
 		bindKeyToCommand(inputManager, InputStateManager.R, KeyInput.KEY_R);
+		bindKeyToCommand(inputManager, InputStateManager.W, KeyInput.KEY_W);
 	}
 
 	private void bindKeyToCommand(InputManager inputManager, String command,

@@ -10,8 +10,8 @@ import org.springframework.context.support.GenericApplicationContext;
 import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.house.House;
-import pl.rembol.jme3.world.smallobject.Axe;
 import pl.rembol.jme3.world.terrain.Terrain;
 import pl.rembol.jme3.world.warehouse.Warehouse;
 
@@ -96,8 +96,6 @@ public class GameRunningAppState extends AbstractAppState {
 
 		terrain = applicationContext.getBean(Terrain.class);
 		terrain.init(128);
-		terrain.smoothenTerrain(new Vector2f(25f, -5f), new Vector2f(35f, 5f),
-				5, 20f);
 
 		this.assetManager = app.getAssetManager();
 		this.rootNode = simpleApp.getRootNode();
@@ -120,9 +118,10 @@ public class GameRunningAppState extends AbstractAppState {
 		enemy.setName("bad guy");
 		enemy.setColor(ColorRGBA.Red);
 
-		Warehouse warehouse = applicationContext
-				.getAutowireCapableBeanFactory().createBean(Warehouse.class)
-				.init(new Vector2f(30f, 0f));
+		terrain.smoothenTerrain(new Vector2f(25f, -5f), new Vector2f(35f, 5f),
+				5, 20f);
+		Building warehouse = applicationContext.getAutowireCapableBeanFactory()
+				.createBean(Warehouse.class).init(new Vector2f(30f, 0f));
 		warehouse.setOwner(activePlayer);
 
 		for (int i = 0; i < 5; ++i) {
@@ -130,8 +129,6 @@ public class GameRunningAppState extends AbstractAppState {
 					(new Random().nextFloat() + 2f) * 5f,
 					(new Random().nextFloat() + i - 3f) * 10f));
 			ballMan.setOwner(activePlayer);
-
-			ballMan.wield(new Axe(applicationContext));
 
 			applicationContext
 					.getAutowireCapableBeanFactory()
@@ -146,7 +143,9 @@ public class GameRunningAppState extends AbstractAppState {
 		ballMan.setOwner(enemy);
 		terrain.smoothenTerrain(new Vector2f(45f, 5f), new Vector2f(55f, 15f),
 				5, 20f);
-		House house = new House(applicationContext, new Vector2f(50f, 10f));
+		Building house = applicationContext.getAutowireCapableBeanFactory()
+				.createBean(House.class);
+		house.init(new Vector2f(50f, 10f));
 		house.setOwner(enemy);
 
 	}

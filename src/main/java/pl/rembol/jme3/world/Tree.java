@@ -50,10 +50,14 @@ public class Tree implements Selectable {
 				+ terrain.getTerrain().getLocalTranslation().y, position.y));
 	}
 
+	public float getWidth() {
+		return 2f;
+	}
+
 	public void init(Vector3f position) {
 
-		tree = ModelHelper.rewriteDiffuseToAmbient((Node) assetManager
-				.loadModel("tree.blend"));
+		tree = initNode();
+
 		tree.setShadowMode(ShadowMode.Cast);
 		rootNode.attachChild(tree);
 		tree.setLocalTranslation(position);
@@ -67,6 +71,12 @@ public class Tree implements Selectable {
 		bulletAppState.getPhysicsSpace().add(control);
 
 		GameState.get().register(this);
+	}
+
+	@Override
+	public Node initNode() {
+		return ModelHelper.rewriteDiffuseToAmbient((Node) assetManager
+				.loadModel("tree.blend"));
 	}
 
 	protected void setHp(int hp) {

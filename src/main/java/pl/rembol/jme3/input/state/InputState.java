@@ -6,6 +6,10 @@ public enum InputState {
 
 	ISSUE_ORDER,
 
+	BUILD_MENU,
+
+	ISSUE_BUILD_ORDER,
+
 	ISSUE_ORDER_IMMEDIATELY;
 
 }

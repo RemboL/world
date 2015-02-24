@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.rembol.jme3.controls.TimeToLiveControl;
+import pl.rembol.jme3.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.Shovel;
 import pl.rembol.jme3.world.terrain.Terrain;
@@ -14,16 +14,11 @@ import pl.rembol.jme3.world.terrain.Terrain;
 import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 public class SmoothenTerrainAction extends Action {
-
-	private static final int DUST_PARTICLE_HIGH_LIFE_IN_SECONDS = 5;
 
 	private static final int HIT_FRAME = 20 * 1000 / 30;
 
@@ -35,7 +30,7 @@ public class SmoothenTerrainAction extends Action {
 
 	private long animationStart;
 
-	private final List<ParticleEmitter> particleEmitters = new ArrayList<>();
+	private final List<DustParticleEmitter> particleEmitters = new ArrayList<>();
 
 	private boolean hit = false;
 
@@ -77,31 +72,10 @@ public class SmoothenTerrainAction extends Action {
 		}
 	}
 
-	private ParticleEmitter createParticleEmiter() {
-		ParticleEmitter emitter = new ParticleEmitter("Debris",
-				ParticleMesh.Type.Triangle, 20);
-		Material dustMaterial = new Material(assetManager,
-				"Common/MatDefs/Misc/Particle.j3md");
-		dustMaterial.setTexture("Texture",
-				assetManager.loadTexture("Effects/Explosion/flame.png"));
-		emitter.setMaterial(dustMaterial);
-		emitter.setImagesX(2);
-		emitter.setImagesY(2);
-		emitter.setRotateSpeed(4);
-		emitter.setSelectRandomImage(true);
-		emitter.getParticleInfluencer().setInitialVelocity(
-				new Vector3f(0, -1, 0));
-		emitter.setStartColor(new ColorRGBA(1f, .75f, .5f, .75f));
-		emitter.setGravity(0, 0, 0);
-		emitter.setHighLife(DUST_PARTICLE_HIGH_LIFE_IN_SECONDS * 1f);
-		emitter.setLowLife(DUST_PARTICLE_HIGH_LIFE_IN_SECONDS * .4f);
-		emitter.setStartSize(1f);
-		emitter.setEndSize(4f);
-		emitter.getParticleInfluencer().setVelocityVariation(2f);
-		rootNode.attachChild(emitter);
-		emitter.setLocalTranslation(start.x,
-				terrain.getTerrain().getHeight(start), start.y);
-		return emitter;
+	private DustParticleEmitter createParticleEmiter() {
+		return new DustParticleEmitter(applicationContext)
+				.doSetLocalTranslation(new Vector3f(start.x, terrain
+						.getTerrain().getHeight(start), start.y));
 	}
 
 	private void randomizeEmitterLocation(ParticleEmitter emitter) {
@@ -141,10 +115,8 @@ public class SmoothenTerrainAction extends Action {
 
 	@Override
 	public void stop() {
-		for (ParticleEmitter emitter : particleEmitters) {
-			emitter.setParticlesPerSec(0f);
-			emitter.addControl(new TimeToLiveControl(applicationContext,
-					DUST_PARTICLE_HIGH_LIFE_IN_SECONDS));
+		for (DustParticleEmitter emitter : particleEmitters) {
+			emitter.stopEmitting();
 		}
 	}
 

@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.hud.ResourcesBar;
 import pl.rembol.jme3.world.warehouse.Warehouse;
 
@@ -32,6 +33,9 @@ public class Player {
 
 	@Autowired
 	private ResourcesBar resourcesBar;
+
+	@Autowired
+	private ConsoleLog consoleLog;
 
 	@PostConstruct
 	public void init() {
@@ -101,6 +105,7 @@ public class Player {
 	public boolean hasResources(int wood, int housing) {
 		if (wood > 0 && resourcesWood < wood) {
 			if (active) {
+				consoleLog.addLine("Not enough wood");
 				resourcesBar.blinkWood();
 			}
 			return false;
@@ -108,6 +113,7 @@ public class Player {
 
 		if (housing > 0 && resourcesHousingLimit - resourcesHousing < housing) {
 			if (active) {
+				consoleLog.addLine("Not enough housing");
 				resourcesBar.blinkHousing();
 			}
 			return false;

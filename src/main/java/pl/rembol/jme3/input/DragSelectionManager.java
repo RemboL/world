@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import pl.rembol.jme3.input.state.InputStateManager;
 import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -53,6 +54,9 @@ public class DragSelectionManager extends AbstractControl {
 	@Autowired
 	private SelectionManager selectionManager;
 
+	@Autowired
+	private InputStateManager inputStateManager;
+
 	private Vector3f dragStart;
 
 	private Vector3f dragStop;
@@ -77,18 +81,9 @@ public class DragSelectionManager extends AbstractControl {
 
 	public void start() {
 		dragStart = getCollisionWithTerrain();
-		dragStop = dragStart.clone();
-
-		geometry = new Geometry("dragSelect", getBox(dragStart, dragStop));
-		Material mat = new Material(assetManager,
-				"Common/MatDefs/Misc/Unshaded.j3md");
-		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-		mat.setColor("Color", new ColorRGBA(.5f, 1f, .5f, .2f));
-		geometry.setMaterial(mat);
-		geometry.setQueueBucket(Bucket.Transparent);
-		geometry.addControl(this);
-
-		rootNode.attachChild(geometry);
+		if (dragStart != null) {
+			dragStop = dragStart.clone();
+		}
 	}
 
 	private DragSurface getBox(Vector3f dragStart, Vector3f dragStop) {
@@ -148,7 +143,10 @@ public class DragSelectionManager extends AbstractControl {
 
 	public void confirm() {
 
-		selectionManager.dragSelect(dragStart, dragStop);
+		if (dragStart != null && dragStop != null) {
+			selectionManager.dragSelect(dragStart, dragStop);
+			inputStateManager.cancelOrder();
+		}
 
 		cancel();
 	}
@@ -181,6 +179,21 @@ public class DragSelectionManager extends AbstractControl {
 		}
 
 		return null;
+	}
+
+	public void startDragging() {
+		if (geometry == null) {
+			geometry = new Geometry("dragSelect", getBox(dragStart, dragStop));
+			Material mat = new Material(assetManager,
+					"Common/MatDefs/Misc/Unshaded.j3md");
+			mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+			mat.setColor("Color", new ColorRGBA(.5f, 1f, .5f, .2f));
+			geometry.setMaterial(mat);
+			geometry.setQueueBucket(Bucket.Transparent);
+			geometry.addControl(this);
+
+			rootNode.attachChild(geometry);
+		}
 	}
 
 }

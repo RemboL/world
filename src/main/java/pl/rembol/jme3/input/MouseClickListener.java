@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import pl.rembol.jme3.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.input.state.InputStateManager;
 import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.GameState;
@@ -63,6 +64,9 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	@Autowired
 	private DragSelectionManager dragSelectionManager;
 
+	@Autowired
+	private BuildingSilhouetteManager buildingSilhouetteManager;
+
 	private boolean isButtonDown = false;
 
 	private Vector2f dragStartPosition;
@@ -92,6 +96,10 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 		if (isButtonDown
 				&& dragStartPosition != null
 				&& dragStartPosition.distance(inputManager.getCursorPosition()) > 5f) {
+			if (!isDragged) {
+				dragSelectionManager.startDragging();
+				buildingSilhouetteManager.removeSilhouette();
+			}
 			isDragged = true;
 		}
 	}
@@ -109,8 +117,6 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 		if ((name.equals(InputStateManager.LEFT_CLICK) || name
 				.equals(InputStateManager.RIGHT_CLICK)) && !keyPressed) {
 			if (!isDragged) {
-				dragSelectionManager.cancel();
-
 				if (!checkActionButtons(name)) {
 					if (!checkSelectionIcons(name)) {
 
@@ -119,6 +125,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 						if (collidedWithNode(collided)) {
 							Selectable selectable = GameState.get()
 									.getSelectable(Node.class.cast(collided));
+							System.out.println("#### selectable: "+selectable);
 							inputStateManager.click(name, selectable);
 						} else {
 							Vector3f collisionWithTerrain = getCollisionWithTerrain();
@@ -131,6 +138,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 						}
 					}
 				}
+				dragSelectionManager.cancel();
 			} else if (name.equals(InputStateManager.LEFT_CLICK)) {
 				dragSelectionManager.confirm();
 			}

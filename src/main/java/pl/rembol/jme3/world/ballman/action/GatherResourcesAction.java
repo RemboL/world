@@ -11,15 +11,13 @@ public class GatherResourcesAction extends Action {
 
 	private Tree tree;
 
-	private Warehouse warehouse;
-
 	private BallMan ballMan;
 
 	public GatherResourcesAction init(BallMan ballMan, Tree tree) {
 		this.ballMan = ballMan;
 		this.tree = tree;
 
-		warehouse = getClosestWarehouse();
+		getClosestWarehouse();
 
 		return this;
 	}
@@ -27,12 +25,13 @@ public class GatherResourcesAction extends Action {
 	@Override
 	protected void doAct(BallMan ballMan, float tpf) {
 
-		if (ballMan.getWieldedObject() instanceof Log
-				&& getClosestWarehouse() != null) {
+		Optional<Warehouse> warehouse = getClosestWarehouse();
+
+		if (ballMan.getWieldedObject() instanceof Log && warehouse.isPresent()) {
 			ballMan.addActionOnStart(applicationContext
 					.getAutowireCapableBeanFactory()
 					.createBean(ReturnResourcesAction.class)
-					.init(getClosestWarehouse()));
+					.init(warehouse.get()));
 		} else {
 			ballMan.addActionOnStart(applicationContext
 					.getAutowireCapableBeanFactory()
@@ -44,17 +43,9 @@ public class GatherResourcesAction extends Action {
 		return (getClosestWarehouse() == null) || tree.isDestroyed();
 	}
 
-	private Warehouse getClosestWarehouse() {
+	private Optional<Warehouse> getClosestWarehouse() {
 
-		if (warehouse == null) {
-			Optional<Warehouse> optional = ballMan.getOwner()
-					.getClosestWarehouse(tree.getLocation());
-			if (optional.isPresent()) {
-				warehouse = optional.get();
-			}
-		}
-
-		return warehouse;
+		return ballMan.getOwner().getClosestWarehouse(tree.getLocation());
 	}
 
 }

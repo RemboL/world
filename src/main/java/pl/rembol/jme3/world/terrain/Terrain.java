@@ -53,7 +53,7 @@ public class Terrain {
 		AbstractHeightMap heightmap = new FlatHeightMap(size);
 		try {
 			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
-			heightmap.normalizeTerrain(30f);
+			heightmap.normalizeTerrain(20f);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -338,4 +338,5 @@ public class Terrain {
 				position.x, position.z)) + terrain.getLocalTranslation().y,
 				position.z);
 	}
+
 }

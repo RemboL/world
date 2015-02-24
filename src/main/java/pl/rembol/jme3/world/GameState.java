@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.house.House;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.warehouse.Warehouse;
@@ -53,8 +54,9 @@ public class GameState {
 	}
 
 	public void unregister(Selectable selectable) {
+		System.out.println("#### unregister");
+		selectables.remove(selectable.getNode().getUserData("selectable"));
 		selectable.getNode().setUserData("selectable", null);
-		selectables.remove(selectable);
 		selectionManager.deselect(selectable);
 	}
 
@@ -65,7 +67,7 @@ public class GameState {
 		return null;
 	}
 
-	public List<House> getHousesByOwner(Player player) {
+	public List<Building> getHousesByOwner(Player player) {
 		return selectables.values().stream()
 				.filter(selectable -> House.class.isInstance(selectable))
 				.map(selectable -> House.class.cast(selectable))
@@ -110,5 +112,39 @@ public class GameState {
 				.filter(selectable -> selectable.getNode()
 						.getWorldTranslation().z <= maxZ)
 				.collect(Collectors.toList());
+	}
+
+	public boolean isSpaceFreeWithBuffer(Vector3f position, float width) {
+		return isSpaceFree(position, width + 2.5f);
+	}
+
+	public boolean isSpaceFree(Vector3f position, float width) {
+		return !selectables
+				.values()
+				.stream()
+				.anyMatch(
+						selectable -> isColliding(selectable, position, width));
+	}
+
+	private boolean isColliding(Selectable selectable, Vector3f position,
+			float width) {
+		if (selectable.getNode().getWorldTranslation().x
+				+ selectable.getWidth() <= position.x - width) {
+			return false;
+		}
+		if (selectable.getNode().getWorldTranslation().x
+				- selectable.getWidth() >= position.x + width) {
+			return false;
+		}
+		if (selectable.getNode().getWorldTranslation().z
+				+ selectable.getWidth() <= position.z - width) {
+			return false;
+		}
+		if (selectable.getNode().getWorldTranslation().z
+				- selectable.getWidth() >= position.z + width) {
+			return false;
+		}
+
+		return true;
 	}
 }

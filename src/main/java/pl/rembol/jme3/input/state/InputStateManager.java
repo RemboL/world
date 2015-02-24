@@ -14,6 +14,7 @@ import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 
 @Component
 public class InputStateManager {
@@ -23,6 +24,10 @@ public class InputStateManager {
 	public static final String F = "command_f";
 
 	public static final String B = "command_b";
+
+	public static final String H = "command_h";
+
+	public static final String W = "command_w";
 
 	public static final String C = "command_c";
 
@@ -49,6 +54,9 @@ public class InputStateManager {
 	@Autowired
 	private SelectionManager selectionManager;
 
+	@Autowired
+	private BuildingSilhouetteManager buildingSilhouetteManager;
+
 	public InputState getCurrentState() {
 		return currentState;
 	}
@@ -63,29 +71,16 @@ public class InputStateManager {
 				cancelOrder();
 				break;
 			}
-		} else if (currentState == InputState.DEFAULT) {
+		} else if (currentState == InputState.ISSUE_BUILD_ORDER) {
 			switch (command) {
 			case InputStateManager.LEFT_CLICK:
-				orderFactory.produceOrder(OrderFactory.ORDER_SELECT).perform(
-						target);
-				break;
-			case InputStateManager.RIGHT_CLICK:
-				if (selectionManager.getSelectionType() == SelectionType.UNIT) {
-					orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
-							.perform(target);
+				Vector3f location = buildingSilhouetteManager
+						.getSilhouettePosition();
+				if (location != null) {
+					performOrder(new Vector2f(location.x, location.z));
+				} else {
+					cancelOrder();
 				}
-				break;
-			}
-		}
-
-		actionBox.updateActionButtons();
-	}
-
-	public void click(String command, Vector2f target) {
-		if (currentState == InputState.ISSUE_ORDER) {
-			switch (command) {
-			case InputStateManager.LEFT_CLICK:
-				performOrder(target);
 				break;
 			case InputStateManager.RIGHT_CLICK:
 				cancelOrder();
@@ -107,17 +102,66 @@ public class InputStateManager {
 		}
 
 		actionBox.updateActionButtons();
+		buildingSilhouetteManager.removeSilhouette();
+	}
+
+	public void click(String command, Vector2f target) {
+		if (currentState == InputState.ISSUE_ORDER) {
+			switch (command) {
+			case InputStateManager.LEFT_CLICK:
+				performOrder(target);
+				break;
+			case InputStateManager.RIGHT_CLICK:
+				cancelOrder();
+				break;
+			}
+		} else if (currentState == InputState.ISSUE_BUILD_ORDER) {
+			switch (command) {
+			case InputStateManager.LEFT_CLICK:
+				Vector3f location = buildingSilhouetteManager
+						.getSilhouettePosition();
+				if (location != null) {
+					performOrder(new Vector2f(location.x, location.z));
+				} else {
+					cancelOrder();
+				}
+				break;
+			case InputStateManager.RIGHT_CLICK:
+				cancelOrder();
+				break;
+			}
+		} else if (currentState == InputState.DEFAULT) {
+			switch (command) {
+			case InputStateManager.LEFT_CLICK:
+				orderFactory.produceOrder(OrderFactory.ORDER_SELECT).perform(
+						target);
+				break;
+			case InputStateManager.RIGHT_CLICK:
+				if (selectionManager.getSelectionType() == SelectionType.UNIT) {
+					orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
+							.perform(target);
+				}
+				break;
+			}
+		}
+
+		actionBox.updateActionButtons();
+		buildingSilhouetteManager.removeSilhouette();
 	}
 
 	public void type(String command) {
+		System.out.println("typing "+command);
 		getTransitionAndChangeState(command);
 
 		actionBox.updateActionButtons();
 	}
 
-	private void cancelOrder() {
+	public void cancelOrder() {
 		currentOrder = null;
 		currentState = InputState.DEFAULT;
+
+		actionBox.updateActionButtons();
+		buildingSilhouetteManager.removeSilhouette();
 	}
 
 	private void performOrder(Selectable target) {
@@ -140,9 +184,11 @@ public class InputStateManager {
 
 		if (transition.isPresent()) {
 			currentState = transition.get().getTargetState();
-			if (currentState == InputState.ISSUE_ORDER) {
+			if (currentState == InputState.ISSUE_ORDER
+					|| currentState == InputState.ISSUE_BUILD_ORDER) {
 				currentOrder = orderFactory.produceOrder(transition.get()
 						.getOrder());
+				buildingSilhouetteManager.createSilhouette(currentOrder);
 			} else if (currentState == InputState.ISSUE_ORDER_IMMEDIATELY) {
 				currentOrder = null;
 				orderFactory.produceOrder(transition.get().getOrder()).perform(
@@ -152,6 +198,7 @@ public class InputStateManager {
 				currentOrder = null;
 			}
 		}
+		
 		return transition;
 	}
 

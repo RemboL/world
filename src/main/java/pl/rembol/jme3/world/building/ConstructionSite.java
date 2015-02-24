@@ -4,7 +4,6 @@ import org.springframework.context.ApplicationContext;
 
 import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.hud.ActionBox;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -28,8 +27,7 @@ public class ConstructionSite extends AbstractControl {
 
 		this.building = building;
 		this.buildingTimeInSeconds = buildingTimeInSeconds;
-		finishedPosition = applicationContext.getBean(Terrain.class)
-				.getGroundPosition(building.getNode().getLocalTranslation());
+		finishedPosition = new Vector3f(0, 0, 0);
 		startingPosition = finishedPosition.subtract(Vector3f.UNIT_Y
 				.mult(building.getHeight()));
 		building.getNode().addControl(this);
@@ -63,7 +61,6 @@ public class ConstructionSite extends AbstractControl {
 		if (finished) {
 			finishBuilding();
 		} else {
-
 			building.getNode().setLocalTranslation(
 					startingPosition.clone().interpolate(finishedPosition,
 							progress / buildingTimeInSeconds));
