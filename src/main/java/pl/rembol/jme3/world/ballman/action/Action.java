@@ -32,6 +32,7 @@ public abstract class Action implements ApplicationContextAware {
 	}
 
 	public void finish() {
+		stop();
 	}
 
 	public void stop() {

@@ -11,7 +11,7 @@ import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.particles.SparkParticleEmitter;
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.player.WithOwner;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.action.Action;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
@@ -88,7 +88,7 @@ public class BallMan extends AbstractControl implements Selectable,
 		control.setWalkDirection(control.getViewDirection().mult(
 				new Random().nextFloat() * 5f));
 
-		GameState.get().register(this);
+		applicationContext.getBean(UnitRegistry.class).register(this);
 
 	}
 
@@ -118,7 +118,7 @@ public class BallMan extends AbstractControl implements Selectable,
 				applicationContext.getBean("rootNode", Node.class))
 				.doSetLocalTranslation(node.getLocalTranslation()).emit();
 
-		GameState.get().unregister(this);
+		applicationContext.getBean(UnitRegistry.class).unregister(this);
 		applicationContext.getBean("rootNode", Node.class).detachChild(node);
 		node.removeControl(this);
 		applicationContext.getBean(BulletAppState.class).getPhysicsSpace()

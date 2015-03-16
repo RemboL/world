@@ -7,7 +7,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.rembol.jme3.particles.DustParticleEmitter;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.ConstructionSite;
@@ -57,6 +57,9 @@ public abstract class BuildAction extends Action {
 
 	@Autowired
 	private ConsoleLog consoleLog;
+	
+	@Autowired
+	private UnitRegistry gameState;
 
 	public abstract Building createBuilding();
 
@@ -85,7 +88,7 @@ public abstract class BuildAction extends Action {
 	protected void start(BallMan ballMan) {
 		Building building = createBuilding();
 
-		if (!GameState.get().isSpaceFree(terrain.getGroundPosition(position),
+		if (!gameState.isSpaceFree(terrain.getGroundPosition(position),
 				building.getWidth())) {
 			consoleLog.addLine("Can't build here, something's in the way");
 			isFinished = true;

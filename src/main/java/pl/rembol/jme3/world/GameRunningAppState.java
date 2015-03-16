@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world;
 
-import java.util.Random;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -13,7 +11,6 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.house.House;
 import pl.rembol.jme3.world.terrain.Terrain;
-import pl.rembol.jme3.world.warehouse.Warehouse;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -103,7 +100,6 @@ public class GameRunningAppState extends AbstractAppState {
 		this.selectionManager = applicationContext
 				.getBean(SelectionManager.class);
 
-		GameState.get().setSelectionManager(selectionManager);
 		initLightAndShadows(app.getViewPort());
 
 		activePlayer = applicationContext.getAutowireCapableBeanFactory()
@@ -113,41 +109,37 @@ public class GameRunningAppState extends AbstractAppState {
 		activePlayer.setActive(true);
 		activePlayer.addWood(500);
 
-		Player enemy = applicationContext.getAutowireCapableBeanFactory()
-				.createBean(Player.class);
-		enemy.setName("bad guy");
-		enemy.setColor(ColorRGBA.Red);
+		BallMan ballMan = new BallMan(applicationContext, new Vector2f(12.5f,
+				30f));
+		ballMan.setOwner(activePlayer);
 
-		terrain.smoothenTerrain(new Vector2f(25f, -5f), new Vector2f(35f, 5f),
-				5, 20f);
-		Building warehouse = applicationContext.getAutowireCapableBeanFactory()
-				.createBean(Warehouse.class).init(new Vector2f(30f, 0f));
-		warehouse.setOwner(activePlayer);
+		createHouse(2, 4);
+		createHouse(3, 3);
+		createHouse(2, 2);
+		createHouse(4, 1);
+		createHouse(4, 0);
+		createHouse(3, -1);
+		createHouse(3, -2);
+		createHouse(3, -3);
+		createHouse(5, -2);
+		createHouse(6, -2);
+		createHouse(7, -2);
+		createHouse(8, -3);
+		createHouse(4, -4);
+		createHouse(5, -4);
+		createHouse(6, -4);
+		createHouse(8, -4);
+		createHouse(6, -5);
+		createHouse(8, -5);
+		createHouse(7, -6);
 
-		for (int i = 0; i < 5; ++i) {
-			BallMan ballMan = new BallMan(applicationContext, new Vector2f(
-					(new Random().nextFloat() + 2f) * 5f,
-					(new Random().nextFloat() + i - 3f) * 10f));
-			ballMan.setOwner(activePlayer);
+	}
 
-			applicationContext
-					.getAutowireCapableBeanFactory()
-					.createBean(Tree.class)
-					.init(new Vector2f((new Random().nextFloat() - 2f) * 5f,
-							(new Random().nextFloat() + i - 3f) * 10f));
-
-		}
-
-		BallMan ballMan = new BallMan(applicationContext, new Vector2f(50f,
-				-10f));
-		ballMan.setOwner(enemy);
-		terrain.smoothenTerrain(new Vector2f(45f, 5f), new Vector2f(55f, 15f),
-				5, 20f);
+	private void createHouse(int x, int y) {
 		Building house = applicationContext.getAutowireCapableBeanFactory()
 				.createBean(House.class);
-		house.init(new Vector2f(50f, 10f));
-		house.setOwner(enemy);
-
+		house.init(new Vector2f(10 * x, 10 * y));
+		house.setOwner(activePlayer);
 	}
 
 	private ConfigurableApplicationContext initializeParentApplicationContext(

@@ -10,8 +10,9 @@ import org.springframework.context.ApplicationContextAware;
 import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.player.WithOwner;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ModelHelper;
+import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
@@ -28,7 +29,7 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 
 public abstract class Building implements Selectable, WithOwner, Destructable,
-		ApplicationContextAware {
+		Solid, ApplicationContextAware {
 
 	private RigidBodyControl control;
 	private Node node;
@@ -52,6 +53,9 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
 	@Autowired
 	private SelectionManager selectionManager;
+
+	@Autowired
+	private UnitRegistry gameState;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
@@ -89,7 +93,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
 		bulletAppState.getPhysicsSpace().add(control);
 
-		GameState.get().register(this);
+		gameState.register(this);
 
 		hp = getMaxHp();
 
@@ -188,8 +192,8 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 	}
 
 	private void destroy() {
-		GameState.get().unregister(this);
-		applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
+		gameState.unregister(this);
+		bulletAppState.getPhysicsSpace()
 				.remove(control);
 
 		applicationContext.getAutowireCapableBeanFactory()

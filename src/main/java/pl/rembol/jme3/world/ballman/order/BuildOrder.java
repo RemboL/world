@@ -4,7 +4,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
@@ -25,6 +25,9 @@ public abstract class BuildOrder extends Order<BallMan> {
 	@Autowired
 	protected ConsoleLog consoleLog;
 
+	@Autowired
+	protected UnitRegistry gameState;
+
 	@PostConstruct
 	private void initWidth() {
 		width = applicationContext.getAutowireCapableBeanFactory()
@@ -33,7 +36,7 @@ public abstract class BuildOrder extends Order<BallMan> {
 
 	@Override
 	protected void doPerform(BallMan ballMan, Vector2f location) {
-		if (!GameState.get().isSpaceFreeWithBuffer(
+		if (!gameState.isSpaceFreeWithBuffer(
 				terrain.getGroundPosition(location), width)) {
 			consoleLog.addLine("Can't build here, something's in the way");
 			return;

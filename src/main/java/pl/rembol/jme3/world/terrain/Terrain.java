@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import pl.rembol.jme3.world.pathfinding.PathfindingService;
+
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -45,6 +47,9 @@ public class Terrain {
 
 	@Autowired
 	private Camera camera;
+	
+	@Autowired
+	private PathfindingService pathfindingService;
 
 	public void init(int size) {
 
@@ -77,6 +82,8 @@ public class Terrain {
 		terrainBodyControl = new RigidBodyControl(sceneShape, 0);
 		bulletAppState.getPhysicsSpace().add(terrainBodyControl);
 		terrain.addControl(terrainBodyControl);
+		
+		pathfindingService.initFromTerrain();
 	}
 
 	private void createMaterials() {

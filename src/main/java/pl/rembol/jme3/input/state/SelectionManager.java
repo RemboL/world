@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import pl.rembol.jme3.input.ModifierKeysManager;
 import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.GameRunningAppState;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.house.House;
@@ -40,6 +40,9 @@ public class SelectionManager {
 
 	@Autowired
 	private ModifierKeysManager modifierKeysManager;
+
+	@Autowired
+	private UnitRegistry gameState;
 
 	public void select(Selectable selectable) {
 		if (modifierKeysManager.isShiftPressed()) {
@@ -132,8 +135,8 @@ public class SelectionManager {
 
 	public void dragSelect(Vector3f dragStart, Vector3f dragStop) {
 
-		List<Selectable> dragSelected = GameState.get()
-				.getSelectableByPosition(dragStart, dragStop);
+		List<Selectable> dragSelected = gameState.getSelectableByPosition(
+				dragStart, dragStop);
 
 		if (modifierKeysManager.isShiftPressed()) {
 			for (Selectable selectable : dragSelected) {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import pl.rembol.jme3.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.input.state.InputStateManager;
 import pl.rembol.jme3.input.state.SelectionManager;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.ActionButton;
 import pl.rembol.jme3.world.hud.SelectionIcon;
@@ -67,6 +67,9 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	@Autowired
 	private BuildingSilhouetteManager buildingSilhouetteManager;
 
+	@Autowired
+	private UnitRegistry gameState;
+
 	private boolean isButtonDown = false;
 
 	private Vector2f dragStartPosition;
@@ -123,9 +126,8 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 						Collidable collided = getClosestCollidingObject();
 
 						if (collidedWithNode(collided)) {
-							Selectable selectable = GameState.get()
+							Selectable selectable = gameState
 									.getSelectable(Node.class.cast(collided));
-							System.out.println("#### selectable: "+selectable);
 							inputStateManager.click(name, selectable);
 						} else {
 							Vector3f collisionWithTerrain = getCollisionWithTerrain();
@@ -216,7 +218,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 		Float collisionDistance = null;
 		Collidable collided = null;
 
-		for (Collidable collidable : GameState.get().getSelectablesNodes()) {
+		for (Collidable collidable : gameState.getSelectablesNodes()) {
 			CollisionResults results = new CollisionResults();
 			collidable.collideWith(ray, results);
 

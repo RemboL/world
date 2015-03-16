@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.order.BuildOrder;
 import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.building.Building;
@@ -54,6 +54,9 @@ public class BuildingSilhouetteManager extends AbstractControl implements
 
 	@Autowired
 	private Node rootNode;
+
+	@Autowired
+	private UnitRegistry gameState;
 
 	private ApplicationContext applicationContext;
 
@@ -130,7 +133,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
 		Vector3f newPosition = getNewPosition();
 		if (newPosition != null) {
 			silhouette.setLocalTranslation(newPosition);
-			if (GameState.get().isSpaceFreeWithBuffer(newPosition,
+			if (gameState.isSpaceFreeWithBuffer(newPosition,
 					building.getWidth())) {
 				silhouette.setMaterial(greenMaterial);
 			} else {

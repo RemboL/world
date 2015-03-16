@@ -20,7 +20,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 
-public class Tree implements Selectable {
+public class Tree implements Selectable, Solid {
 
 	private BetterCharacterControl control;
 	private Node tree;
@@ -43,6 +43,9 @@ public class Tree implements Selectable {
 
 	@Autowired
 	private SelectionManager selectionManager;
+	
+	@Autowired
+	private UnitRegistry gameState;
 
 	public void init(Vector2f position) {
 		init(new Vector3f(position.x, terrain.getTerrain().getHeight(
@@ -70,7 +73,7 @@ public class Tree implements Selectable {
 
 		bulletAppState.getPhysicsSpace().add(control);
 
-		GameState.get().register(this);
+		gameState.register(this);
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public class Tree implements Selectable {
 
 	private void destroy() {
 		System.out.println("TIMBEEER!!!");
-		GameState.get().unregister(this);
+		gameState.unregister(this);
 		bulletAppState.getPhysicsSpace().remove(control);
 		tree.getParent().detachChild(tree);
 		this.destroyed = true;

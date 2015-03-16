@@ -1,17 +1,31 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.pathfinding.PathfindingService;
+import pl.rembol.jme3.world.pathfinding.Rectangle2f;
+import pl.rembol.jme3.world.pathfinding.VectorPath;
 
 import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 
 public class MoveTowardsLocationAction extends Action {
 
 	private Vector2f rectangleStart;
 	private Vector2f rectangleEnd;
 
+	private VectorPath newPath;
+
 	private float targetDistance;
+
+	@Autowired
+	private Node rootNode;
+
+	@Autowired
+	PathfindingService pathfindingService;
 
 	public MoveTowardsLocationAction init(Vector2f rectangleStart,
 			Vector2f rectangleEnd, float targetDistance) {
@@ -23,8 +37,8 @@ public class MoveTowardsLocationAction extends Action {
 	}
 
 	public MoveTowardsLocationAction init(Vector2f point, float targetDistance) {
-		this.rectangleStart = point;
-		this.rectangleEnd = point;
+		this.rectangleStart = point.subtract(targetDistance, targetDistance);
+		this.rectangleEnd = point.add(new Vector2f(targetDistance, targetDistance));
 		this.targetDistance = targetDistance;
 
 		return this;
@@ -32,14 +46,29 @@ public class MoveTowardsLocationAction extends Action {
 
 	@Override
 	protected void doAct(BallMan ballMan, float tpf) {
-		ballMan.lookTowards(getClosest(ballMan.getLocation()));
-		ballMan.setTargetVelocity(5f);
+		if (newPath != null) {
+			newPath.updatePath(ballMan.getLocation());
+
+			Vector3f checkpoint = newPath.getCheckPoint();
+			if (checkpoint != null) {
+				ballMan.lookTowards(checkpoint);
+				ballMan.setTargetVelocity(5f);
+			}
+		}
+
+	}
+
+	@Override
+	public void stop() {
+		newPath.clearPath();
 	}
 
 	@Override
 	public boolean isFinished(BallMan ballMan) {
-		if (getClosest(ballMan.getLocation()).distance(ballMan.getLocation()) < targetDistance) {
+		if (getClosest(ballMan.getLocation()).distance(ballMan.getLocation()) < targetDistance
+				|| newPath.isFinished(ballMan.getLocation())) {
 			ballMan.setTargetVelocity(0f);
+
 			return true;
 		}
 
@@ -72,6 +101,11 @@ public class MoveTowardsLocationAction extends Action {
 	@Override
 	protected void start(BallMan ballMan) {
 		ballMan.setAnimation("walk", LoopMode.Loop);
+		System.out.println("@@started");
+
+		newPath = pathfindingService.buildPath(ballMan.getLocation(),
+				new Rectangle2f(rectangleStart, rectangleEnd));
+		System.out.println("### "+newPath);
 	}
 
 }
