@@ -15,10 +15,14 @@ public class Rectangle2f {
 				end.y));
 	}
 
+	public Rectangle2f(Vector2f vector) {
+		this(vector, vector);
+	}
+
 	public float distance(Vector2i from) {
 		return distance(new Vector2f(from.x, from.y));
 	}
-	
+
 	public float distance(Vector2f from) {
 		float distanceX = getOneDimensionDistance(start.x, end.x, from.x);
 		float distanceY = getOneDimensionDistance(start.y, end.y, from.y);
@@ -36,6 +40,21 @@ public class Rectangle2f {
 		}
 
 		return from - end;
+	}
+
+	private float getOneDimensionClosest(float start, float end, float from) {
+		if (from < start) {
+			return start;
+		} else if (start <= from && from <= end) {
+			return from;
+		} else {
+			return end;
+		}
+	}
+
+	public Vector2f getClosest(Vector2f from) {
+		return new Vector2f(getOneDimensionClosest(start.x, end.x, from.x),
+				getOneDimensionClosest(start.y, end.y, from.y));
 	}
 
 }

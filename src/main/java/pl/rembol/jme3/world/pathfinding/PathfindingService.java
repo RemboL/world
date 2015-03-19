@@ -3,6 +3,7 @@ package pl.rembol.jme3.world.pathfinding;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -11,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
 import pl.rembol.jme3.world.pathfinding.Vector2iPath.AStarComparator;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -33,9 +35,12 @@ public class PathfindingService implements ApplicationContextAware {
 
 	private Map<Integer, Map<Integer, PathfindingBlock>> blocks = new HashMap<>();
 
+	private Map<Integer, Map<Integer, PathfindingCluster>> clusters = new HashMap<>();
+
 	private ApplicationContext applicationContext;
 
 	public void initFromTerrain() {
+		clusters.clear();
 		blocks.clear();
 
 		for (int x = -terrain.getTerrainSize(); x <= terrain.getTerrainSize(); ++x) {
@@ -54,9 +59,70 @@ public class PathfindingService implements ApplicationContextAware {
 			}
 		}
 
+		connectClusters();
+		initBorders();
+
+	}
+
+	private void connectClusters() {
+		for (Integer x : clusters.keySet()) {
+			for (Integer y : clusters.get(x).keySet()) {
+				PathfindingCluster currentCluster = clusters.get(x).get(y);
+
+				currentCluster
+						.setNeighbor(Direction.LEFT, getCluster(x - 1, y));
+				currentCluster.setNeighbor(Direction.RIGHT,
+						getCluster(x + 1, y));
+				currentCluster.setNeighbor(Direction.UP, getCluster(x, y + 1));
+				currentCluster
+						.setNeighbor(Direction.DOWN, getCluster(x, y - 1));
+			}
+		}
+	}
+	
+	private void initBorders() {
+		for (Integer x : clusters.keySet()) {
+			for (Integer y : clusters.get(x).keySet()) {
+				clusters.get(x).get(y).initBorders(applicationContext);
+			}
+		}
+	}
+
+	private void initBordersIfNeeded() {
+		for (Integer x : clusters.keySet()) {
+			for (Integer y : clusters.get(x).keySet()) {
+				clusters.get(x).get(y).initBordersIfNeeded(applicationContext);
+			}
+		}
+	}
+
+	private Optional<PathfindingCluster> getCluster(int x, int y) {
+		if (clusters.containsKey(x) && clusters.get(x).containsKey(y)) {
+			return Optional.of(clusters.get(x).get(y));
+		}
+		return Optional.empty();
 	}
 
 	private void setBlock(int x, int y, boolean isBlockFree) {
+		int clusterX = x >= 0 ? x / PathfindingCluster.SIZE
+				: -((PathfindingCluster.SIZE - 1 - x) / PathfindingCluster.SIZE);
+		int clusterY = y >= 0 ? y / PathfindingCluster.SIZE
+				: -((PathfindingCluster.SIZE - 1 - y) / PathfindingCluster.SIZE);
+
+		if (clusters.get(clusterX) == null) {
+			clusters.put(clusterX, new HashMap<>());
+		}
+
+		if (clusters.get(clusterX).get(clusterY) == null) {
+			clusters.get(clusterX).put(
+					clusterY,
+					new PathfindingCluster().withOffset(new Vector2i(clusterX
+							* PathfindingCluster.SIZE, clusterY
+							* PathfindingCluster.SIZE)));
+		}
+
+		clusters.get(clusterX).get(clusterY).setBlock(x, y, isBlockFree);
+
 		if (blocks.get(x) == null) {
 			blocks.put(x, new HashMap<>());
 		}
@@ -89,6 +155,8 @@ public class PathfindingService implements ApplicationContextAware {
 				setBlock(x, y, false);
 			}
 		}
+		
+		initBordersIfNeeded();
 	}
 
 	public void removeSolid(Vector3f position, float width) {
@@ -118,17 +186,17 @@ public class PathfindingService implements ApplicationContextAware {
 		while (!paths.isEmpty() && iteration++ < MAX_PATHFINDING_ITERATIONS) {
 			Vector2iPath path = paths.first();
 			paths.remove(path);
-			
+
 			if (nodesVisited.contains(path.getLast())) {
 				System.out.println("#### REVISIT");
 				continue;
 			}
 			nodesVisited.add(path.getLast());
-			
 
 			if (target.distance(path.getLast()) == 0) {
 				System.out.println("returning path of length "
-						+ path.getLength() + " on iteration " + iteration+", nodes visited: "+nodesVisited.size());
+						+ path.getLength() + " on iteration " + iteration
+						+ ", nodes visited: " + nodesVisited.size());
 				return new VectorPath(path, applicationContext, nodesVisited);
 			}
 
@@ -137,10 +205,13 @@ public class PathfindingService implements ApplicationContextAware {
 					Vector2iPath newPath = new Vector2iPath(path, neighbor);
 					if (target.distance(neighbor) == 0) {
 						System.out.println("returning path of length "
-								+ path.getLength() + " on iteration " + iteration+", nodes visited: "+nodesVisited.size());
-						return new VectorPath(newPath, applicationContext, nodesVisited);
+								+ path.getLength() + " on iteration "
+								+ iteration + ", nodes visited: "
+								+ nodesVisited.size());
+						return new VectorPath(newPath, applicationContext,
+								nodesVisited);
 					}
-					
+
 					if (!paths.contains(newPath)) {
 						paths.add(newPath);
 					}

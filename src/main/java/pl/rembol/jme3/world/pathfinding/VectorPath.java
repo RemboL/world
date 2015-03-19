@@ -18,7 +18,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Sphere;
+import com.jme3.scene.shape.Line;
 
 public class VectorPath {
 
@@ -39,27 +39,17 @@ public class VectorPath {
 						.getGroundPosition(vector2i.asVector2f()))
 				.collect(Collectors.toList());
 
-		for (Vector3f vector : vectorList) {
-			Geometry node = new Geometry("path node", new Sphere(5, 5, .5f));
+		for (int i = 0; i < vectorList.size() - 1; ++i) {
+
+			Geometry node = new Geometry("path node", new Line(vectorList
+					.get(i).add(Vector3f.UNIT_Y.mult(10f)), vectorList.get(
+					i + 1).add(Vector3f.UNIT_Y.mult(10f))));
 			node.setMaterial(greenMaterial);
-			node.setLocalTranslation(vector);
 			applicationContext.getBean("rootNode", Node.class)
 					.attachChild(node);
-			nodes.put(vector, node);
+			nodes.put(vectorList.get(i), node);
 		}
 
-		for (Vector2i visited : nodesVisited) {
-			if (!path.vectorList.contains(visited)) {
-				Geometry node = new Geometry("path node", new Sphere(5, 5, .5f));
-				node.setMaterial(redMaterial);
-				node.setLocalTranslation(applicationContext.getBean(
-						Terrain.class).getGroundPosition(visited.asVector2f()));
-				applicationContext.getBean("rootNode", Node.class).attachChild(
-						node);
-				nodes.put(applicationContext.getBean(Terrain.class)
-						.getGroundPosition(visited.asVector2f()), node);
-			}
-		}
 	}
 
 	private static void initMaterials(AssetManager assetManager) {
@@ -92,7 +82,7 @@ public class VectorPath {
 		for (Map.Entry<Vector3f, Spatial> entry : nodes.entrySet()) {
 			entry.getValue().getParent().detachChild(entry.getValue());
 		}
-		
+
 		nodes.clear();
 		vectorList.clear();
 	}
@@ -123,6 +113,15 @@ public class VectorPath {
 		}
 
 		return vectorList.get(0);
+	}
+
+	public float length() {
+		float length = 0;
+		for (int i = 0; i < vectorList.size() - 1; ++i) {
+			length += vectorList.get(i).distance(vectorList.get(i + 1));
+		}
+
+		return length;
 	}
 
 }

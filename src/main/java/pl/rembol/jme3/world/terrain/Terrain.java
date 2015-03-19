@@ -56,12 +56,12 @@ public class Terrain {
 		createMaterials();
 
 		AbstractHeightMap heightmap = new FlatHeightMap(size);
-		try {
-			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
-			heightmap.normalizeTerrain(20f);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
+//			heightmap.normalizeTerrain(20f);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		int patchSize = 129;
 		terrain = new TerrainQuad("my terrain", patchSize, size + 1,

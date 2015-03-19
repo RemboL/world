@@ -7,6 +7,8 @@ import static java.lang.Math.round;
 import java.util.Arrays;
 import java.util.List;
 
+import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
+
 import com.jme3.math.Vector2f;
 
 public class Vector2i {
@@ -76,4 +78,37 @@ public class Vector2i {
 		return new Vector2f(x, y);
 	}
 
+	public Vector2i move(Direction direction) {
+		switch (direction) {
+		case UP:
+			return new Vector2i(x, y + 1);
+		case DOWN:
+			return new Vector2i(x, y - 1);
+		case LEFT:
+			return new Vector2i(x - 1, y);
+		case RIGHT:
+			return new Vector2i(x + 1, y);
+		default:
+			return null;
+		}
+	}
+
+	public boolean isAdjacentTo(List<Vector2i> points) {
+		for (Vector2i that : points) {
+			if (isAdjacentTo(that)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isAdjacentTo(Vector2i that) {
+		if (x == that.x && Math.abs(y - that.y) == 1) {
+			return true;
+		}
+		if (y == that.y && Math.abs(x - that.x) == 1) {
+			return true;
+		}
+		return false;
+	}
 }

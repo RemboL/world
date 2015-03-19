@@ -5,7 +5,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
@@ -48,8 +47,6 @@ public class GameRunningAppState extends AbstractAppState {
 	int frame = 200;
 
 	private Terrain terrain;
-
-	private SelectionManager selectionManager;
 
 	private AppSettings settings;
 
@@ -96,9 +93,6 @@ public class GameRunningAppState extends AbstractAppState {
 
 		this.assetManager = app.getAssetManager();
 		this.rootNode = simpleApp.getRootNode();
-
-		this.selectionManager = applicationContext
-				.getBean(SelectionManager.class);
 
 		initLightAndShadows(app.getViewPort());
 
