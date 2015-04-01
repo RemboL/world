@@ -6,6 +6,6 @@ public interface WithNode {
 
 	Node getNode();
 
-	Node initNode();
+	Node initNodeWithScale();
 
 }

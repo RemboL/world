@@ -56,5 +56,13 @@ public class Rectangle2f {
 		return new Vector2f(getOneDimensionClosest(start.x, end.x, from.x),
 				getOneDimensionClosest(start.y, end.y, from.y));
 	}
+	
+	public Vector2f getStart() {
+		return start;
+	}
+
+	public Vector2f getEnd() {
+		return end;
+	}
 
 }

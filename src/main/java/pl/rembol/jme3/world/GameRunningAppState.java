@@ -126,7 +126,7 @@ public class GameRunningAppState extends AbstractAppState {
 		createHouse(6, -5);
 		createHouse(8, -5);
 		createHouse(7, -6);
-
+		
 	}
 
 	private void createHouse(int x, int y) {
@@ -158,6 +158,8 @@ public class GameRunningAppState extends AbstractAppState {
 						simpleApp.getInputManager());
 		parentApplicationContext.getBeanFactory().registerSingleton(
 				BulletAppState.class.getSimpleName(), bulletAppState);
+		parentApplicationContext.getBeanFactory().registerSingleton(
+				SimpleApplication.class.getSimpleName(), simpleApp);
 
 		parentApplicationContext.refresh();
 

@@ -10,6 +10,11 @@ import java.util.stream.IntStream;
 
 import org.springframework.context.ApplicationContext;
 
+import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
+import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
+import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
+import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
+
 public class PathfindingCluster {
 
 	public static final int SIZE = 16;
@@ -65,8 +70,16 @@ public class PathfindingCluster {
 			neighbouringClusters.put(direction, cluster.get());
 		}
 	}
+	
+	public Map<Direction, PathfindingCluster> getNeighbors() {
+		return neighbouringClusters;
+	}
 
-	boolean isBlockFree(Vector2i vector) {
+	public List<ClusterBorder> getBorders() {
+		return borders;
+	}
+
+	public boolean isBlockFree(Vector2i vector) {
 		return isBlockFree(vector.x, vector.y);
 	}
 
@@ -82,7 +95,7 @@ public class PathfindingCluster {
 		return blocks.get(x).get(y).isFree();
 	}
 
-	void setBlock(int x, int y, boolean isBlockFree) {
+	void setBlock(int x, int y, boolean isBlockFree, ApplicationContext context) {
 		if (isClusterInitialized) {
 			clearBorders();
 		}
@@ -100,7 +113,7 @@ public class PathfindingCluster {
 			blocks.get(x).put(y, new PathfindingBlock());
 		}
 
-		blocks.get(x).get(y).setFree(isBlockFree);
+		blocks.get(x).get(y).setFree(x, y, isBlockFree, context);
 	}
 
 	private void clearBorders() {
@@ -218,24 +231,42 @@ public class PathfindingCluster {
 
 		for (ClusterBorder startBorder : borders) {
 			for (ClusterBorder targetBorder : this.borders) {
-				if (startBorder != targetBorder
-						&& !startBorder.hasPathTo(targetBorder)) {
-
-					VectorPath path = AStarAlgorithm.buildPath(
-							startBorder.middlePoint.asVector2f(),
-							new Rectangle2f(targetBorder.middlePoint
-									.asVector2f()), applicationContext,
-							MAX_PATHFINDING_ITERATIONS,
-							vector -> isBlockFree(vector));
-					if (path != null) {
-						startBorder.addPath(targetBorder, path);
-					}
-				}
+				connectBorders(applicationContext, startBorder, targetBorder);
+				connectBorders(applicationContext, targetBorder, startBorder);
 			}
 		}
 
 		borderInitialized.put(direction, true);
 
+	}
+
+	private void connectBorders(ApplicationContext applicationContext,
+			ClusterBorder startBorder, ClusterBorder targetBorder) {
+		if (startBorder != targetBorder
+				&& !startBorder.hasPathTo(targetBorder)) {
+
+			if (BresenhamAlgorithm.isDirectPathPossible(
+					startBorder.middlePoint, targetBorder.middlePoint,
+					vector -> isBlockFree(vector))) {
+				Vector2iPath path = new Vector2iPath(
+						startBorder.middlePoint);
+				path.add(targetBorder.middlePoint);
+
+				startBorder.addPath(targetBorder, new VectorPath(path,
+						applicationContext));
+
+			} else {
+				VectorPath path = AStarAlgorithm.buildUnitPath(
+						startBorder.middlePoint.asVector2f(),
+						new Rectangle2f(targetBorder.middlePoint
+								.asVector2f()), applicationContext,
+						MAX_PATHFINDING_ITERATIONS,
+						vector -> isBlockFree(vector));
+				if (path != null) {
+					startBorder.addPath(targetBorder, path);
+				}
+			}
+		}
 	}
 
 	private List<Vector2i> getBorderPoints(Direction direction) {
@@ -261,4 +292,16 @@ public class PathfindingCluster {
 		}
 	}
 
+	public String toString() {
+		int minX = blocks.keySet().stream()
+				.reduce(999, (i, j) -> Math.min(i, j));
+		int maxX = blocks.keySet().stream()
+				.reduce(-999, (i, j) -> Math.max(i, j));
+		int minY = blocks.get(minX).keySet().stream()
+				.reduce(999, (i, j) -> Math.min(i, j));
+		int maxY = blocks.get(maxX).keySet().stream()
+				.reduce(-999, (i, j) -> Math.max(i, j));
+
+		return "(" + minX + ", " + minY + ") - (" + maxX + ", " + maxY + ")";
+	}
 }

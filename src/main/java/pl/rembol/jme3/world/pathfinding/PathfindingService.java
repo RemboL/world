@@ -1,21 +1,40 @@
 package pl.rembol.jme3.world.pathfinding;
 
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
+
+import com.jme3.app.SimpleApplication;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import pl.rembol.jme3.world.DebugService;
+import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
-import pl.rembol.jme3.world.pathfinding.Vector2iPath.AStarComparator;
+import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
+import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
+import pl.rembol.jme3.world.pathfinding.algorithms.DijkstraAlgorithm;
+import pl.rembol.jme3.world.pathfinding.paths.ComplexPath;
+import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
+import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
+import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
 import pl.rembol.jme3.world.terrain.Terrain;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -25,7 +44,7 @@ public class PathfindingService implements ApplicationContextAware {
 
 	private static final float TERRAIN_DIFF_THRESHOLD = 2f;
 
-	private static final int MAX_PATHFINDING_ITERATIONS = 1000000;
+	public static final int MAX_PATHFINDING_ITERATIONS = 1000000;
 
 	@Autowired
 	private Terrain terrain;
@@ -33,7 +52,13 @@ public class PathfindingService implements ApplicationContextAware {
 	@Autowired
 	private Node rootNode;
 
-	private Map<Integer, Map<Integer, PathfindingBlock>> blocks = new HashMap<>();
+	@Autowired
+	private DebugService debugService;
+
+	@Autowired
+	private ConsoleLog consoleLog;
+
+	private ExecutorService executor = Executors.newFixedThreadPool(10);
 
 	private Map<Integer, Map<Integer, PathfindingCluster>> clusters = new HashMap<>();
 
@@ -41,7 +66,6 @@ public class PathfindingService implements ApplicationContextAware {
 
 	public void initFromTerrain() {
 		clusters.clear();
-		blocks.clear();
 
 		for (int x = -terrain.getTerrainSize(); x <= terrain.getTerrainSize(); ++x) {
 			for (int y = -terrain.getTerrainSize(); y <= terrain
@@ -61,7 +85,6 @@ public class PathfindingService implements ApplicationContextAware {
 
 		connectClusters();
 		initBorders();
-
 	}
 
 	private void connectClusters() {
@@ -79,7 +102,7 @@ public class PathfindingService implements ApplicationContextAware {
 			}
 		}
 	}
-	
+
 	private void initBorders() {
 		for (Integer x : clusters.keySet()) {
 			for (Integer y : clusters.get(x).keySet()) {
@@ -104,10 +127,15 @@ public class PathfindingService implements ApplicationContextAware {
 	}
 
 	private void setBlock(int x, int y, boolean isBlockFree) {
-		int clusterX = x >= 0 ? x / PathfindingCluster.SIZE
-				: -((PathfindingCluster.SIZE - 1 - x) / PathfindingCluster.SIZE);
-		int clusterY = y >= 0 ? y / PathfindingCluster.SIZE
-				: -((PathfindingCluster.SIZE - 1 - y) / PathfindingCluster.SIZE);
+		getClusterByPoint(new Vector2i(x, y)).setBlock(x, y, isBlockFree,
+				applicationContext);
+	}
+
+	public PathfindingCluster getClusterByPoint(Vector2i point) {
+		int clusterX = point.x >= 0 ? point.x / PathfindingCluster.SIZE
+				: -((PathfindingCluster.SIZE - 1 - point.x) / PathfindingCluster.SIZE);
+		int clusterY = point.y >= 0 ? point.y / PathfindingCluster.SIZE
+				: -((PathfindingCluster.SIZE - 1 - point.y) / PathfindingCluster.SIZE);
 
 		if (clusters.get(clusterX) == null) {
 			clusters.put(clusterX, new HashMap<>());
@@ -121,17 +149,8 @@ public class PathfindingService implements ApplicationContextAware {
 							* PathfindingCluster.SIZE)));
 		}
 
-		clusters.get(clusterX).get(clusterY).setBlock(x, y, isBlockFree);
-
-		if (blocks.get(x) == null) {
-			blocks.put(x, new HashMap<>());
-		}
-
-		if (blocks.get(x).get(y) == null) {
-			blocks.get(x).put(y, new PathfindingBlock());
-		}
-
-		blocks.get(x).get(y).setFree(isBlockFree);
+		PathfindingCluster cluster = clusters.get(clusterX).get(clusterY);
+		return cluster;
 	}
 
 	private boolean checkTerrainSmooth(int x, int y, float height) {
@@ -148,14 +167,14 @@ public class PathfindingService implements ApplicationContextAware {
 	}
 
 	public void addSolid(Vector3f position, float width) {
-		for (int x = Math.round(position.x - width); x <= Math.round(position.x
+		for (int x = (int) floor(position.x - width); x <= (int) ceil(position.x
 				+ width); ++x) {
-			for (int y = Math.round(position.z - width); y <= Math
-					.round(position.z + width); ++y) {
+			for (int y = (int) floor(position.z - width); y <= (int) ceil(position.z
+					+ width); ++y) {
 				setBlock(x, y, false);
 			}
 		}
-		
+
 		initBordersIfNeeded();
 	}
 
@@ -169,68 +188,261 @@ public class PathfindingService implements ApplicationContextAware {
 		}
 	}
 
-	public VectorPath buildPath(Vector3f start, Rectangle2f target) {
+	public Future<IExternalPath> buildPath(Vector3f start, Rectangle2f target) {
 		return buildPath(new Vector2f(start.x, start.z), target);
 	}
 
-	public VectorPath buildPath(Vector2f start, Rectangle2f target) {
-		AStarComparator comparator = new Vector2iPath.AStarComparator(target);
+	public Future<IExternalPath> buildPath(Vector2f start, Rectangle2f target) {
 
-		TreeSet<Vector2iPath> paths = new TreeSet<>(comparator);
+		Callable<IExternalPath> worker = null;
 
-		Vector2iPath startingPath = new Vector2iPath(start);
-		paths.add(startingPath);
+		if (debugService.getPathfinding() == 0) {
+			worker = () -> {
+				long time = System.currentTimeMillis();
+				Vector2iPath path = new Vector2iPath(new Vector2i(start));
+				path.add(new Vector2i(target.getClosest(start)));
 
-		int iteration = 0;
-		Set<Vector2i> nodesVisited = new HashSet<>();
-		while (!paths.isEmpty() && iteration++ < MAX_PATHFINDING_ITERATIONS) {
-			Vector2iPath path = paths.first();
-			paths.remove(path);
+				applicationContext.getBean(SimpleApplication.class).enqueue(
+						new Callable<Void>() {
 
-			if (nodesVisited.contains(path.getLast())) {
-				System.out.println("#### REVISIT");
-				continue;
-			}
-			nodesVisited.add(path.getLast());
+							@Override
+							public Void call() throws Exception {
+								consoleLog.addLine("path found in "
+										+ (System.currentTimeMillis() - time)
+										+ "ms");
+								return null;
+							}
 
-			if (target.distance(path.getLast()) == 0) {
-				System.out.println("returning path of length "
-						+ path.getLength() + " on iteration " + iteration
-						+ ", nodes visited: " + nodesVisited.size());
-				return new VectorPath(path, applicationContext, nodesVisited);
-			}
+						});
 
-			for (Vector2i neighbor : path.getLast().getNeighbors()) {
-				if (isBlockFree(neighbor) && !nodesVisited.contains(neighbor)) {
-					Vector2iPath newPath = new Vector2iPath(path, neighbor);
-					if (target.distance(neighbor) == 0) {
-						System.out.println("returning path of length "
-								+ path.getLength() + " on iteration "
-								+ iteration + ", nodes visited: "
-								+ nodesVisited.size());
-						return new VectorPath(newPath, applicationContext,
-								nodesVisited);
+				return new VectorPath(path, applicationContext, ColorRGBA.Blue);
+			};
+		}
+		if (debugService.getPathfinding() == 1) {
+			worker = () -> {
+				long time = System.currentTimeMillis();
+				if (BresenhamAlgorithm.isDirectPathPossible(
+						new Vector2i(start),
+						new Vector2i(target.getClosest(start)),
+						vector -> isBlockFree(vector))) {
+					Vector2iPath path = new Vector2iPath(new Vector2i(start));
+					path.add(new Vector2i(target.getClosest(start)));
+
+					applicationContext.getBean(SimpleApplication.class)
+							.enqueue(new Callable<Void>() {
+
+								@Override
+								public Void call() throws Exception {
+									consoleLog.addLine("path found in "
+											+ (System.currentTimeMillis() - time)
+											+ "ms");
+									return null;
+								}
+
+							});
+
+					return new VectorPath(path, applicationContext,
+							ColorRGBA.Blue);
+				}
+				applicationContext.getBean(SimpleApplication.class).enqueue(
+						new Callable<Void>() {
+
+							@Override
+							public Void call() throws Exception {
+								consoleLog.addLine("path found in "
+										+ (System.currentTimeMillis() - time)
+										+ "ms");
+								return null;
+							}
+
+						});
+
+				return new VectorPath(new Vector2iPath(new ArrayList<>()),
+						applicationContext, ColorRGBA.Blue);
+			};
+		}
+		if (debugService.getPathfinding() == 2) {
+			worker = () -> {
+				long time = System.currentTimeMillis();
+				VectorPath path = AStarAlgorithm.buildUnitPath(start, target,
+						applicationContext, MAX_PATHFINDING_ITERATIONS,
+						vector -> isBlockFree(vector));
+
+				applicationContext.getBean(SimpleApplication.class).enqueue(
+						new Callable<Void>() {
+
+							@Override
+							public Void call() throws Exception {
+								consoleLog.addLine("path found in "
+										+ (System.currentTimeMillis() - time)
+										+ "ms");
+								return null;
+							}
+
+						});
+				return new VectorPath(new Vector2iPath(path.getVectorList()
+						.stream().map(vector -> new Vector2i(vector))
+						.collect(Collectors.toList())), applicationContext,
+						ColorRGBA.Blue);
+			};
+		}
+		if (debugService.getPathfinding() == 4
+				|| debugService.getPathfinding() == 3) {
+			worker = () -> {
+				long time = System.currentTimeMillis();
+				if (BresenhamAlgorithm.isDirectPathPossible(
+						new Vector2i(start),
+						new Vector2i(target.getClosest(start)),
+						vector -> isBlockFree(vector))) {
+					Vector2iPath path = new Vector2iPath(new Vector2i(start));
+					path.add(new Vector2i(target.getClosest(start)));
+
+					applicationContext.getBean(SimpleApplication.class)
+							.enqueue(new Callable<Void>() {
+
+								@Override
+								public Void call() throws Exception {
+									consoleLog.addLine("path found in "
+											+ (System.currentTimeMillis() - time)
+											+ "ms");
+									return null;
+								}
+
+							});
+					return new VectorPath(path, applicationContext,
+							ColorRGBA.Blue);
+
+				} else {
+
+					Map<ClusterBorder, Vector2iPath> startingPaths = buildStartingClusterPaths(start);
+					Map<ClusterBorder, VectorPath> targetPaths = buildTargetPaths(target);
+
+					ComplexPath complexPath = AStarAlgorithm.buildSectorPath(
+							start, startingPaths, target, targetPaths,
+							applicationContext, MAX_PATHFINDING_ITERATIONS);
+					if (complexPath != null) {
+						applicationContext.getBean(SimpleApplication.class)
+								.enqueue(new Callable<Void>() {
+
+									@Override
+									public Void call() throws Exception {
+										consoleLog.addLine("path found in "
+												+ (System.currentTimeMillis() - time)
+												+ "ms");
+										return null;
+									}
+
+								});
+						return new SectorPath(complexPath, start,
+								applicationContext);
 					}
+					applicationContext.getBean(SimpleApplication.class)
+							.enqueue(new Callable<Void>() {
 
-					if (!paths.contains(newPath)) {
-						paths.add(newPath);
-					}
+								@Override
+								public Void call() throws Exception {
+									consoleLog.addLine("path found in "
+											+ (System.currentTimeMillis() - time)
+											+ "ms");
+									return null;
+								}
+
+							});
+					return new VectorPath(new Vector2iPath(new ArrayList<>()),
+							applicationContext, ColorRGBA.Blue);
+				}
+
+			};
+		}
+
+		return executor.submit(worker);
+
+	}
+
+	private Map<ClusterBorder, VectorPath> buildTargetPaths(Rectangle2f target) {
+		Map<ClusterBorder, VectorPath> targetPaths = new HashMap<>();
+
+		Set<PathfindingCluster> targetClusters = getTargetClusters(target);
+		for (PathfindingCluster targetCluster : targetClusters) {
+			for (ClusterBorder border : targetCluster.getBorders()) {
+				VectorPath path = buildSimplePath(border.getMiddlePoint(),
+						target, targetCluster);
+				if (path != null) {
+					targetPaths.put(border, path);
 				}
 			}
 		}
+		return targetPaths;
+	}
 
-		return null;
+	private VectorPath buildSimplePath(Vector2i start, Rectangle2f target,
+			PathfindingCluster cluster) {
+		if (BresenhamAlgorithm.isDirectPathPossible(start,
+				new Vector2i(target.getClosest(start.asVector2f())),
+				vector -> cluster.isBlockFree(vector))) {
+			Vector2iPath path = new Vector2iPath(start);
+			path.add(new Vector2i(target.getClosest(start.asVector2f())));
+
+			return new VectorPath(path, applicationContext);
+
+		} else {
+			return AStarAlgorithm.buildUnitPath(start.asVector2f(), target,
+					applicationContext, MAX_PATHFINDING_ITERATIONS,
+					vector -> cluster.isBlockFree(vector));
+		}
+	}
+
+	private Set<PathfindingCluster> getTargetClusters(Rectangle2f target) {
+		Set<Integer> setX = createInclusiveSet(target.getStart().x,
+				target.getEnd().x);
+		Set<Integer> setY = createInclusiveSet(target.getStart().y,
+				target.getEnd().y);
+		Set<PathfindingCluster> targetClusters = new HashSet<>();
+		for (Integer x : setX) {
+			for (Integer y : setY) {
+				targetClusters.add(getClusterByPoint(new Vector2i(x, y)));
+			}
+		}
+		return targetClusters;
+	}
+
+	private Set<Integer> createInclusiveSet(float start, float end) {
+		Set<Integer> set = new HashSet<>();
+		for (int i = Math.round(start) + PathfindingCluster.SIZE; i < end; i += PathfindingCluster.SIZE) {
+			set.add(i);
+		}
+		set.add(Math.round(start));
+		set.add(Math.round(end));
+
+		return set;
+	}
+
+	private Map<ClusterBorder, Vector2iPath> buildStartingClusterPaths(
+			Vector2f start) {
+		PathfindingCluster startingCluster = getClusterByPoint(new Vector2i(
+				start));
+
+		Map<Vector2i, Vector2iPath> startingClusterPaths = DijkstraAlgorithm
+				.buildUnitPath(
+						start,
+						startingCluster.getBorders().stream()
+								.map(border -> border.getMiddlePoint())
+								.collect(Collectors.toList()),
+						applicationContext,
+						vector2i -> startingCluster.isBlockFree(vector2i));
+
+		Map<ClusterBorder, Vector2iPath> startingPaths = new HashMap<>();
+
+		for (ClusterBorder border : startingCluster.getBorders()) {
+			if (startingClusterPaths.containsKey(border.getMiddlePoint()))
+				startingPaths.put(border,
+						startingClusterPaths.get(border.getMiddlePoint()));
+		}
+		return startingPaths;
 	}
 
 	private boolean isBlockFree(Vector2i neighbor) {
-		if (!blocks.containsKey(neighbor.x)) {
-			return false;
-		}
-
-		if (!blocks.get(neighbor.x).containsKey(neighbor.y)) {
-			return false;
-		}
-		return blocks.get(neighbor.x).get(neighbor.y).isFree();
+		return getClusterByPoint(neighbor).isBlockFree(neighbor);
 	}
 
 	@Override

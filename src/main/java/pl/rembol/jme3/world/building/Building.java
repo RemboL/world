@@ -73,7 +73,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 	public Building init(Vector3f position, boolean startUnderGround) {
 
 		node = new Node();
-		building = initNode();
+		building = initNodeWithScale();
 
 		building.setShadowMode(ShadowMode.Cast);
 		if (startUnderGround) {
@@ -193,11 +193,16 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
 	private void destroy() {
 		gameState.unregister(this);
-		bulletAppState.getPhysicsSpace()
-				.remove(control);
+		bulletAppState.getPhysicsSpace().remove(control);
 
 		applicationContext.getAutowireCapableBeanFactory()
 				.createBean(BuildingDestructionControl.class).init(this);
+	}
+
+	public Node initNodeWithScale() {
+		Node node = initNode();
+		node.setLocalScale(getWidth());
+		return node;
 	}
 
 	public abstract Node initNode();

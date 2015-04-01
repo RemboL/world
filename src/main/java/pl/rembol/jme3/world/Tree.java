@@ -59,7 +59,7 @@ public class Tree implements Selectable, Solid {
 
 	public void init(Vector3f position) {
 
-		tree = initNode();
+		tree = initNodeWithScale();
 
 		tree.setShadowMode(ShadowMode.Cast);
 		rootNode.attachChild(tree);
@@ -77,7 +77,7 @@ public class Tree implements Selectable, Solid {
 	}
 
 	@Override
-	public Node initNode() {
+	public Node initNodeWithScale() {
 		return ModelHelper.rewriteDiffuseToAmbient((Node) assetManager
 				.loadModel("tree.blend"));
 	}

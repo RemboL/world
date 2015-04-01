@@ -5,11 +5,15 @@ import static com.jme3.math.FastMath.sqrt;
 import static java.lang.Math.round;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
 
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 
 public class Vector2i {
 
@@ -24,6 +28,11 @@ public class Vector2i {
 	public Vector2i(Vector2f vector) {
 		this.x = round(vector.x);
 		this.y = round(vector.y);
+	}
+
+	public Vector2i(Vector3f vector) {
+		this.x = round(vector.x);
+		this.y = round(vector.z);
 	}
 
 	public float distance(Vector2i that) {
@@ -53,25 +62,48 @@ public class Vector2i {
 		return "(" + x + ", " + y + ")";
 	}
 
-	public List<Vector2i> getNeighbors() {
-		return Arrays.asList( //
-				new Vector2i(x - 2, y - 1), //
-				new Vector2i(x - 2, y + 1), //
-				new Vector2i(x - 1, y - 2), //
-				new Vector2i(x - 1, y - 1), //
-				new Vector2i(x - 1, y), //
-				new Vector2i(x - 1, y + 1), //
-				new Vector2i(x - 1, y + 2), //
-				new Vector2i(x, y - 1), //
-				new Vector2i(x, y + 1), //
-				new Vector2i(x + 1, y - 2), //
-				new Vector2i(x + 1, y - 1), //
-				new Vector2i(x + 1, y), //
-				new Vector2i(x + 1, y + 1), //
-				new Vector2i(x + 1, y + 2), //
-				new Vector2i(x + 2, y - 1), //
-				new Vector2i(x + 2, y + 1) //
-				);
+	/**
+	 * Returns a map having neighboring points as keys and blocking points as
+	 * values. <br>
+	 * <br>
+	 * For each neighboring points in keySet algorithm needs to check each point
+	 * in corresponding value to ensure that there is a valid path.
+	 * 
+	 * @return
+	 */
+	public Map<Vector2i, List<Vector2i>> getNeighbors() {
+		Map<Vector2i, List<Vector2i>> result = new HashMap<>();
+
+		result.put(new Vector2i(x - 2, y - 1), Arrays.asList(new Vector2i(
+				x - 1, y - 1), new Vector2i(x - 1, y)));
+		result.put(new Vector2i(x - 2, y + 1), Arrays.asList(new Vector2i(
+				x - 1, y), new Vector2i(x - 1, y + 1)));
+		result.put(new Vector2i(x - 1, y - 2), Arrays.asList(new Vector2i(
+				x - 1, y - 1), new Vector2i(x, y - 1)));
+		result.put(new Vector2i(x - 1, y - 1),
+				Arrays.asList(new Vector2i(x - 1, y), new Vector2i(x, y - 1)));
+		result.put(new Vector2i(x - 1, y), Collections.<Vector2i> emptyList());
+		result.put(new Vector2i(x - 1, y + 1),
+				Arrays.asList(new Vector2i(x - 1, y), new Vector2i(x, y + 1)));
+		result.put(new Vector2i(x - 1, y + 2), Arrays.asList(new Vector2i(
+				x - 1, y + 1), new Vector2i(x, y + 1)));
+		result.put(new Vector2i(x, y - 1), Collections.<Vector2i> emptyList());
+		result.put(new Vector2i(x, y + 1), Collections.<Vector2i> emptyList());
+		result.put(new Vector2i(x + 1, y - 2), Arrays.asList(new Vector2i(x,
+				y - 1), new Vector2i(x + 1, y - 1)));
+		result.put(new Vector2i(x + 1, y - 1),
+				Arrays.asList(new Vector2i(x, y - 1), new Vector2i(x + 1, y)));
+		result.put(new Vector2i(x + 1, y), Collections.<Vector2i> emptyList());
+		result.put(new Vector2i(x + 1, y + 1),
+				Arrays.asList(new Vector2i(x, y + 1), new Vector2i(x + 1, y)));
+		result.put(new Vector2i(x + 1, y + 2), Arrays.asList(new Vector2i(x,
+				y + 1), new Vector2i(x + 1, y + 1)));
+		result.put(new Vector2i(x + 2, y - 1), Arrays.asList(new Vector2i(
+				x + 1, y - 1), new Vector2i(x + 1, y)));
+		result.put(new Vector2i(x + 2, y + 1), Arrays.asList(new Vector2i(
+				x + 1, y), new Vector2i(x + 1, y + 1)));
+
+		return result;
 	}
 
 	public Vector2f asVector2f() {

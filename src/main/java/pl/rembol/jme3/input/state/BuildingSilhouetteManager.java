@@ -86,7 +86,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
 
 			if (newPosition != null) {
 				building = createBuilding(currentOrder);
-				silhouette = building.initNode();
+				silhouette = building.initNodeWithScale();
 				silhouette.setMaterial(greenMaterial);
 				silhouette.setLocalTranslation(newPosition);
 				silhouette.addControl(this);

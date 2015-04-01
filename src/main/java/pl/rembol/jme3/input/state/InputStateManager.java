@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.rembol.jme3.input.state.SelectionManager.SelectionType;
+import pl.rembol.jme3.world.DebugService;
 import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.ballman.order.OrderFactory;
 import pl.rembol.jme3.world.hud.ActionBox;
@@ -33,6 +34,10 @@ public class InputStateManager {
 
 	public static final String R = "command_r";
 
+	public static final String _1 = "command_1";
+
+	public static final String _2 = "command_2";
+
 	public static final String RIGHT_CLICK = "command_rightClick";
 
 	public static final String LEFT_CLICK = "command_leftClick";
@@ -56,6 +61,9 @@ public class InputStateManager {
 
 	@Autowired
 	private BuildingSilhouetteManager buildingSilhouetteManager;
+
+	@Autowired
+	private DebugService debugService;
 
 	public InputState getCurrentState() {
 		return currentState;
@@ -150,10 +158,16 @@ public class InputStateManager {
 	}
 
 	public void type(String command) {
-		System.out.println("typing "+command);
+		System.out.println("typing " + command);
 		getTransitionAndChangeState(command);
 
 		actionBox.updateActionButtons();
+
+		if (_1.equals(command)) {
+			debugService.switchPathfinding();
+		} else if (_2.equals(command)) {
+			debugService.switchDisplay();
+		}
 	}
 
 	public void cancelOrder() {
@@ -198,7 +212,7 @@ public class InputStateManager {
 				currentOrder = null;
 			}
 		}
-		
+
 		return transition;
 	}
 

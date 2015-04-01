@@ -1,24 +1,35 @@
-package pl.rembol.jme3.world.pathfinding;
+package pl.rembol.jme3.world.pathfinding.paths;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+
+import pl.rembol.jme3.world.pathfinding.Vector2i;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
-public class Vector2iPath {
+public class Vector2iPath implements IPath2i {
 
 	List<Vector2i> vectorList = new ArrayList<>();
 	float length = 0;
 
 	public Vector2iPath(Vector2f start) {
-		vectorList.add(new Vector2i(start));
+		this(new Vector2i(start));
+	}
+
+	public Vector2iPath(Vector2i start) {
+		vectorList.add(start);
 	}
 
 	public Vector2iPath(Vector2iPath path, Vector2i neighbor) {
 		vectorList.addAll(path.vectorList);
 		vectorList.add(neighbor);
+
+		recalculateLength();
+	}
+
+	public Vector2iPath(List<Vector2i> list) {
+		vectorList.addAll(list);
 
 		recalculateLength();
 	}
@@ -51,25 +62,6 @@ public class Vector2iPath {
 
 	public float getLength() {
 		return length;
-	}
-
-	public static class AStarComparator implements Comparator<Vector2iPath> {
-
-		private Rectangle2f target;
-
-		public AStarComparator(Rectangle2f target) {
-			this.target = target;
-		}
-
-		@Override
-		public int compare(Vector2iPath path1, Vector2iPath path2) {
-			return Float.compare(getDistance(path1), getDistance(path2));
-		}
-
-		private float getDistance(Vector2iPath path) {
-			return target.distance(path.getLast()) + path.getLength();
-		}
-
 	}
 
 	@Override
@@ -109,9 +101,13 @@ public class Vector2iPath {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getLast().toString();
+	}
+
+	public List<Vector2i> getVectorList() {
+		return vectorList;
 	}
 }

@@ -145,13 +145,13 @@ public class BallMan extends AbstractControl implements Selectable,
 	}
 
 	@Override
-	public Node initNode() {
+	public Node initNodeWithScale() {
 		return (Node) applicationContext.getBean(AssetManager.class).loadModel(
 				"ballman/ballman.mesh.xml");
 	}
 
 	private void initNode(Node rootNode) {
-		node = initNode();
+		node = initNodeWithScale();
 
 		rootNode.attachChild(node);
 		node.setShadowMode(ShadowMode.Cast);
