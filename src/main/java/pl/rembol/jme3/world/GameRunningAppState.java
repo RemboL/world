@@ -106,6 +106,9 @@ public class GameRunningAppState extends AbstractAppState {
 		BallMan ballMan = new BallMan(applicationContext, new Vector2f(12.5f,
 				30f));
 		ballMan.setOwner(activePlayer);
+		BallMan ballMan2 = new BallMan(applicationContext, new Vector2f(32.5f,
+				30f));
+		ballMan2.setOwner(activePlayer);
 
 		createHouse(2, 4);
 		createHouse(3, 3);

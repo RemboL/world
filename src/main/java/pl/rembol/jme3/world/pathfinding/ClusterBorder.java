@@ -9,16 +9,10 @@ import java.util.Set;
 
 import org.springframework.context.ApplicationContext;
 
-import pl.rembol.jme3.world.DebugService;
 import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
 
 public class ClusterBorder {
 
@@ -31,8 +25,6 @@ public class ClusterBorder {
 	private List<Vector2i> borderPoints = new ArrayList<>();
 
 	Vector2i middlePoint = null;
-
-	private Geometry geometry;
 
 	private List<VectorPath> paths = new ArrayList<>();
 
@@ -138,28 +130,10 @@ public class ClusterBorder {
 		min3f = min3f.subtract(new Vector3f(.1f, .1f, .1f));
 		max3f = max3f.add(new Vector3f(.1f, .1f, .1f));
 
-		if (geometry == null) {
-			geometry = new Geometry("dragSelect", new Box(
-					(max3f.x - min3f.x) / 2, (max3f.y - min3f.y) / 2,
-					(max3f.z - min3f.z) / 2));
-			geometry.setLocalTranslation(min3f.add(max3f).mult(.5f)
-					.add(Vector3f.UNIT_Y.mult(1)));
-			Material mat = new Material(context.getBean(AssetManager.class),
-					"Common/MatDefs/Misc/Unshaded.j3md");
-			mat.setColor("Color", new ColorRGBA(.5f, 1f, .5f, 1f));
-			geometry.setMaterial(mat);
-
-			context.getBean(DebugService.class).getBorderDisplayNode().attachChild(geometry);
-		}
 		return this;
 	}
 
 	public void clear() {
-		if (geometry != null) {
-			geometry.getParent().detachChild(geometry);
-			geometry = null;
-		}
-
 		for (VectorPath path : paths) {
 			path.clearPath();
 		}

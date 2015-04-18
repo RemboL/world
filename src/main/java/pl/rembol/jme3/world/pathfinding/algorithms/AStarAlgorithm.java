@@ -98,7 +98,7 @@ public class AStarAlgorithm {
 								newPath.getLast())) {
 							Vector3f targetPoint = targetPaths
 									.get(targetBorder).getLast();
-							
+
 							for (VectorPath targetpath : targetPaths.values()) {
 								targetpath.clearPath();
 							}
@@ -116,9 +116,8 @@ public class AStarAlgorithm {
 			}
 		}
 		new VectorPath(new Vector2iPath(new ArrayList<Vector2i>()),
-				applicationContext, nodesVisited);
+				applicationContext);
 
-		
 		for (VectorPath targetpath : targetPaths.values()) {
 			targetpath.clearPath();
 		}
@@ -152,7 +151,7 @@ public class AStarAlgorithm {
 			nodesVisited.add(path.getLast());
 
 			if (target.distance(path.getLast()) == 0) {
-				return new VectorPath(path, applicationContext, nodesVisited);
+				return new VectorPath(path, applicationContext);
 			}
 
 			for (Map.Entry<Vector2i, List<Vector2i>> neighborEntry : path
@@ -162,8 +161,7 @@ public class AStarAlgorithm {
 					Vector2iPath newPath = new Vector2iPath(path,
 							neighborEntry.getKey());
 					if (target.distance(neighborEntry.getKey()) == 0) {
-						return new VectorPath(newPath, applicationContext,
-								nodesVisited);
+						return new VectorPath(newPath, applicationContext);
 					}
 
 					if (!paths.contains(newPath)) {

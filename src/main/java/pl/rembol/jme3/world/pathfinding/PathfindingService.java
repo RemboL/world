@@ -3,9 +3,6 @@ package pl.rembol.jme3.world.pathfinding;
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
 
-import com.jme3.app.SimpleApplication;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +18,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import pl.rembol.jme3.world.DebugService;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
 import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
@@ -30,11 +25,12 @@ import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.DijkstraAlgorithm;
 import pl.rembol.jme3.world.pathfinding.paths.ComplexPath;
 import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
+import pl.rembol.jme3.world.pathfinding.paths.SectorPath;
+import pl.rembol.jme3.world.pathfinding.paths.FuturePath;
 import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
 import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
 import pl.rembol.jme3.world.terrain.Terrain;
 
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -51,9 +47,6 @@ public class PathfindingService implements ApplicationContextAware {
 
 	@Autowired
 	private Node rootNode;
-
-	@Autowired
-	private DebugService debugService;
 
 	@Autowired
 	private ConsoleLog consoleLog;
@@ -188,174 +181,40 @@ public class PathfindingService implements ApplicationContextAware {
 		}
 	}
 
-	public Future<IExternalPath> buildPath(Vector3f start, Rectangle2f target) {
+	public IExternalPath buildPath(Vector3f start, Rectangle2f target) {
 		return buildPath(new Vector2f(start.x, start.z), target);
 	}
 
-	public Future<IExternalPath> buildPath(Vector2f start, Rectangle2f target) {
+	public IExternalPath buildPath(Vector2f start, Rectangle2f target) {
 
-		Callable<IExternalPath> worker = null;
-
-		if (debugService.getPathfinding() == 0) {
-			worker = () -> {
-				long time = System.currentTimeMillis();
+		Callable<IExternalPath> worker = () -> {
+			if (BresenhamAlgorithm.isDirectPathPossible(new Vector2i(start),
+					new Vector2i(target.getClosest(start)),
+					vector -> isBlockFree(vector))) {
 				Vector2iPath path = new Vector2iPath(new Vector2i(start));
 				path.add(new Vector2i(target.getClosest(start)));
+				return new VectorPath(applicationContext, start,
+						target.getClosest(start));
 
-				applicationContext.getBean(SimpleApplication.class).enqueue(
-						new Callable<Void>() {
+			} else {
 
-							@Override
-							public Void call() throws Exception {
-								consoleLog.addLine("path found in "
-										+ (System.currentTimeMillis() - time)
-										+ "ms");
-								return null;
-							}
+				Map<ClusterBorder, Vector2iPath> startingPaths = buildStartingClusterPaths(start);
+				Map<ClusterBorder, VectorPath> targetPaths = buildTargetPaths(target);
 
-						});
-
-				return new VectorPath(path, applicationContext, ColorRGBA.Blue);
-			};
-		}
-		if (debugService.getPathfinding() == 1) {
-			worker = () -> {
-				long time = System.currentTimeMillis();
-				if (BresenhamAlgorithm.isDirectPathPossible(
-						new Vector2i(start),
-						new Vector2i(target.getClosest(start)),
-						vector -> isBlockFree(vector))) {
-					Vector2iPath path = new Vector2iPath(new Vector2i(start));
-					path.add(new Vector2i(target.getClosest(start)));
-
-					applicationContext.getBean(SimpleApplication.class)
-							.enqueue(new Callable<Void>() {
-
-								@Override
-								public Void call() throws Exception {
-									consoleLog.addLine("path found in "
-											+ (System.currentTimeMillis() - time)
-											+ "ms");
-									return null;
-								}
-
-							});
-
-					return new VectorPath(path, applicationContext,
-							ColorRGBA.Blue);
-				}
-				applicationContext.getBean(SimpleApplication.class).enqueue(
-						new Callable<Void>() {
-
-							@Override
-							public Void call() throws Exception {
-								consoleLog.addLine("path found in "
-										+ (System.currentTimeMillis() - time)
-										+ "ms");
-								return null;
-							}
-
-						});
-
-				return new VectorPath(new Vector2iPath(new ArrayList<>()),
-						applicationContext, ColorRGBA.Blue);
-			};
-		}
-		if (debugService.getPathfinding() == 2) {
-			worker = () -> {
-				long time = System.currentTimeMillis();
-				VectorPath path = AStarAlgorithm.buildUnitPath(start, target,
-						applicationContext, MAX_PATHFINDING_ITERATIONS,
-						vector -> isBlockFree(vector));
-
-				applicationContext.getBean(SimpleApplication.class).enqueue(
-						new Callable<Void>() {
-
-							@Override
-							public Void call() throws Exception {
-								consoleLog.addLine("path found in "
-										+ (System.currentTimeMillis() - time)
-										+ "ms");
-								return null;
-							}
-
-						});
-				return new VectorPath(new Vector2iPath(path.getVectorList()
-						.stream().map(vector -> new Vector2i(vector))
-						.collect(Collectors.toList())), applicationContext,
-						ColorRGBA.Blue);
-			};
-		}
-		if (debugService.getPathfinding() == 4
-				|| debugService.getPathfinding() == 3) {
-			worker = () -> {
-				long time = System.currentTimeMillis();
-				if (BresenhamAlgorithm.isDirectPathPossible(
-						new Vector2i(start),
-						new Vector2i(target.getClosest(start)),
-						vector -> isBlockFree(vector))) {
-					Vector2iPath path = new Vector2iPath(new Vector2i(start));
-					path.add(new Vector2i(target.getClosest(start)));
-
-					applicationContext.getBean(SimpleApplication.class)
-							.enqueue(new Callable<Void>() {
-
-								@Override
-								public Void call() throws Exception {
-									consoleLog.addLine("path found in "
-											+ (System.currentTimeMillis() - time)
-											+ "ms");
-									return null;
-								}
-
-							});
-					return new VectorPath(path, applicationContext,
-							ColorRGBA.Blue);
-
-				} else {
-
-					Map<ClusterBorder, Vector2iPath> startingPaths = buildStartingClusterPaths(start);
-					Map<ClusterBorder, VectorPath> targetPaths = buildTargetPaths(target);
-
-					ComplexPath complexPath = AStarAlgorithm.buildSectorPath(
-							start, startingPaths, target, targetPaths,
-							applicationContext, MAX_PATHFINDING_ITERATIONS);
-					if (complexPath != null) {
-						applicationContext.getBean(SimpleApplication.class)
-								.enqueue(new Callable<Void>() {
-
-									@Override
-									public Void call() throws Exception {
-										consoleLog.addLine("path found in "
-												+ (System.currentTimeMillis() - time)
-												+ "ms");
-										return null;
-									}
-
-								});
-						return new SectorPath(complexPath, start,
-								applicationContext);
-					}
-					applicationContext.getBean(SimpleApplication.class)
-							.enqueue(new Callable<Void>() {
-
-								@Override
-								public Void call() throws Exception {
-									consoleLog.addLine("path found in "
-											+ (System.currentTimeMillis() - time)
-											+ "ms");
-									return null;
-								}
-
-							});
-					return new VectorPath(new Vector2iPath(new ArrayList<>()),
-							applicationContext, ColorRGBA.Blue);
+				ComplexPath complexPath = AStarAlgorithm.buildSectorPath(start,
+						startingPaths, target, targetPaths, applicationContext,
+						MAX_PATHFINDING_ITERATIONS);
+				if (complexPath != null) {
+					return new SectorPath(complexPath, start,
+							applicationContext);
 				}
 
-			};
-		}
+				return new VectorPath(applicationContext);
+			}
 
-		return executor.submit(worker);
+		};
+
+		return new FuturePath(executor.submit(worker));
 
 	}
 

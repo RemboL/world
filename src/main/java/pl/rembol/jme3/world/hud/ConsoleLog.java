@@ -1,10 +1,13 @@
 package pl.rembol.jme3.world.hud;
 
+import java.util.concurrent.Callable;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
@@ -24,6 +27,9 @@ public class ConsoleLog {
 	@Autowired
 	private AssetManager assetManager;
 
+	@Autowired
+	private SimpleApplication simpleApplication;
+
 	private Node node;
 
 	@PostConstruct
@@ -39,4 +45,15 @@ public class ConsoleLog {
 		new ConsoleLogLine(assetManager, node, text);
 	}
 
+	public void addLineExternal(String text) {
+		simpleApplication.enqueue(new Callable<Void>() {
+
+			@Override
+			public Void call() {
+				addLine(text);
+				return null;
+			}
+
+		});
+	}
 }
