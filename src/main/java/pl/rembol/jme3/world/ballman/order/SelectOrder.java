@@ -2,7 +2,7 @@ package pl.rembol.jme3.world.ballman.order;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.rembol.jme3.input.state.SelectionManager;
+import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.math.Vector2f;

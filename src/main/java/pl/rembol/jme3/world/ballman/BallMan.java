@@ -7,10 +7,6 @@ import java.util.Random;
 
 import org.springframework.context.ApplicationContext;
 
-import pl.rembol.jme3.input.state.SelectionManager;
-import pl.rembol.jme3.particles.SparkParticleEmitter;
-import pl.rembol.jme3.player.Player;
-import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.action.Action;
@@ -18,8 +14,12 @@ import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
+import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithDefaultAction;
 import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.world.particles.SparkParticleEmitter;
+import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;

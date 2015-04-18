@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import pl.rembol.jme3.input.state.SelectionManager;
-import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.house.House;
+import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
+import pl.rembol.jme3.world.player.Player;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.warehouse.Warehouse;
 

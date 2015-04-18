@@ -2,8 +2,8 @@ package pl.rembol.jme3.world.building;
 
 import org.springframework.context.ApplicationContext;
 
-import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.hud.ActionBox;
+import pl.rembol.jme3.world.input.state.SelectionManager;
 
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;

@@ -2,7 +2,7 @@ package pl.rembol.jme3.world.smallobject;
 
 import org.springframework.context.ApplicationContext;
 
-import pl.rembol.jme3.controls.TimeToLiveControl;
+import pl.rembol.jme3.world.controls.TimeToLiveControl;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;

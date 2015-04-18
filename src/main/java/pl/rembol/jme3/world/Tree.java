@@ -6,8 +6,8 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.rembol.jme3.input.state.SelectionManager;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.terrain.Terrain;

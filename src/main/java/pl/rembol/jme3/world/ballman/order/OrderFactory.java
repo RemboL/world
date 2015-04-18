@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import pl.rembol.jme3.input.state.SelectionManager;
+import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.selection.Selectable;
 
 @Component

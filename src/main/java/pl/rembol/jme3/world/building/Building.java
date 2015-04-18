@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import pl.rembol.jme3.input.state.SelectionManager;
-import pl.rembol.jme3.player.Player;
-import pl.rembol.jme3.player.WithOwner;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.Solid;
+import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;

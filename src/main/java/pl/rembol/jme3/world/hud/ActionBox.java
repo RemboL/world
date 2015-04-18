@@ -7,8 +7,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import pl.rembol.jme3.input.state.Command;
-import pl.rembol.jme3.input.state.InputStateManager;
+import pl.rembol.jme3.world.input.state.Command;
+import pl.rembol.jme3.world.input.state.InputStateManager;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;

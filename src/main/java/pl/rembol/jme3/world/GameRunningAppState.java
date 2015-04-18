@@ -5,10 +5,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import pl.rembol.jme3.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.house.House;
+import pl.rembol.jme3.world.player.Player;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.app.Application;

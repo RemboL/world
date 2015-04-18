@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import pl.rembol.jme3.particles.DustParticleEmitter;
+import pl.rembol.jme3.world.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.effect.ParticleEmitter;

@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.hud;
 
-import pl.rembol.jme3.input.state.Command;
+import pl.rembol.jme3.world.input.state.Command;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.ui.Picture;
