@@ -73,6 +73,7 @@ public class GameRunningAppState extends AbstractAppState {
 
 	@Override
 	public void cleanup() {
+		ConfigurableApplicationContext.class.cast(applicationContext).close();
 	}
 
 	@Override
@@ -129,7 +130,7 @@ public class GameRunningAppState extends AbstractAppState {
 		createHouse(6, -5);
 		createHouse(8, -5);
 		createHouse(7, -6);
-		
+
 	}
 
 	private void createHouse(int x, int y) {

@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +22,14 @@ import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.DijkstraAlgorithm;
 import pl.rembol.jme3.world.pathfinding.paths.ComplexPath;
+import pl.rembol.jme3.world.pathfinding.paths.FuturePath;
 import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
 import pl.rembol.jme3.world.pathfinding.paths.SectorPath;
-import pl.rembol.jme3.world.pathfinding.paths.FuturePath;
 import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
 import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
 import pl.rembol.jme3.world.terrain.Terrain;
+import pl.rembol.jme3.world.threads.Executor;
+import pl.rembol.jme3.world.threads.ThreadManager;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -51,7 +51,8 @@ public class PathfindingService implements ApplicationContextAware {
 	@Autowired
 	private ConsoleLog consoleLog;
 
-	private ExecutorService executor = Executors.newFixedThreadPool(10);
+	@Autowired
+	private ThreadManager threadManager;
 
 	private Map<Integer, Map<Integer, PathfindingCluster>> clusters = new HashMap<>();
 
@@ -214,7 +215,7 @@ public class PathfindingService implements ApplicationContextAware {
 
 		};
 
-		return new FuturePath(executor.submit(worker));
+		return new FuturePath(threadManager.submit(Executor.FULL_PATH, worker));
 
 	}
 

@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -20,13 +18,13 @@ import pl.rembol.jme3.world.pathfinding.Vector2i;
 import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.world.terrain.Terrain;
+import pl.rembol.jme3.world.threads.Executor;
+import pl.rembol.jme3.world.threads.ThreadManager;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
 public class SectorPath implements IExternalPath {
-
-	private static ExecutorService executor = Executors.newFixedThreadPool(20);
 
 	private static class FarStep {
 		Vector3f point;
@@ -102,7 +100,8 @@ public class SectorPath implements IExternalPath {
 
 		Callable<VectorPath> caller = getStepWorker(start, step);
 
-		farList.get(step).pathWorker = executor.submit(caller);
+		farList.get(step).pathWorker = applicationContext.getBean(
+				ThreadManager.class).submit(Executor.PARTIAL_PATH, caller);
 	}
 
 	private Callable<VectorPath> getStepWorker(Vector2i start, final int step) {
