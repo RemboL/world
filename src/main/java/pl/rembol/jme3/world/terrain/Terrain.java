@@ -3,10 +3,13 @@ package pl.rembol.jme3.world.terrain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
+import pl.rembol.jme3.world.save.TerrainDTO;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -31,7 +34,7 @@ import com.jme3.texture.Texture.WrapMode;
 public class Terrain {
 
 	private TerrainQuad terrain;
-	private Material mat_terrain;
+	private Material terrainMaterial;
 	private Texture alphaMap;
 	private AlphaMapManipulator manipulator = new AlphaMapManipulator();
 	private RigidBodyControl terrainBodyControl;
@@ -47,28 +50,25 @@ public class Terrain {
 
 	@Autowired
 	private Camera camera;
-	
+
 	@Autowired
 	private PathfindingService pathfindingService;
 
 	public void init(int size) {
 
-		createMaterials();
+		init(createTerrainQuad(size));
+	}
 
-		AbstractHeightMap heightmap = new FlatHeightMap(size);
-//		try {
-//			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
-//			heightmap.normalizeTerrain(20f);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+	public void init(TerrainDTO terrainDTO) {
+		alphaMap.setImage(terrainDTO.toAlphaMap());
+		init(terrainDTO.toTerrainQuad());
+	}
 
-		int patchSize = 129;
-		terrain = new TerrainQuad("my terrain", patchSize, size + 1,
-				heightmap.getHeightMap());
+	private void init(TerrainQuad terrain) {
+		this.terrain = terrain;
 		terrain.setShadowMode(ShadowMode.Receive);
 
-		terrain.setMaterial(mat_terrain);
+		terrain.setMaterial(terrainMaterial);
 		terrain.setLocalTranslation(0, 0, 0);
 		terrain.setLocalScale(2f, 1f, 2f);
 
@@ -82,37 +82,52 @@ public class Terrain {
 		terrainBodyControl = new RigidBodyControl(sceneShape, 0);
 		bulletAppState.getPhysicsSpace().add(terrainBodyControl);
 		terrain.addControl(terrainBodyControl);
-		
+
 		pathfindingService.initFromTerrain();
 	}
 
+	private TerrainQuad createTerrainQuad(int size) {
+		AbstractHeightMap heightmap = new FlatHeightMap(size);
+		try {
+			heightmap = new HillHeightMap(size, 10000, 10f, 20f);
+			heightmap.normalizeTerrain(20f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		int patchSize = 129;
+		return new TerrainQuad("my terrain", patchSize, size + 1,
+				heightmap.getHeightMap());
+	}
+
+	@PostConstruct
 	private void createMaterials() {
-		mat_terrain = new Material(assetManager,
+		terrainMaterial = new Material(assetManager,
 				"Common/MatDefs/Terrain/TerrainLighting.j3md");
-		mat_terrain.setBoolean("useTriPlanarMapping", false);
-		mat_terrain.setBoolean("WardIso", true);
-		mat_terrain.setFloat("Shininess", 0);
+		terrainMaterial.setBoolean("useTriPlanarMapping", false);
+		terrainMaterial.setBoolean("WardIso", true);
+		terrainMaterial.setFloat("Shininess", 0);
 
 		alphaMap = assetManager.loadTexture("red.jpg");
-		mat_terrain.setTexture("AlphaMap", alphaMap);
+		terrainMaterial.setTexture("AlphaMap", alphaMap);
 
 		Texture grass = assetManager
 				.loadTexture("Textures/Terrain/splat/grass.jpg");
 		grass.setWrap(WrapMode.Repeat);
-		mat_terrain.setTexture("DiffuseMap", grass);
-		mat_terrain.setFloat("DiffuseMap_0_scale", 64f);
+		terrainMaterial.setTexture("DiffuseMap", grass);
+		terrainMaterial.setFloat("DiffuseMap_0_scale", 64f);
 
 		Texture dirt = assetManager
 				.loadTexture("Textures/Terrain/splat/dirt.jpg");
 		dirt.setWrap(WrapMode.Repeat);
-		mat_terrain.setTexture("DiffuseMap_1", dirt);
-		mat_terrain.setFloat("DiffuseMap_1_scale", 64f);
+		terrainMaterial.setTexture("DiffuseMap_1", dirt);
+		terrainMaterial.setFloat("DiffuseMap_1_scale", 64f);
 
 		Texture rock = assetManager
 				.loadTexture("Textures/Terrain/splat/road.jpg");
 		rock.setWrap(WrapMode.Repeat);
-		mat_terrain.setTexture("DiffuseMap_2", rock);
-		mat_terrain.setFloat("DiffuseMap_2_scale", 128f);
+		terrainMaterial.setTexture("DiffuseMap_2", rock);
+		terrainMaterial.setFloat("DiffuseMap_2_scale", 128f);
 	}
 
 	public TerrainQuad getTerrain() {
@@ -344,6 +359,10 @@ public class Terrain {
 		return new Vector3f(position.x, terrain.getHeight(new Vector2f(
 				position.x, position.z)) + terrain.getLocalTranslation().y,
 				position.z);
+	}
+
+	public TerrainDTO save() {
+		return new TerrainDTO(terrain, alphaMap.getImage());
 	}
 
 }

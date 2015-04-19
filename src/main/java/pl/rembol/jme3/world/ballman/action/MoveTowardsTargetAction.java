@@ -67,6 +67,7 @@ public class MoveTowardsTargetAction extends Action {
 				target.getNode().getWorldTranslation()) < targetDistance
 				|| (path != null && path.isFinished(ballMan.getLocation()))) {
 			ballMan.setTargetVelocity(0f);
+			ballMan.lookTowards(target);
 			return true;
 		}
 

@@ -1,7 +1,10 @@
 package pl.rembol.jme3.world.house;
 
 import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.save.HouseDTO;
+import pl.rembol.jme3.world.save.UnitDTO;
 
+import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 
 public class House extends Building {
@@ -39,5 +42,19 @@ public class House extends Building {
 	@Override
 	public int getMaxHp() {
 		return 150;
+	}
+
+	@Override
+	public UnitDTO save(String key) {
+		return new HouseDTO(key, this);
+	}
+
+	@Override
+	public void load(UnitDTO unit) {
+		if (HouseDTO.class.isInstance(unit)) {
+			init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
+			this.setOwner(playerService.getPlayer(HouseDTO.class.cast(unit)
+					.getPlayer()));
+		}
 	}
 }

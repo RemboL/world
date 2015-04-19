@@ -13,6 +13,4 @@ public interface Selectable extends WithNode {
 	List<String> getStatusText();
 
 	String getIconName();
-
-	float getWidth();
 }

@@ -144,6 +144,10 @@ public class Player {
 		updateResources();
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
 	private void updateResources() {
 		if (active) {
 			resourcesBar.updateResources(resourcesWood, resourcesHousing,

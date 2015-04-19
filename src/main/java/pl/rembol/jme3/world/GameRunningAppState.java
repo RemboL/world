@@ -5,10 +5,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.building.Building;
-import pl.rembol.jme3.world.house.House;
-import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.PlayerService;
+import pl.rembol.jme3.world.save.SaveState;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.app.Application;
@@ -22,7 +20,6 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
@@ -40,17 +37,11 @@ public class GameRunningAppState extends AbstractAppState {
 
 	private boolean nightDayEffect = false;
 
-	private AssetManager assetManager;
-
-	private Node rootNode;
-
 	int frame = 200;
-
-	private Terrain terrain;
 
 	private AppSettings settings;
 
-	private Player activePlayer;
+	// private Player activePlayer;
 
 	private ApplicationContext applicationContext;
 
@@ -89,55 +80,19 @@ public class GameRunningAppState extends AbstractAppState {
 		applicationContext = new ClassPathXmlApplicationContext(
 				new String[] { "/app-ctx.xml" }, parentApplicationContext);
 
-		terrain = applicationContext.getBean(Terrain.class);
-		terrain.init(128);
-
-		this.assetManager = app.getAssetManager();
-		this.rootNode = simpleApp.getRootNode();
-
 		initLightAndShadows(app.getViewPort());
+		Terrain terrain = applicationContext.getBean(Terrain.class);
+		PlayerService playerService = applicationContext
+				.getBean(PlayerService.class);
 
-		activePlayer = applicationContext.getAutowireCapableBeanFactory()
-				.createBean(Player.class);
-		activePlayer.setName("RemboL");
-		activePlayer.setColor(ColorRGBA.Yellow);
-		activePlayer.setActive(true);
-		activePlayer.addWood(500);
+		SaveState load = SaveState.load("save.xml");
+		terrain.init(load.getTerrain());
+		playerService.loadPlayers(load.getPlayers());
+		applicationContext.getBean(UnitRegistry.class).load(load.getUnits());
 
-		BallMan ballMan = new BallMan(applicationContext, new Vector2f(12.5f,
-				30f));
-		ballMan.setOwner(activePlayer);
-		BallMan ballMan2 = new BallMan(applicationContext, new Vector2f(32.5f,
-				30f));
-		ballMan2.setOwner(activePlayer);
-
-		createHouse(2, 4);
-		createHouse(3, 3);
-		createHouse(2, 2);
-		createHouse(4, 1);
-		createHouse(4, 0);
-		createHouse(3, -1);
-		createHouse(3, -2);
-		createHouse(3, -3);
-		createHouse(5, -2);
-		createHouse(6, -2);
-		createHouse(7, -2);
-		createHouse(8, -3);
-		createHouse(4, -4);
-		createHouse(5, -4);
-		createHouse(6, -4);
-		createHouse(8, -4);
-		createHouse(6, -5);
-		createHouse(8, -5);
-		createHouse(7, -6);
-
-	}
-
-	private void createHouse(int x, int y) {
-		Building house = applicationContext.getAutowireCapableBeanFactory()
-				.createBean(House.class);
-		house.init(new Vector2f(10 * x, 10 * y));
-		house.setOwner(activePlayer);
+		// new SaveState(terrain.save(), playerService.savePlayers(),
+		// applicationContext.getBean(UnitRegistry.class).save())
+		// .save("default.xml");
 	}
 
 	private ConfigurableApplicationContext initializeParentApplicationContext(
@@ -174,18 +129,21 @@ public class GameRunningAppState extends AbstractAppState {
 		directional = new DirectionalLight();
 		directional.setDirection(new Vector3f(-2f, -10f, -5f).normalize());
 		directional.setColor(ColorRGBA.White.mult(.7f));
-		rootNode.addLight(directional);
+		applicationContext.getBean("rootNode", Node.class)
+				.addLight(directional);
 		AmbientLight ambient = new AmbientLight();
 		ambient.setColor(ColorRGBA.White.mult(0.3f));
-		rootNode.addLight(ambient);
+		applicationContext.getBean("rootNode", Node.class).addLight(ambient);
 
 		final int SHADOWMAP_SIZE = 1024;
 		DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(
-				assetManager, SHADOWMAP_SIZE, 3);
+				applicationContext.getBean(AssetManager.class), SHADOWMAP_SIZE,
+				3);
 		dlsr.setLight(directional);
 		viewPort.addProcessor(dlsr);
 
-		FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+		FilterPostProcessor fpp = new FilterPostProcessor(
+				applicationContext.getBean(AssetManager.class));
 
 		FogFilter fog = new FogFilter();
 		fog.setFogColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
@@ -193,10 +151,6 @@ public class GameRunningAppState extends AbstractAppState {
 		fog.setFogDensity(1.5f);
 		fpp.addFilter(fog);
 		viewPort.addProcessor(fpp);
-	}
-
-	public Player getActivePlayer() {
-		return activePlayer;
 	}
 
 }

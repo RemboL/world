@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.math.Vector2f;
@@ -28,7 +29,7 @@ public abstract class Order<OrderedType extends Selectable> implements
 		}
 	}
 
-	public void perform(Selectable target) {
+	public void perform(WithNode target) {
 		for (OrderedType ballMan : selected) {
 			doPerform(ballMan, target);
 		}
@@ -36,7 +37,7 @@ public abstract class Order<OrderedType extends Selectable> implements
 
 	protected abstract void doPerform(OrderedType ballMan, Vector2f location);
 
-	protected abstract void doPerform(OrderedType ballMan, Selectable target);
+	protected abstract void doPerform(OrderedType ballMan, WithNode target);
 
 	public void setSelected(List<OrderedType> selected) {
 		this.selected = selected;

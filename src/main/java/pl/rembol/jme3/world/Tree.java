@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.save.TreeDTO;
+import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.terrain.Terrain;
@@ -43,9 +45,9 @@ public class Tree implements Selectable, Solid {
 
 	@Autowired
 	private SelectionManager selectionManager;
-	
+
 	@Autowired
-	private UnitRegistry gameState;
+	private UnitRegistry unitRegistry;
 
 	public void init(Vector2f position) {
 		init(new Vector3f(position.x, terrain.getTerrain().getHeight(
@@ -73,13 +75,17 @@ public class Tree implements Selectable, Solid {
 
 		bulletAppState.getPhysicsSpace().add(control);
 
-		gameState.register(this);
+		unitRegistry.register(this);
 	}
 
 	@Override
 	public Node initNodeWithScale() {
 		return ModelHelper.rewriteDiffuseToAmbient((Node) assetManager
 				.loadModel("tree.blend"));
+	}
+
+	public int getHp() {
+		return hp;
 	}
 
 	protected void setHp(int hp) {
@@ -100,7 +106,7 @@ public class Tree implements Selectable, Solid {
 
 	private void destroy() {
 		System.out.println("TIMBEEER!!!");
-		gameState.unregister(this);
+		unitRegistry.unregister(this);
 		bulletAppState.getPhysicsSpace().remove(control);
 		tree.getParent().detachChild(tree);
 		this.destroyed = true;
@@ -149,6 +155,19 @@ public class Tree implements Selectable, Solid {
 	@Override
 	public String getIconName() {
 		return "tree";
+	}
+
+	@Override
+	public UnitDTO save(String key) {
+		return new TreeDTO(key, this);
+	}
+
+	@Override
+	public void load(UnitDTO unit) {
+		if (TreeDTO.class.isInstance(unit)) {
+			init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
+			setHp(TreeDTO.class.cast(unit).getHp());
+		}
 	}
 
 }

@@ -11,6 +11,7 @@ import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.ballman.order.OrderFactory;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
+import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.Selectable;
 
 import com.jme3.math.Vector2f;
@@ -61,7 +62,7 @@ public class InputStateManager {
 		return currentState;
 	}
 
-	public void click(String command, Selectable target) {
+	public void click(String command, WithNode target) {
 		if (currentState == InputState.ISSUE_ORDER) {
 			switch (command) {
 			case InputStateManager.LEFT_CLICK:
@@ -164,7 +165,7 @@ public class InputStateManager {
 		buildingSilhouetteManager.removeSilhouette();
 	}
 
-	private void performOrder(Selectable target) {
+	private void performOrder(WithNode target) {
 		currentOrder.perform(target);
 		currentOrder = null;
 		currentState = InputState.DEFAULT;

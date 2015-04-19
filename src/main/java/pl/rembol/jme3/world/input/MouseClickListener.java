@@ -13,7 +13,7 @@ import pl.rembol.jme3.world.hud.StatusBar;
 import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.collision.Collidable;
@@ -126,9 +126,9 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 						Collidable collided = getClosestCollidingObject();
 
 						if (collidedWithNode(collided)) {
-							Selectable selectable = gameState
+							WithNode withNode = gameState
 									.getSelectable(Node.class.cast(collided));
-							inputStateManager.click(name, selectable);
+							inputStateManager.click(name, withNode);
 						} else {
 							Vector3f collisionWithTerrain = getCollisionWithTerrain();
 							if (collisionWithTerrain != null) {

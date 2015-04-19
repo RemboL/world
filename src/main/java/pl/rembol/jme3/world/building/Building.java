@@ -12,6 +12,7 @@ import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
@@ -55,7 +56,10 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 	private SelectionManager selectionManager;
 
 	@Autowired
-	private UnitRegistry gameState;
+	private UnitRegistry unitRegistry;
+
+	@Autowired
+	protected PlayerService playerService;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
@@ -93,7 +97,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
 		bulletAppState.getPhysicsSpace().add(control);
 
-		gameState.register(this);
+		unitRegistry.register(this);
 
 		hp = getMaxHp();
 
@@ -178,6 +182,10 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 		}
 	}
 
+	public int getHp() {
+		return hp;
+	}
+
 	@Override
 	public boolean isDestroyed() {
 		return hp <= 0;
@@ -192,7 +200,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 	}
 
 	private void destroy() {
-		gameState.unregister(this);
+		unitRegistry.unregister(this);
 		bulletAppState.getPhysicsSpace().remove(control);
 
 		applicationContext.getAutowireCapableBeanFactory()

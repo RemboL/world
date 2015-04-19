@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.Tree;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.action.Action;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
@@ -19,7 +21,10 @@ import pl.rembol.jme3.world.interfaces.WithDefaultAction;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.particles.SparkParticleEmitter;
 import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
+import pl.rembol.jme3.world.save.BallManDTO;
+import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
@@ -45,7 +50,28 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 
 public class BallMan extends AbstractControl implements Selectable,
-		WithDefaultAction, WithOwner, Destructable {
+		WithDefaultAction, WithOwner, Destructable, ApplicationContextAware {
+
+	@Autowired
+	private Terrain terrain;
+
+	@Autowired
+	private Node rootNode;
+
+	@Autowired
+	private BulletAppState bulletAppState;
+
+	@Autowired
+	private UnitRegistry unitRegistry;
+
+	@Autowired
+	private SelectionManager selectionManager;
+
+	@Autowired
+	private AssetManager assetManager;
+
+	@Autowired
+	private PlayerService playerService;
 
 	private Node node;
 	private Node selectionNode;
@@ -63,14 +89,17 @@ public class BallMan extends AbstractControl implements Selectable,
 	private Player owner;
 	private ApplicationContext applicationContext;
 
-	public BallMan(ApplicationContext applicationContext, Vector2f position) {
-		this(applicationContext, applicationContext.getBean(Terrain.class)
-				.getGroundPosition(position));
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 	}
 
-	public BallMan(ApplicationContext applicationContext, Vector3f position) {
-		this.applicationContext = applicationContext;
-		initNode(applicationContext.getBean("rootNode", Node.class));
+	public void init(Vector2f position) {
+		init(terrain.getGroundPosition(position));
+	}
+
+	public void init(Vector3f position) {
+		initNode(rootNode);
 		node.setLocalTranslation(position);
 		node.setLocalRotation(new Quaternion().fromAngleAxis(
 				new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
@@ -79,8 +108,7 @@ public class BallMan extends AbstractControl implements Selectable,
 
 		node.addControl(this);
 
-		applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
-				.add(control);
+		bulletAppState.getPhysicsSpace().add(control);
 
 		node.addControl(control);
 		control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
@@ -88,8 +116,7 @@ public class BallMan extends AbstractControl implements Selectable,
 		control.setWalkDirection(control.getViewDirection().mult(
 				new Random().nextFloat() * 5f));
 
-		applicationContext.getBean(UnitRegistry.class).register(this);
-
+		unitRegistry.register(this);
 	}
 
 	@Override
@@ -108,21 +135,19 @@ public class BallMan extends AbstractControl implements Selectable,
 		}
 
 		if (updateSelection) {
-			applicationContext.getBean(SelectionManager.class)
-					.updateSelectionText();
+			selectionManager.updateSelectionText();
 		}
 	}
 
 	private void destroy() {
 		new SparkParticleEmitter(applicationContext, ColorRGBA.Red, 1000,
-				applicationContext.getBean("rootNode", Node.class))
-				.doSetLocalTranslation(node.getLocalTranslation()).emit();
+				rootNode).doSetLocalTranslation(node.getLocalTranslation())
+				.emit();
 
-		applicationContext.getBean(UnitRegistry.class).unregister(this);
-		applicationContext.getBean("rootNode", Node.class).detachChild(node);
+		unitRegistry.unregister(this);
+		rootNode.detachChild(node);
 		node.removeControl(this);
-		applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
-				.remove(control);
+		bulletAppState.getPhysicsSpace().remove(control);
 	}
 
 	@Override
@@ -146,8 +171,7 @@ public class BallMan extends AbstractControl implements Selectable,
 
 	@Override
 	public Node initNodeWithScale() {
-		return (Node) applicationContext.getBean(AssetManager.class).loadModel(
-				"ballman/ballman.mesh.xml");
+		return (Node) assetManager.loadModel("ballman/ballman.mesh.xml");
 	}
 
 	private void initNode(Node rootNode) {
@@ -236,8 +260,7 @@ public class BallMan extends AbstractControl implements Selectable,
 	@Override
 	public void select() {
 		if (selectionNode == null) {
-			selectionNode = new SelectionNode(
-					applicationContext.getBean(AssetManager.class));
+			selectionNode = new SelectionNode(assetManager);
 			node.attachChild(selectionNode);
 			selectionNode.setLocalTranslation(0, .3f, 0);
 		}
@@ -252,7 +275,7 @@ public class BallMan extends AbstractControl implements Selectable,
 	}
 
 	@Override
-	public void performDefaultAction(Selectable target) {
+	public void performDefaultAction(WithNode target) {
 		if (target instanceof Tree) {
 			setAction(applicationContext.getAutowireCapableBeanFactory()
 					.createBean(GatherResourcesAction.class)
@@ -332,6 +355,20 @@ public class BallMan extends AbstractControl implements Selectable,
 	@Override
 	public String getIconName() {
 		return "ballman";
+	}
+
+	@Override
+	public UnitDTO save(String key) {
+		return new BallManDTO(key, this);
+	}
+
+	@Override
+	public void load(UnitDTO unit) {
+		if (BallManDTO.class.isInstance(unit)) {
+			init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
+			this.setOwner(playerService.getPlayer(BallManDTO.class.cast(unit)
+					.getPlayer()));
+		}
 	}
 
 }

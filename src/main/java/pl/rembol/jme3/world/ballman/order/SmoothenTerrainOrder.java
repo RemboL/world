@@ -3,7 +3,7 @@ package pl.rembol.jme3.world.ballman.order;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
-import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.interfaces.WithNode;
 
 import com.jme3.math.Vector2f;
 
@@ -22,7 +22,7 @@ public class SmoothenTerrainOrder extends Order<BallMan> {
 	}
 
 	@Override
-	protected void doPerform(BallMan ballMan, Selectable target) {
+	protected void doPerform(BallMan ballMan, WithNode target) {
 		System.out.println("I cannot smoothen the " + target);
 	}
 

@@ -2,8 +2,11 @@ package pl.rembol.jme3.world.warehouse;
 
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.save.UnitDTO;
+import pl.rembol.jme3.world.save.WarehouseDTO;
 import pl.rembol.jme3.world.smallobject.Log;
 
+import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 
 public class Warehouse extends Building {
@@ -57,6 +60,20 @@ public class Warehouse extends Building {
 	@Override
 	public int getMaxHp() {
 		return 100;
+	}
+
+	@Override
+	public UnitDTO save(String key) {
+		return new WarehouseDTO(key, this);
+	}
+
+	@Override
+	public void load(UnitDTO unit) {
+		if (WarehouseDTO.class.isInstance(unit)) {
+			init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
+			this.setOwner(playerService.getPlayer(WarehouseDTO.class.cast(unit)
+					.getPlayer()));
+		}
 	}
 
 }

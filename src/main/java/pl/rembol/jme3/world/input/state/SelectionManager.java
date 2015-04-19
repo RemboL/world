@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import pl.rembol.jme3.world.GameRunningAppState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
@@ -15,6 +14,7 @@ import pl.rembol.jme3.world.house.House;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.StatusBar;
 import pl.rembol.jme3.world.input.ModifierKeysManager;
+import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.selection.Selectable;
 
@@ -30,7 +30,7 @@ public class SelectionManager {
 	private List<Selectable> selected = new ArrayList<>();
 
 	@Autowired
-	private GameRunningAppState appState;
+	private PlayerService playerService;
 
 	@Autowired
 	private ActionBox actionBox;
@@ -130,7 +130,7 @@ public class SelectionManager {
 
 	private boolean isOwnedByActivePlayer(Selectable selectedUnit) {
 		return WithOwner.class.cast(selectedUnit).getOwner()
-				.equals(appState.getActivePlayer());
+				.equals(playerService.getActivePlayer());
 	}
 
 	public void dragSelect(Vector3f dragStart, Vector3f dragStop) {
@@ -153,7 +153,7 @@ public class SelectionManager {
 							.isInstance(selectable))
 					.map(selectable -> WithOwner.class.cast(selectable))
 					.filter(withOwner -> withOwner.getOwner().equals(
-							appState.getActivePlayer()))
+							playerService.getActivePlayer()))
 					.collect(Collectors.toList());
 
 			if (!activePlayerOwned.isEmpty()) {
