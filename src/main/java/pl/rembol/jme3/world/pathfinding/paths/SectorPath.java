@@ -196,6 +196,10 @@ public class SectorPath implements IExternalPath {
 			}
 		}
 
+		if (farList.get(stepCounter).pathWorker == null) {
+			addStepWorker(new Vector2i(location), stepCounter);
+		}
+
 		if (stepCounter + 1 < farList.size()) {
 			if (farList.get(stepCounter + 1).path == null
 					&& farList.get(stepCounter + 1).pathWorker == null

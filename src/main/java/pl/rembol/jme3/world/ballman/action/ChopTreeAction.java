@@ -13,7 +13,7 @@ public class ChopTreeAction extends Action {
 
 	private static final int MAX_CHOPS = 10;
 
-	private static final float REQUIRED_DISTANCE = 5f;
+	private static final float REQUIRED_DISTANCE = 4f;
 
 	private Tree tree;
 

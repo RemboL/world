@@ -192,9 +192,7 @@ public class PathfindingService implements ApplicationContextAware {
 			if (BresenhamAlgorithm.isDirectPathPossible(new Vector2i(start),
 					new Vector2i(target.getClosest(start)),
 					vector -> isBlockFree(vector))) {
-				Vector2iPath path = new Vector2iPath(new Vector2i(start));
-				path.add(new Vector2i(target.getClosest(start)));
-				return new VectorPath(applicationContext, start,
+				return new VectorPath(applicationContext,
 						target.getClosest(start));
 
 			} else {

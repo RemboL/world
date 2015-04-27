@@ -40,7 +40,7 @@ public class ReturnResourcesAction extends Action {
 			ballMan.addActionOnStart(applicationContext
 					.getAutowireCapableBeanFactory()
 					.createBean(MoveTowardsTargetAction.class)
-					.init(warehouse, 8));
+					.init(warehouse, 3));
 		}
 	}
 

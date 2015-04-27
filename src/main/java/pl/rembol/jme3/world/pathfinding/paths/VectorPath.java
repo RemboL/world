@@ -51,7 +51,7 @@ public class VectorPath implements IExternalPath {
 			return;
 		}
 
-		if (location.distance(vectorList.get(0)) < 1) {
+		if (location.distance(vectorList.get(0)) < 2) {
 			vectorList.remove(0);
 
 			updatePath(location);

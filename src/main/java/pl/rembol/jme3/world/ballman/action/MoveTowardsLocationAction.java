@@ -35,13 +35,14 @@ public class MoveTowardsLocationAction extends Action {
 
 	@Override
 	protected void doAct(BallMan ballMan, float tpf) {
-
 		path.updatePath(ballMan.getLocation());
 
 		Vector3f checkpoint = path.getCheckPoint();
 		if (checkpoint != null) {
 			ballMan.lookTowards(checkpoint);
 			ballMan.setTargetVelocity(5f);
+		} else {
+			ballMan.setTargetVelocity(0f);
 		}
 	}
 

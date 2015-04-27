@@ -41,8 +41,6 @@ public class GameRunningAppState extends AbstractAppState {
 
 	private AppSettings settings;
 
-	// private Player activePlayer;
-
 	private ApplicationContext applicationContext;
 
 	public GameRunningAppState(AppSettings settings) {

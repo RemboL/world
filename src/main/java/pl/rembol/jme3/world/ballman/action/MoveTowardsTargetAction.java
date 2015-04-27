@@ -52,6 +52,8 @@ public class MoveTowardsTargetAction extends Action {
 		if (checkpoint != null) {
 			ballMan.lookTowards(checkpoint);
 			ballMan.setTargetVelocity(5f);
+		} else {
+			ballMan.setTargetVelocity(0f);
 		}
 
 		if (targetPosition.distance(target.getNode().getWorldTranslation()) > targetDistance) {
