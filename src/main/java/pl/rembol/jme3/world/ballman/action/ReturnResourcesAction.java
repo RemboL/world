@@ -1,12 +1,13 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.building.warehouse.Warehouse;
+import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.Log;
-import pl.rembol.jme3.world.warehouse.Warehouse;
 
 public class ReturnResourcesAction extends Action {
 
-	private float targetDistance = 8;
+	private float targetDistance = 3;
 	private Warehouse warehouse;
 
 	public ReturnResourcesAction init(Warehouse target) {
@@ -40,13 +41,13 @@ public class ReturnResourcesAction extends Action {
 			ballMan.addActionOnStart(applicationContext
 					.getAutowireCapableBeanFactory()
 					.createBean(MoveTowardsTargetAction.class)
-					.init(warehouse, 3));
+					.init(warehouse, targetDistance));
 		}
 	}
 
 	private boolean isCloseEnough(BallMan ballMan) {
-		return ballMan.getLocation().distance(
-				warehouse.getNode().getWorldTranslation()) < targetDistance;
+		return new Rectangle2f(warehouse, targetDistance).isInside(ballMan
+				.getNode().getWorldTranslation());
 	}
 
 }

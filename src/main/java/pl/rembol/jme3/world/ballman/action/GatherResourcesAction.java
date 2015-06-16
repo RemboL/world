@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import pl.rembol.jme3.world.Tree;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.smallobject.Log;
-import pl.rembol.jme3.world.warehouse.Warehouse;
 
 public class GatherResourcesAction extends Action {
 

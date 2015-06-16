@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.save;
 
-import pl.rembol.jme3.world.house.House;
+import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.interfaces.WithNode;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;

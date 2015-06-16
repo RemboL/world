@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.save;
 
+import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.interfaces.WithNode;
-import pl.rembol.jme3.world.warehouse.Warehouse;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
-import pl.rembol.jme3.world.house.House;
+import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.StatusBar;
 import pl.rembol.jme3.world.input.ModifierKeysManager;

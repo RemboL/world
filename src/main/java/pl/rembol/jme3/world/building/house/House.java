@@ -1,4 +1,4 @@
-package pl.rembol.jme3.world.house;
+package pl.rembol.jme3.world.building.house;
 
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.save.HouseDTO;

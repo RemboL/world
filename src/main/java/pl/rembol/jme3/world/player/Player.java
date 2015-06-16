@@ -7,9 +7,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.hud.ResourcesBar;
-import pl.rembol.jme3.world.warehouse.Warehouse;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;

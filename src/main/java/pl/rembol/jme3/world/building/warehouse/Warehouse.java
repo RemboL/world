@@ -1,4 +1,4 @@
-package pl.rembol.jme3.world.warehouse;
+package pl.rembol.jme3.world.building.warehouse;
 
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;

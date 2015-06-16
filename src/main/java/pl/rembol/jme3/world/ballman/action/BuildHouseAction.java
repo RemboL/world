@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.house.House;
+import pl.rembol.jme3.world.building.house.House;
 
 public class BuildHouseAction extends BuildAction {
 
