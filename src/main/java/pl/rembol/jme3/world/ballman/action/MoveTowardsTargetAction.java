@@ -2,6 +2,7 @@ package pl.rembol.jme3.world.ballman.action;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.interfaces.WithNode;
@@ -58,7 +59,8 @@ public class MoveTowardsTargetAction extends Action {
 
 		if (targetPosition.distance(target.getNode().getWorldTranslation()) > targetDistance) {
 			// target moved
-			this.targetPosition = target.getNode().getWorldTranslation().clone();
+			this.targetPosition = target.getNode().getWorldTranslation()
+					.clone();
 			start(ballMan);
 		}
 	}
@@ -80,10 +82,19 @@ public class MoveTowardsTargetAction extends Action {
 	protected void start(BallMan ballMan) {
 		ballMan.setAnimation("walk", LoopMode.Loop);
 
-		path = pathfindingService.buildPath(ballMan.getLocation(),
-				new Rectangle2f(new Vector2f(targetPosition.x - targetDistance,
-						targetPosition.z - targetDistance), new Vector2f(
-						targetPosition.x + targetDistance, targetPosition.z
-								+ targetDistance)));
+		if (target instanceof Solid) {
+			path = pathfindingService.buildPath(
+					ballMan.getLocation(),
+					new Rectangle2f(new Vector2f(targetPosition.x
+							- target.getWidth() - 2, targetPosition.z
+							- target.getWidth() - 2), new Vector2f(
+							targetPosition.x + target.getWidth() + 2,
+							targetPosition.z + target.getWidth() + 2)));
+		} else {
+			path = pathfindingService.buildPath(ballMan.getLocation(),
+					new Rectangle2f(new Vector2f(targetPosition.x - 1,
+							targetPosition.z - 1), new Vector2f(
+							targetPosition.x + 1, targetPosition.z + 1)));
+		}
 	}
 }

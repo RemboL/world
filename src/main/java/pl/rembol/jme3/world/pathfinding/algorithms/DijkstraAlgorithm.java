@@ -57,10 +57,6 @@ public class DijkstraAlgorithm {
 			List<Vector2i> targets, ApplicationContext applicationContext,
 			Function<Vector2i, Boolean> isBlockFreeFunction) {
 
-		if (!isBlockFreeFunction.apply(new Vector2i(start))) {
-			return null;
-		}
-
 		Comparator<PointerPath> comparator = (path1, path2) -> Float.compare(
 				path1.length(), path2.length());
 

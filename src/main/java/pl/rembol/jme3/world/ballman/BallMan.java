@@ -104,7 +104,7 @@ public class BallMan extends AbstractControl implements Selectable,
 		node.setLocalRotation(new Quaternion().fromAngleAxis(
 				new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
-		control = new BetterCharacterControl(1f, 10f, 1);
+		control = new BetterCharacterControl(.6f, 10f, 1);
 
 		node.addControl(this);
 
