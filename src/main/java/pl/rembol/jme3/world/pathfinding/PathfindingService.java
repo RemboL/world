@@ -223,17 +223,17 @@ public class PathfindingService implements ApplicationContextAware {
 		Set<PathfindingCluster> targetClusters = getTargetClusters(target);
 		for (PathfindingCluster targetCluster : targetClusters) {
 			for (ClusterBorder border : targetCluster.getBorders()) {
-				VectorPath path = buildSimplePath(border.getMiddlePoint(),
+				Optional<VectorPath> path = buildSimplePath(border.getMiddlePoint(),
 						target, targetCluster);
-				if (path != null) {
-					targetPaths.put(border, path);
+				if (path.isPresent()) {
+					targetPaths.put(border, path.get());
 				}
 			}
 		}
 		return targetPaths;
 	}
 
-	private VectorPath buildSimplePath(Vector2i start, Rectangle2f target,
+	private Optional<VectorPath> buildSimplePath(Vector2i start, Rectangle2f target,
 			PathfindingCluster cluster) {
 		if (BresenhamAlgorithm.isDirectPathPossible(start,
 				new Vector2i(target.getClosest(start.asVector2f())),
@@ -241,7 +241,7 @@ public class PathfindingService implements ApplicationContextAware {
 			Vector2iPath path = new Vector2iPath(start);
 			path.add(new Vector2i(target.getClosest(start.asVector2f())));
 
-			return new VectorPath(path, applicationContext);
+			return Optional.of(new VectorPath(path, applicationContext));
 
 		} else {
 			return AStarAlgorithm.buildUnitPath(start.asVector2f(), target,

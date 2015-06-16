@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -124,12 +125,12 @@ public class AStarAlgorithm {
 		return null;
 	}
 
-	public static VectorPath buildUnitPath(Vector2f start, Rectangle2f target,
+	public static Optional<VectorPath> buildUnitPath(Vector2f start, Rectangle2f target,
 			ApplicationContext applicationContext, int maxIterations,
 			Function<Vector2i, Boolean> isBlockFreeFunction) {
 
 		if (!isBlockFreeFunction.apply(new Vector2i(start))) {
-			return null;
+			return Optional.empty();
 		}
 
 		AStarComparator comparator = new AStarComparator(target);
@@ -151,7 +152,7 @@ public class AStarAlgorithm {
 			nodesVisited.add(path.getLast());
 
 			if (target.distance(path.getLast()) == 0) {
-				return new VectorPath(path, applicationContext);
+				return Optional.of(new VectorPath(path, applicationContext));
 			}
 
 			for (Map.Entry<Vector2i, List<Vector2i>> neighborEntry : path
@@ -161,7 +162,7 @@ public class AStarAlgorithm {
 					Vector2iPath newPath = new Vector2iPath(path,
 							neighborEntry.getKey());
 					if (target.distance(neighborEntry.getKey()) == 0) {
-						return new VectorPath(newPath, applicationContext);
+						return Optional.of(new VectorPath(newPath, applicationContext));
 					}
 
 					if (!paths.contains(newPath)) {
@@ -171,7 +172,7 @@ public class AStarAlgorithm {
 			}
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	private static boolean canTraverse(

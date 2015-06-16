@@ -254,13 +254,13 @@ public class PathfindingCluster {
 						applicationContext));
 
 			} else {
-				VectorPath path = AStarAlgorithm.buildUnitPath(
+				Optional<VectorPath> path = AStarAlgorithm.buildUnitPath(
 						startBorder.middlePoint.asVector2f(), new Rectangle2f(
 								targetBorder.middlePoint.asVector2f()),
 						applicationContext, MAX_PATHFINDING_ITERATIONS,
 						vector -> isBlockFree(vector));
-				if (path != null) {
-					startBorder.addPath(targetBorder, path);
+				if (path.isPresent()) {
+					startBorder.addPath(targetBorder, path.get());
 				}
 			}
 		}

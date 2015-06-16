@@ -3,6 +3,7 @@ package pl.rembol.jme3.world.pathfinding.paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -148,21 +149,21 @@ public class SectorPath implements IExternalPath {
 
                 }
 
-                VectorPath path = AStarAlgorithm.buildUnitPath(
+                Optional<VectorPath> path = AStarAlgorithm.buildUnitPath(
                         start.asVector2f(),
                         new Rectangle2f(target.asVector2f()),
                         applicationContext,
                         PathfindingService.MAX_PATHFINDING_ITERATIONS, isFree);
 
-                if (path != null) {
+                if (path.isPresent()) {
                     if (step + 1 < farList.size()) {
                         List<Vector2i> newList = new ArrayList<>();
 
-                        for (Vector3f vector : path.getVectorList()) {
+                        for (Vector3f vector : path.get().getVectorList()) {
                             newList.add(new Vector2i(vector));
                             if (farList.get(step + 1).cluster
                                     .isBlockFree(new Vector2i(vector))) {
-                                path.clearPath();
+                                path.get().clearPath();
                                 return new VectorPath(
                                         new Vector2iPath(newList),
                                         applicationContext);
@@ -170,7 +171,7 @@ public class SectorPath implements IExternalPath {
                         }
                     }
 
-                    return new VectorPath(new Vector2iPath(path.getVectorList()
+                    return new VectorPath(new Vector2iPath(path.get().getVectorList()
                             .stream().map(vector -> new Vector2i(vector))
                             .collect(Collectors.toList())), applicationContext);
                 }
