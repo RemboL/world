@@ -12,7 +12,7 @@ import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
-import pl.rembol.jme3.world.smallobject.Hammer;
+import pl.rembol.jme3.world.smallobject.tools.Hammer;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.animation.LoopMode;
@@ -24,154 +24,159 @@ import com.jme3.scene.Node;
 
 public abstract class BuildAction extends Action {
 
-	private static final int HIT_FRAME = 20 * 1000 / 30;
+    private static final int HIT_FRAME = 20 * 1000 / 30;
 
-	private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
+    private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-	private long animationStart;
+    private long animationStart;
 
-	private final List<DustParticleEmitter> particleEmitters = new ArrayList<>();
+    private final List<DustParticleEmitter> particleEmitters = new ArrayList<>();
 
-	private boolean hit = false;
+    private boolean hit = false;
 
-	private float minX;
-	private float maxX;
-	private float minY;
-	private float maxY;
-	private Random random = new Random();
+    private float minX;
+    private float maxX;
+    private float minY;
+    private float maxY;
+    private Random random = new Random();
 
-	private boolean isFinished = false;
+    private boolean isFinished = false;
 
-	private ConstructionSite constructionSite;
+    private ConstructionSite constructionSite;
 
-	private Vector2f position;
+    private Vector2f position;
 
-	@Autowired
-	private Terrain terrain;
+    @Autowired
+    private Terrain terrain;
 
-	@Autowired
-	private AssetManager assetManager;
+    @Autowired
+    private AssetManager assetManager;
 
-	@Autowired
-	private Node rootNode;
+    @Autowired
+    private Node rootNode;
 
-	@Autowired
-	private ConsoleLog consoleLog;
-	
-	@Autowired
-	private UnitRegistry gameState;
+    @Autowired
+    private ConsoleLog consoleLog;
 
-	public abstract Building createBuilding();
+    @Autowired
+    private UnitRegistry gameState;
 
-	protected abstract boolean retrieveResources(BallMan ballMan);
+    public abstract Building createBuilding();
 
-	@Override
-	public boolean isFinished(BallMan ballMan) {
-		return isFinished;
-	}
+    protected abstract boolean retrieveResources(BallMan ballMan);
 
-	@Override
-	public void finish() {
-		for (DustParticleEmitter emitter : particleEmitters) {
-			emitter.stopEmitting();
-		}
+    @Override
+    public boolean isFinished(BallMan ballMan) {
+        return isFinished;
+    }
 
-	}
+    @Override
+    public void finish() {
+        for (DustParticleEmitter emitter : particleEmitters) {
+            emitter.stopEmitting();
+        }
 
-	public BuildAction init(Vector2f position) {
-		this.position = position;
+    }
 
-		return this;
-	}
+    public BuildAction init(Vector2f position) {
+        this.position = position;
 
-	@Override
-	protected void start(BallMan ballMan) {
-		Building building = createBuilding();
+        return this;
+    }
 
-		if (!gameState.isSpaceFree(terrain.getGroundPosition(position),
-				building.getWidth())) {
-			consoleLog.addLine("Can't build here, something's in the way");
-			isFinished = true;
-			return;
-		}
+    @Override
+    protected boolean start(BallMan ballMan) {
+        Building building = createBuilding();
 
-		if (retrieveResources(ballMan)) {
-			ballMan.wield(new Hammer(applicationContext));
-			resetAnimation(ballMan);
+        if (!gameState.isSpaceFree(terrain.getGroundPosition(position),
+                building.getWidth())) {
+            consoleLog.addLine("Can't build here, something's in the way");
+            isFinished = true;
+            return true;
+        }
 
-			building.init(position, true);
-			building.setOwner(ballMan.getOwner());
-			constructionSite = new ConstructionSite(applicationContext,
-					building, 5f);
+        if (assertWielded(ballMan, Hammer.class)) {
+            if (retrieveResources(ballMan)) {
+                resetAnimation(ballMan);
 
-			minX = position.getX() - constructionSite.getBuilding().getWidth()
-					- 5;
-			maxX = position.getX() + constructionSite.getBuilding().getWidth()
-					+ 5;
-			minY = position.getY() - constructionSite.getBuilding().getWidth()
-					- 5;
-			maxY = position.getY() + constructionSite.getBuilding().getWidth()
-					+ 5;
+                building.init(position, true);
+                building.setOwner(ballMan.getOwner());
+                constructionSite = new ConstructionSite(applicationContext,
+                        building, 5f);
 
-			for (int i = 0; i < 10; ++i) {
-				particleEmitters.add(createParticleEmiter());
-			}
-		} else {
-			isFinished = true;
-		}
+                minX = position.getX()
+                        - constructionSite.getBuilding().getWidth() - 5;
+                maxX = position.getX()
+                        + constructionSite.getBuilding().getWidth() + 5;
+                minY = position.getY()
+                        - constructionSite.getBuilding().getWidth() - 5;
+                maxY = position.getY()
+                        + constructionSite.getBuilding().getWidth() + 5;
 
-	}
+                for (int i = 0; i < 10; ++i) {
+                    particleEmitters.add(createParticleEmiter());
+                }
+            } else {
+                isFinished = true;
+            }
 
-	private DustParticleEmitter createParticleEmiter() {
-		return new DustParticleEmitter(applicationContext)
-				.doSetLocalTranslation(new Vector3f(position.x, terrain
-						.getTerrain().getHeight(position), position.y));
-	}
+            return true;
+        }
 
-	@Override
-	protected void doAct(BallMan ballMan, float tpf) {
-		if (constructionSite != null && constructionSite.isFinished()) {
-			isFinished = true;
-		}
-		if (!isFinished) {
-			constructionSite.addBuildProgress(tpf);
+        return false;
 
-			for (ParticleEmitter emitter : particleEmitters) {
-				randomizeEmitterLocation(emitter);
-			}
+    }
 
-			if (animationEnded()) {
-				resetAnimation(ballMan);
-			}
-			if (animationHit()) {
-				hit = true;
-			}
+    private DustParticleEmitter createParticleEmiter() {
+        return new DustParticleEmitter(applicationContext)
+                .doSetLocalTranslation(new Vector3f(position.x, terrain
+                        .getTerrain().getHeight(position), position.y));
+    }
 
-		}
+    @Override
+    protected void doAct(BallMan ballMan, float tpf) {
+        if (constructionSite != null && constructionSite.isFinished()) {
+            isFinished = true;
+        }
+        if (!isFinished) {
+            constructionSite.addBuildProgress(tpf);
 
-	}
+            for (ParticleEmitter emitter : particleEmitters) {
+                randomizeEmitterLocation(emitter);
+            }
 
-	private boolean animationEnded() {
-		return System.currentTimeMillis() - animationStart >= ANIMATION_LENGTH;
-	}
+            if (animationEnded()) {
+                resetAnimation(ballMan);
+            }
+            if (animationHit()) {
+                hit = true;
+            }
 
-	private boolean animationHit() {
-		return !hit && System.currentTimeMillis() - animationStart >= HIT_FRAME;
-	}
+        }
 
-	private void resetAnimation(BallMan ballMan) {
-		ballMan.setAnimation("strike", LoopMode.DontLoop);
-		animationStart = System.currentTimeMillis();
-		hit = false;
-	}
+    }
 
-	protected void randomizeEmitterLocation(ParticleEmitter emitter) {
+    private boolean animationEnded() {
+        return System.currentTimeMillis() - animationStart >= ANIMATION_LENGTH;
+    }
 
-		float x = minX + (maxX - minX) * random.nextFloat();
-		float y = minY + (maxY - minY) * random.nextFloat();
+    private boolean animationHit() {
+        return !hit && System.currentTimeMillis() - animationStart >= HIT_FRAME;
+    }
 
-		emitter.setLocalTranslation(x,
-				terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
-	}
+    private void resetAnimation(BallMan ballMan) {
+        ballMan.setAnimation("strike", LoopMode.DontLoop);
+        animationStart = System.currentTimeMillis();
+        hit = false;
+    }
+
+    protected void randomizeEmitterLocation(ParticleEmitter emitter) {
+
+        float x = minX + (maxX - minX) * random.nextFloat();
+        float y = minY + (maxY - minY) * random.nextFloat();
+
+        emitter.setLocalTranslation(x,
+                terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
+    }
 
 }

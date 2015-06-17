@@ -18,6 +18,8 @@ public class ResourcesBar {
 	private Picture frame;
 	private Picture woodIcon;
 	private BitmapText woodText;
+    private Picture stoneIcon;
+    private BitmapText stoneText;
 	private Picture housingIcon;
 	private BitmapText housingText;
 
@@ -67,18 +69,31 @@ public class ResourcesBar {
 		woodText.move(framePosition.x + 65,
 				framePosition.y + 16 + woodText.getLineHeight(), 0);
 		guiNode.attachChild(woodText);
+		
+		stoneIcon = new Picture("Stone icon");
+		stoneIcon.setImage(assetManager, "interface/resources/stone.png", true);
+		stoneIcon.move(framePosition.x + 125, framePosition.y + 13, -1);
+		stoneIcon.setWidth(ICON_SIZE);
+		stoneIcon.setHeight(ICON_SIZE);
+        guiNode.attachChild(stoneIcon);
+
+        stoneText = new BitmapText(guiFont);
+        stoneText.setSize(guiFont.getCharSet().getRenderedSize());
+        stoneText.move(framePosition.x + 165,
+                framePosition.y + 16 + woodText.getLineHeight(), 0);
+        guiNode.attachChild(stoneText);
 
 		housingIcon = new Picture("Housing icon");
 		housingIcon.setImage(assetManager, "interface/resources/housing.png",
 				true);
-		housingIcon.move(framePosition.x + 125, framePosition.y + 13, -1);
+		housingIcon.move(framePosition.x + 225, framePosition.y + 13, -1);
 		housingIcon.setWidth(ICON_SIZE);
 		housingIcon.setHeight(ICON_SIZE);
 		guiNode.attachChild(housingIcon);
 
 		housingText = new BitmapText(guiFont);
 		housingText.setSize(guiFont.getCharSet().getRenderedSize());
-		housingText.move(framePosition.x + 165,
+		housingText.move(framePosition.x + 265,
 				framePosition.y + 16 + woodText.getLineHeight(), 0);
 		guiNode.attachChild(housingText);
 
@@ -87,6 +102,10 @@ public class ResourcesBar {
 	public void setWood(int wood) {
 		woodText.setText("" + wood);
 	}
+	
+	public void setStone(int stone) {
+        stoneText.setText("" + stone);
+    }
 
 	public void setHousing(int housing, int housingLimit) {
 		housingText.setText("" + housing + " / " + housingLimit);
@@ -96,12 +115,17 @@ public class ResourcesBar {
 		new BlinkControl(woodIcon, ICON_SIZE);
 	}
 
+    public void blinkStone() {
+        new BlinkControl(stoneIcon, ICON_SIZE);
+    }
+    
 	public void blinkHousing() {
 		new BlinkControl(housingIcon, ICON_SIZE);
 	}
 
-	public void updateResources(int wood, int housing, int housingLimit) {
+	public void updateResources(int wood, int stone, int housing, int housingLimit) {
 		setWood(wood);
+		setStone(stone);
 		setHousing(housing, housingLimit);
 	}
 }

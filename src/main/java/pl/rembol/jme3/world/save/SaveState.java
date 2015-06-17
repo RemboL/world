@@ -29,7 +29,7 @@ public class SaveState {
 		xStream.processAnnotations(new Class[] { SaveState.class,
 				TerrainDTO.class, TerrainQuadDTO.class, AlphaMapDTO.class,
 				PlayerDTO.class, UnitsDTO.class, UnitDTO.class, HouseDTO.class,
-				BallManDTO.class, WarehouseDTO.class, TreeDTO.class });
+				BallManDTO.class, WarehouseDTO.class, TreeDTO.class, StoneDepositDTO.class });
 
 		return xStream;
 	}

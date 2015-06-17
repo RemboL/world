@@ -31,124 +31,125 @@ import com.jme3.system.AppSettings;
 
 public class GameRunningAppState extends AbstractAppState {
 
-	private BulletAppState bulletAppState;
+    private BulletAppState bulletAppState;
 
-	private DirectionalLight directional;
+    private DirectionalLight directional;
 
-	private boolean nightDayEffect = false;
+    private boolean nightDayEffect = false;
 
-	int frame = 200;
+    int frame = 200;
 
-	private AppSettings settings;
+    private AppSettings settings;
 
-	private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
-	public GameRunningAppState(AppSettings settings) {
-		this.settings = settings;
-	}
+    public GameRunningAppState(AppSettings settings) {
+        this.settings = settings;
+    }
 
-	@Override
-	public void update(float tpf) {
-		frame++;
+    @Override
+    public void update(float tpf) {
+        frame++;
 
-		if (nightDayEffect) {
-			directional.setDirection(new Vector3f(FastMath.sin(FastMath.TWO_PI
-					/ 400 * frame),
-					FastMath.sin(FastMath.TWO_PI / 400 * frame) - 0.5f,
-					FastMath.cos(FastMath.TWO_PI / 400 * frame)).normalize());
-		}
+        if (nightDayEffect) {
+            directional.setDirection(new Vector3f(FastMath.sin(FastMath.TWO_PI
+                    / 400 * frame),
+                    FastMath.sin(FastMath.TWO_PI / 400 * frame) - 0.5f,
+                    FastMath.cos(FastMath.TWO_PI / 400 * frame)).normalize());
+        }
 
-	}
+    }
 
-	@Override
-	public void cleanup() {
-		ConfigurableApplicationContext.class.cast(applicationContext).close();
-	}
+    @Override
+    public void cleanup() {
+        ConfigurableApplicationContext.class.cast(applicationContext).close();
+    }
 
-	@Override
-	public void initialize(AppStateManager stateManager, Application app) {
-		SimpleApplication simpleApp = (SimpleApplication) app;
+    @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+        SimpleApplication simpleApp = (SimpleApplication) app;
 
-		bulletAppState = new BulletAppState();
-		stateManager.attach(bulletAppState);
-		// bulletAppState.setDebugEnabled(true);
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        // bulletAppState.setDebugEnabled(true);
 
-		ConfigurableApplicationContext parentApplicationContext = initializeParentApplicationContext(simpleApp);
+        ConfigurableApplicationContext parentApplicationContext = initializeParentApplicationContext(simpleApp);
 
-		applicationContext = new ClassPathXmlApplicationContext(
-				new String[] { "/app-ctx.xml" }, parentApplicationContext);
+        applicationContext = new ClassPathXmlApplicationContext(
+                new String[] { "/app-ctx.xml" }, parentApplicationContext);
 
-		initLightAndShadows(app.getViewPort());
-		Terrain terrain = applicationContext.getBean(Terrain.class);
-		PlayerService playerService = applicationContext
-				.getBean(PlayerService.class);
+        initLightAndShadows(app.getViewPort());
+        Terrain terrain = applicationContext.getBean(Terrain.class);
+        PlayerService playerService = applicationContext
+                .getBean(PlayerService.class);
 
-		SaveState load = SaveState.load("save.xml");
-		terrain.init(load.getTerrain());
-		playerService.loadPlayers(load.getPlayers());
-		applicationContext.getBean(UnitRegistry.class).load(load.getUnits());
+        SaveState load = SaveState.load("save.xml");
+        terrain.init(load.getTerrain());
+        playerService.loadPlayers(load.getPlayers());
+        applicationContext.getBean(UnitRegistry.class).load(load.getUnits());
 
-		// new SaveState(terrain.save(), playerService.savePlayers(),
-		// applicationContext.getBean(UnitRegistry.class).save())
-		// .save("default.xml");
-	}
+//        new SaveState(terrain.save(), playerService.savePlayers(),
+//                applicationContext.getBean(UnitRegistry.class).save())
+//                .save("default.xml");
 
-	private ConfigurableApplicationContext initializeParentApplicationContext(
-			SimpleApplication simpleApp) {
-		ConfigurableApplicationContext parentApplicationContext = new GenericApplicationContext();
+    }
 
-		parentApplicationContext.getBeanFactory()
-				.registerSingleton(AssetManager.class.getSimpleName(),
-						simpleApp.getAssetManager());
-		parentApplicationContext.getBeanFactory().registerSingleton(
-				GameRunningAppState.class.getSimpleName(), this);
-		parentApplicationContext.getBeanFactory().registerSingleton("guiNode",
-				simpleApp.getGuiNode());
-		parentApplicationContext.getBeanFactory().registerSingleton("rootNode",
-				simpleApp.getRootNode());
-		parentApplicationContext.getBeanFactory().registerSingleton(
-				AppSettings.class.getSimpleName(), settings);
-		parentApplicationContext.getBeanFactory().registerSingleton(
-				Camera.class.getSimpleName(), simpleApp.getCamera());
-		parentApplicationContext.getBeanFactory()
-				.registerSingleton(InputManager.class.getSimpleName(),
-						simpleApp.getInputManager());
-		parentApplicationContext.getBeanFactory().registerSingleton(
-				BulletAppState.class.getSimpleName(), bulletAppState);
-		parentApplicationContext.getBeanFactory().registerSingleton(
-				SimpleApplication.class.getSimpleName(), simpleApp);
+    private ConfigurableApplicationContext initializeParentApplicationContext(
+            SimpleApplication simpleApp) {
+        ConfigurableApplicationContext parentApplicationContext = new GenericApplicationContext();
 
-		parentApplicationContext.refresh();
+        parentApplicationContext.getBeanFactory()
+                .registerSingleton(AssetManager.class.getSimpleName(),
+                        simpleApp.getAssetManager());
+        parentApplicationContext.getBeanFactory().registerSingleton(
+                GameRunningAppState.class.getSimpleName(), this);
+        parentApplicationContext.getBeanFactory().registerSingleton("guiNode",
+                simpleApp.getGuiNode());
+        parentApplicationContext.getBeanFactory().registerSingleton("rootNode",
+                simpleApp.getRootNode());
+        parentApplicationContext.getBeanFactory().registerSingleton(
+                AppSettings.class.getSimpleName(), settings);
+        parentApplicationContext.getBeanFactory().registerSingleton(
+                Camera.class.getSimpleName(), simpleApp.getCamera());
+        parentApplicationContext.getBeanFactory()
+                .registerSingleton(InputManager.class.getSimpleName(),
+                        simpleApp.getInputManager());
+        parentApplicationContext.getBeanFactory().registerSingleton(
+                BulletAppState.class.getSimpleName(), bulletAppState);
+        parentApplicationContext.getBeanFactory().registerSingleton(
+                SimpleApplication.class.getSimpleName(), simpleApp);
 
-		return parentApplicationContext;
-	}
+        parentApplicationContext.refresh();
 
-	private void initLightAndShadows(ViewPort viewPort) {
-		directional = new DirectionalLight();
-		directional.setDirection(new Vector3f(-2f, -10f, -5f).normalize());
-		directional.setColor(ColorRGBA.White.mult(.7f));
-		applicationContext.getBean("rootNode", Node.class)
-				.addLight(directional);
-		AmbientLight ambient = new AmbientLight();
-		ambient.setColor(ColorRGBA.White.mult(0.3f));
-		applicationContext.getBean("rootNode", Node.class).addLight(ambient);
+        return parentApplicationContext;
+    }
 
-		final int SHADOWMAP_SIZE = 1024;
-		DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(
-				applicationContext.getBean(AssetManager.class), SHADOWMAP_SIZE,
-				3);
-		dlsr.setLight(directional);
-		viewPort.addProcessor(dlsr);
+    private void initLightAndShadows(ViewPort viewPort) {
+        directional = new DirectionalLight();
+        directional.setDirection(new Vector3f(-2f, -10f, -5f).normalize());
+        directional.setColor(ColorRGBA.White.mult(.7f));
+        applicationContext.getBean("rootNode", Node.class)
+                .addLight(directional);
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White.mult(0.3f));
+        applicationContext.getBean("rootNode", Node.class).addLight(ambient);
 
-		FilterPostProcessor fpp = new FilterPostProcessor(
-				applicationContext.getBean(AssetManager.class));
+        final int SHADOWMAP_SIZE = 1024;
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(
+                applicationContext.getBean(AssetManager.class), SHADOWMAP_SIZE,
+                3);
+        dlsr.setLight(directional);
+        viewPort.addProcessor(dlsr);
 
-		FogFilter fog = new FogFilter();
-		fog.setFogColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-		fog.setFogDistance(400f);
-		fog.setFogDensity(1.5f);
-		fpp.addFilter(fog);
-		viewPort.addProcessor(fpp);
-	}
+        FilterPostProcessor fpp = new FilterPostProcessor(
+                applicationContext.getBean(AssetManager.class));
+
+        FogFilter fog = new FogFilter();
+        fog.setFogColor(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
+        fog.setFogDistance(400f);
+        fog.setFogDensity(1.5f);
+        fpp.addFilter(fog);
+        viewPort.addProcessor(fpp);
+    }
 
 }

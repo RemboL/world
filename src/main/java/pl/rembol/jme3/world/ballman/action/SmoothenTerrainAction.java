@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
-import pl.rembol.jme3.world.smallobject.Shovel;
+import pl.rembol.jme3.world.smallobject.tools.Shovel;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.animation.LoopMode;
@@ -20,118 +20,122 @@ import com.jme3.scene.Node;
 
 public class SmoothenTerrainAction extends Action {
 
-	private static final int HIT_FRAME = 20 * 1000 / 30;
+    private static final int HIT_FRAME = 20 * 1000 / 30;
 
-	private static final int ANIMATION_LENGTH = 45 * 1000 / 30;
+    private static final int ANIMATION_LENGTH = 45 * 1000 / 30;
 
-	private Vector2f start;
-	private Vector2f end;
-	private int border;
+    private Vector2f start;
+    private Vector2f end;
+    private int border;
 
-	private long animationStart;
+    private long animationStart;
 
-	private final List<DustParticleEmitter> particleEmitters = new ArrayList<>();
+    private final List<DustParticleEmitter> particleEmitters = new ArrayList<>();
 
-	private boolean hit = false;
+    private boolean hit = false;
 
-	private float minX;
-	private float maxX;
-	private float minY;
-	private float maxY;
-	private Random random = new Random();
+    private float minX;
+    private float maxX;
+    private float minY;
+    private float maxY;
+    private Random random = new Random();
 
-	@Autowired
-	private AssetManager assetManager;
+    @Autowired
+    private AssetManager assetManager;
 
-	@Autowired
-	private Node rootNode;
+    @Autowired
+    private Node rootNode;
 
-	@Autowired
-	private Terrain terrain;
+    @Autowired
+    private Terrain terrain;
 
-	public SmoothenTerrainAction init(Vector2f start, Vector2f end, int border) {
-		this.start = start;
-		this.end = end;
-		this.border = border;
+    public SmoothenTerrainAction init(Vector2f start, Vector2f end, int border) {
+        this.start = start;
+        this.end = end;
+        this.border = border;
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	protected void start(BallMan ballMan) {
-		ballMan.wield(new Shovel(applicationContext));
-		resetAnimation(ballMan);
+    @Override
+    protected boolean start(BallMan ballMan) {
+        if (!assertWielded(ballMan, Shovel.class)) {
+            return false;
+        }
+        resetAnimation(ballMan);
 
-		minX = start.x - border;
-		maxX = end.x + border;
-		minY = start.y - border;
-		maxY = end.y + border;
+        minX = start.x - border;
+        maxX = end.x + border;
+        minY = start.y - border;
+        maxY = end.y + border;
 
-		for (int i = 0; i < 10; ++i) {
-			particleEmitters.add(createParticleEmiter());
-		}
-	}
+        for (int i = 0; i < 10; ++i) {
+            particleEmitters.add(createParticleEmiter());
+        }
 
-	private DustParticleEmitter createParticleEmiter() {
-		return new DustParticleEmitter(applicationContext)
-				.doSetLocalTranslation(new Vector3f(start.x, terrain
-						.getTerrain().getHeight(start), start.y));
-	}
+        return true;
+    }
 
-	private void randomizeEmitterLocation(ParticleEmitter emitter) {
+    private DustParticleEmitter createParticleEmiter() {
+        return new DustParticleEmitter(applicationContext)
+                .doSetLocalTranslation(new Vector3f(start.x, terrain
+                        .getTerrain().getHeight(start), start.y));
+    }
 
-		float x = minX + (maxX - minX) * random.nextFloat();
-		float y = minY + (maxY - minY) * random.nextFloat();
+    private void randomizeEmitterLocation(ParticleEmitter emitter) {
 
-		emitter.setLocalTranslation(x,
-				terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
-	}
+        float x = minX + (maxX - minX) * random.nextFloat();
+        float y = minY + (maxY - minY) * random.nextFloat();
 
-	@Override
-	protected void doAct(BallMan ballMan, float tpf) {
-		for (ParticleEmitter emitter : particleEmitters) {
-			randomizeEmitterLocation(emitter);
-		}
+        emitter.setLocalTranslation(x,
+                terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
+    }
 
-		if (animationEnded()) {
-			resetAnimation(ballMan);
-		}
-		if (animationHit()) {
-			hit = true;
-			terrain.smoothenTerrain(start, end, border, .3f);
-		}
+    @Override
+    protected void doAct(BallMan ballMan, float tpf) {
+        for (ParticleEmitter emitter : particleEmitters) {
+            randomizeEmitterLocation(emitter);
+        }
 
-	}
+        if (animationEnded()) {
+            resetAnimation(ballMan);
+        }
+        if (animationHit()) {
+            hit = true;
+            terrain.smoothenTerrain(start, end, border, .3f);
+        }
 
-	@Override
-	public boolean isFinished(BallMan ballMan) {
-		return terrain.isTerrainSmooth(start, end);
-	}
+    }
 
-	@Override
-	public void finish() {
-		stop();
-	}
+    @Override
+    public boolean isFinished(BallMan ballMan) {
+        return terrain.isTerrainSmooth(start, end);
+    }
 
-	@Override
-	public void stop() {
-		for (DustParticleEmitter emitter : particleEmitters) {
-			emitter.stopEmitting();
-		}
-	}
+    @Override
+    public void finish() {
+        stop();
+    }
 
-	private boolean animationEnded() {
-		return System.currentTimeMillis() - animationStart >= ANIMATION_LENGTH;
-	}
+    @Override
+    public void stop() {
+        for (DustParticleEmitter emitter : particleEmitters) {
+            emitter.stopEmitting();
+        }
+    }
 
-	private boolean animationHit() {
-		return !hit && System.currentTimeMillis() - animationStart >= HIT_FRAME;
-	}
+    private boolean animationEnded() {
+        return System.currentTimeMillis() - animationStart >= ANIMATION_LENGTH;
+    }
 
-	private void resetAnimation(BallMan ballMan) {
-		ballMan.setAnimation("digWithShovel", LoopMode.DontLoop);
-		animationStart = System.currentTimeMillis();
-		hit = false;
-	}
+    private boolean animationHit() {
+        return !hit && System.currentTimeMillis() - animationStart >= HIT_FRAME;
+    }
+
+    private void resetAnimation(BallMan ballMan) {
+        ballMan.setAnimation("digWithShovel", LoopMode.DontLoop);
+        animationStart = System.currentTimeMillis();
+        hit = false;
+    }
 
 }

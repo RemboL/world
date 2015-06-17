@@ -14,59 +14,61 @@ import com.jme3.scene.Node;
 
 public class MoveTowardsLocationAction extends Action {
 
-	private Vector2f rectangleStart;
-	private Vector2f rectangleEnd;
+    private Vector2f rectangleStart;
+    private Vector2f rectangleEnd;
 
-	private IExternalPath path;
+    private IExternalPath path;
 
-	@Autowired
-	private Node rootNode;
+    @Autowired
+    private Node rootNode;
 
-	@Autowired
-	private PathfindingService pathfindingService;
+    @Autowired
+    private PathfindingService pathfindingService;
 
-	public MoveTowardsLocationAction init(Vector2f point, float targetDistance) {
-		this.rectangleStart = point.subtract(targetDistance, targetDistance);
-		this.rectangleEnd = point.add(new Vector2f(targetDistance,
-				targetDistance));
+    public MoveTowardsLocationAction init(Vector2f point, float targetDistance) {
+        this.rectangleStart = point.subtract(targetDistance, targetDistance);
+        this.rectangleEnd = point.add(new Vector2f(targetDistance,
+                targetDistance));
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	protected void doAct(BallMan ballMan, float tpf) {
-		path.updatePath(ballMan.getLocation());
+    @Override
+    protected void doAct(BallMan ballMan, float tpf) {
+        path.updatePath(ballMan.getLocation());
 
-		Vector3f checkpoint = path.getCheckPoint();
-		if (checkpoint != null) {
-			ballMan.lookTowards(checkpoint);
-			ballMan.setTargetVelocity(5f);
-		} else {
-			ballMan.setTargetVelocity(0f);
-		}
-	}
+        Vector3f checkpoint = path.getCheckPoint();
+        if (checkpoint != null) {
+            ballMan.lookTowards(checkpoint);
+            ballMan.setTargetVelocity(5f);
+        } else {
+            ballMan.setTargetVelocity(0f);
+        }
+    }
 
-	@Override
-	public void stop() {
-		path.clearPath();
-	}
+    @Override
+    public void stop() {
+        path.clearPath();
+    }
 
-	@Override
-	public boolean isFinished(BallMan ballMan) {
-		if ((path != null && path.isFinished(ballMan.getLocation()))) {
-			ballMan.setTargetVelocity(0f);
-			return true;
-		}
+    @Override
+    public boolean isFinished(BallMan ballMan) {
+        if ((path != null && path.isFinished(ballMan.getLocation()))) {
+            ballMan.setTargetVelocity(0f);
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	protected void start(BallMan ballMan) {
-		ballMan.setAnimation("walk", LoopMode.Loop);
+    @Override
+    protected boolean start(BallMan ballMan) {
+        ballMan.setAnimation("walk", LoopMode.Loop);
 
-		path = pathfindingService.buildPath(ballMan.getLocation(),
-				new Rectangle2f(rectangleStart, rectangleEnd));
-	}
+        path = pathfindingService.buildPath(ballMan.getLocation(),
+                new Rectangle2f(rectangleStart, rectangleEnd));
+
+        return true;
+    }
 
 }

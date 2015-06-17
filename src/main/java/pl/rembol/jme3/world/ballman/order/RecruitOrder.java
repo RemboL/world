@@ -20,7 +20,7 @@ public class RecruitOrder extends Order<Building> {
 	}
 
 	private void doPerform(Building house) {
-		if (house.getOwner().retrieveResources(50, 1)) {
+		if (house.getOwner().retrieveResources(50, 0, 1)) {
 
 			Vector2f location = new Vector2f(house.getLocation().x,
 					house.getLocation().z);

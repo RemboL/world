@@ -11,42 +11,45 @@ import com.jme3.scene.Node;
 
 public abstract class SmallObject {
 
-	protected RigidBodyControl control;
-	protected Node node;
-	protected ApplicationContext applicationContext;
+    protected RigidBodyControl control;
+    protected Node node;
+    protected ApplicationContext applicationContext;
 
-	public SmallObject(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
+    public SmallObject init(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        return this;
+    }
 
-	protected Vector3f getHandlePosition() {
-		return Vector3f.ZERO;
-	}
+    protected Vector3f getHandlePosition() {
+        return Vector3f.ZERO;
+    }
 
-	public Node getNode() {
-		return node;
-	}
+    public Node getNode() {
+        return node;
+    }
 
-	public void detach(int timeToLive) {
-		Vector3f itemPosition = node.getWorldTranslation();
-		node.getParent().detachChild(node);
-		applicationContext.getBean("rootNode", Node.class).attachChild(node);
-		node.setLocalTranslation(itemPosition);
-		node.addControl(control);
-		applicationContext.getBean(BulletAppState.class).getPhysicsSpace().add(control);
-		node.addControl(new TimeToLiveControl(applicationContext, timeToLive));
-	}
+    public void detach(int timeToLive) {
+        Vector3f itemPosition = node.getWorldTranslation();
+        node.getParent().detachChild(node);
+        applicationContext.getBean("rootNode", Node.class).attachChild(node);
+        node.setLocalTranslation(itemPosition);
+        node.addControl(control);
+        applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
+                .add(control);
+        node.addControl(new TimeToLiveControl(applicationContext, timeToLive));
+    }
 
-	public void detach() {
-		detach(1);
-	}
+    public void detach() {
+        detach(1);
+    }
 
-	public void attach(Node parent) {
-		node.removeControl(control);
-		node.setLocalTranslation(getHandlePosition());
-		applicationContext.getBean(BulletAppState.class).getPhysicsSpace().remove(control);
+    public void attach(Node parent) {
+        node.removeControl(control);
+        node.setLocalTranslation(getHandlePosition());
+        applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
+                .remove(control);
 
-		parent.attachChild(node);
-	}
+        parent.attachChild(node);
+    }
 
 }

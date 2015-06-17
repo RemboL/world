@@ -13,7 +13,7 @@ public class BuildHouseOrder extends BuildOrder {
 
 	@Override
 	protected boolean hasResources(BallMan ballMan) {
-		return ballMan.getOwner().hasResources(100, 0);
+		return ballMan.getOwner().hasResources(100, 0, 0);
 	}
 
 }

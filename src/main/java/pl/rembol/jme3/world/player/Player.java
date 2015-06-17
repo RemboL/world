@@ -16,155 +16,175 @@ import com.jme3.math.Vector3f;
 
 public class Player {
 
-	private static final int HOUSING_PER_HOUSE = 10;
+    private static final int HOUSING_PER_HOUSE = 10;
 
-	private String name;
+    private String name;
 
-	private static Integer playerCounter = 0;
-	private Integer id;
+    private static Integer playerCounter = 0;
+    private Integer id;
 
-	private int resourcesWood = 0;
-	private int resourcesHousing = 0;
-	private int resourcesHousingLimit = 0;
+    private int resourcesWood = 0;
+    private int resourcesStone = 0;
+    private int resourcesHousing = 0;
+    private int resourcesHousingLimit = 0;
 
-	private ColorRGBA color = null;
+    private ColorRGBA color = null;
 
-	private boolean active = false;
+    private boolean active = false;
 
-	@Autowired
-	private ResourcesBar resourcesBar;
+    @Autowired
+    private ResourcesBar resourcesBar;
 
-	@Autowired
-	private ConsoleLog consoleLog;
+    @Autowired
+    private ConsoleLog consoleLog;
 
-	@Autowired
-	private UnitRegistry gameState;
+    @Autowired
+    private UnitRegistry gameState;
 
-	@PostConstruct
-	public void init() {
-		id = playerCounter++;
-	}
+    @PostConstruct
+    public void init() {
+        id = playerCounter++;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setColor(ColorRGBA color) {
-		this.color = color;
-	}
+    public void setColor(ColorRGBA color) {
+        this.color = color;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public ColorRGBA getColor() {
-		return color;
-	}
+    public ColorRGBA getColor() {
+        return color;
+    }
 
-	@Override
-	public boolean equals(Object that) {
-		if (!Player.class.isInstance(that)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object that) {
+        if (!Player.class.isInstance(that)) {
+            return false;
+        }
 
-		return Player.class.cast(that).getId().equals(this.getId());
-	}
+        return Player.class.cast(that).getId().equals(this.getId());
+    }
 
-	public int getResourcesWood() {
-		return resourcesWood;
-	}
+    public int getResourcesWood() {
+        return resourcesWood;
+    }
 
-	public int getResourcesHousing() {
-		return resourcesHousing;
-	}
+    public int getResourcesStone() {
+        return resourcesStone;
+    }
 
-	public int getResourcesHousingLimit() {
-		return resourcesHousingLimit;
-	}
+    public int getResourcesHousing() {
+        return resourcesHousing;
+    }
 
-	public void addWood(int wood) {
-		resourcesWood += wood;
+    public int getResourcesHousingLimit() {
+        return resourcesHousingLimit;
+    }
 
-		updateResources();
-	}
+    public void addWood(int wood) {
+        resourcesWood += wood;
 
-	public void updateHousingLimit() {
-		resourcesHousingLimit = gameState.getHousesByOwner(this).size()
-				* HOUSING_PER_HOUSE;
+        updateResources();
+    }
 
-		updateResources();
-	}
+    public void addStone(int stone) {
+        resourcesStone += stone;
 
-	public void updateHousing() {
-		resourcesHousing = gameState.getBallMenByOwner(this).size();
+        updateResources();
+    }
 
-		updateResources();
-	}
+    public void updateHousingLimit() {
+        resourcesHousingLimit = gameState.getHousesByOwner(this).size()
+                * HOUSING_PER_HOUSE;
 
-	public boolean hasResources(int wood, int housing) {
-		if (wood > 0 && resourcesWood < wood) {
-			if (active) {
-				consoleLog.addLine("Not enough wood");
-				resourcesBar.blinkWood();
-			}
-			return false;
-		}
+        updateResources();
+    }
 
-		if (housing > 0 && resourcesHousingLimit - resourcesHousing < housing) {
-			if (active) {
-				consoleLog.addLine("Not enough housing");
-				resourcesBar.blinkHousing();
-			}
-			return false;
-		}
+    public void updateHousing() {
+        resourcesHousing = gameState.getBallMenByOwner(this).size();
 
-		return true;
-	}
+        updateResources();
+    }
 
-	public boolean retrieveResources(int wood, int housing) {
-		if (hasResources(wood, housing)) {
-			resourcesWood -= wood;
-			resourcesHousing += housing;
+    public boolean hasResources(int wood, int stone, int housing) {
+        if (wood > 0 && resourcesWood < wood) {
+            if (active) {
+                consoleLog.addLine("Not enough wood");
+                resourcesBar.blinkWood();
+            }
+            return false;
+        }
+        
+        if (stone > 0 && resourcesStone < stone) {
+            if (active) {
+                consoleLog.addLine("Not enough stone");
+                resourcesBar.blinkStone();
+            }
+            return false;
+        }
 
-			updateResources();
+        if (housing > 0 && resourcesHousingLimit - resourcesHousing < housing) {
+            if (active) {
+                consoleLog.addLine("Not enough housing");
+                resourcesBar.blinkHousing();
+            }
+            return false;
+        }
 
-			return true;
-		} else {
-			return false;
-		}
-	}
+        return true;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
+    public boolean retrieveResources(int wood, int stone, int housing) {
+        if (hasResources(wood, stone, housing)) {
+            resourcesWood -= wood;
+            resourcesStone -= stone;
+            resourcesHousing += housing;
 
-		updateResources();
-	}
+            updateResources();
 
-	public boolean isActive() {
-		return active;
-	}
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	private void updateResources() {
-		if (active) {
-			resourcesBar.updateResources(resourcesWood, resourcesHousing,
-					resourcesHousingLimit);
-		}
-	}
+    public void setActive(boolean active) {
+        this.active = active;
 
-	public Optional<Warehouse> getClosestWarehouse(final Vector3f location) {
+        updateResources();
+    }
 
-		return gameState
-				.getWarehousesByOwner(this)
-				.stream()
-				.sorted((first, second) -> Float.valueOf(
-						first.getNode().getWorldTranslation()
-								.distance(location)).compareTo(
-						second.getNode().getWorldTranslation()
-								.distance(location))).findFirst();
+    public boolean isActive() {
+        return active;
+    }
 
-	}
+    private void updateResources() {
+        if (active) {
+            resourcesBar.updateResources(resourcesWood, resourcesStone, resourcesHousing,
+                    resourcesHousingLimit);
+        }
+    }
+
+    public Optional<Warehouse> getClosestWarehouse(final Vector3f location) {
+
+        return gameState
+                .getWarehousesByOwner(this)
+                .stream()
+                .sorted((first, second) -> Float.valueOf(
+                        first.getNode().getWorldTranslation()
+                                .distance(location)).compareTo(
+                        second.getNode().getWorldTranslation()
+                                .distance(location))).findFirst();
+
+    }
 }

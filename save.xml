@@ -40,8 +40,44 @@
     </player>
   </players>
   <units>
-    <idSequence>21</idSequence>
+    <idSequence>25</idSequence>
     <units>
+      <stone_deposit>
+        <key>22</key>
+        <position>
+          <x>10.0</x>
+          <y>6.881152</y>
+          <z>35.0</z>
+        </position>
+		<hp>1000</hp>
+      </stone_deposit>
+      <stone_deposit>
+        <key>23</key>
+        <position>
+          <x>0.0</x>
+          <y>5.8699274</y>
+          <z>40.0</z>
+        </position>
+		<hp>1000</hp>
+      </stone_deposit>
+      <stone_deposit>
+        <key>24</key>
+        <position>
+          <x>-10.0</x>
+          <y>2.9605591</y>
+          <z>30.0</z>
+        </position>
+		<hp>1000</hp>
+      </stone_deposit>
+      <ballman>
+        <key>10</key>
+        <position>
+          <x>1.0</x>
+          <y>8.728781</y>
+          <z>-17.0</z>
+        </position>
+        <player>RemboL</player>
+      </ballman>
       <ballman>
         <key>11</key>
         <position>
@@ -222,15 +258,15 @@
         </position>
         <player>Bad Guy</player>
       </ballman>
-      <ballman>
-        <key>10</key>
+      <stone_deposit>
+        <key>21</key>
         <position>
-          <x>1.0</x>
-          <y>8.728781</y>
-          <z>-17.0</z>
+          <x>20.0</x>
+          <y>7.917671</y>
+          <z>30.0</z>
         </position>
-        <player>RemboL</player>
-      </ballman>
+		<hp>1000</hp>
+      </stone_deposit>
     </units>
   </units>
 </save>

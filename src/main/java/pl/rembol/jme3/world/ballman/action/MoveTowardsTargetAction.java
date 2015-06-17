@@ -16,85 +16,87 @@ import com.jme3.math.Vector3f;
 
 public class MoveTowardsTargetAction extends Action {
 
-	private Vector3f targetPosition;
-	private WithNode target;
-	private float targetDistance;
+    private Vector3f targetPosition;
+    private WithNode target;
+    private float targetDistance;
 
-	@Autowired
-	private PathfindingService pathfindingService;
+    @Autowired
+    private PathfindingService pathfindingService;
 
-	private IExternalPath path;
+    private IExternalPath path;
 
-	public MoveTowardsTargetAction init(WithNode target, float targetDistance) {
-		this.target = target;
-		this.targetDistance = targetDistance;
+    public MoveTowardsTargetAction init(WithNode target, float targetDistance) {
+        this.target = target;
+        this.targetDistance = targetDistance;
 
-		// account for building width
-		if (target instanceof Building) {
-			this.targetDistance += Building.class.cast(target).getWidth();
-		}
-		this.targetPosition = target.getNode().getWorldTranslation().clone();
+        // account for building width
+        if (target instanceof Building) {
+            this.targetDistance += Building.class.cast(target).getWidth();
+        }
+        this.targetPosition = target.getNode().getWorldTranslation().clone();
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public void stop() {
-		if (path != null) {
-			path.clearPath();
-		}
-	}
+    @Override
+    public void stop() {
+        if (path != null) {
+            path.clearPath();
+        }
+    }
 
-	@Override
-	protected void doAct(BallMan ballMan, float tpf) {
-		path.updatePath(ballMan.getLocation());
+    @Override
+    protected void doAct(BallMan ballMan, float tpf) {
+        path.updatePath(ballMan.getLocation());
 
-		Vector3f checkpoint = path.getCheckPoint();
-		if (checkpoint != null) {
-			ballMan.lookTowards(checkpoint);
-			ballMan.setTargetVelocity(5f);
-		} else {
-			ballMan.setTargetVelocity(0f);
-		}
+        Vector3f checkpoint = path.getCheckPoint();
+        if (checkpoint != null) {
+            ballMan.lookTowards(checkpoint);
+            ballMan.setTargetVelocity(5f);
+        } else {
+            ballMan.setTargetVelocity(0f);
+        }
 
-		if (targetPosition.distance(target.getNode().getWorldTranslation()) > targetDistance) {
-			// target moved
-			this.targetPosition = target.getNode().getWorldTranslation()
-					.clone();
-			start(ballMan);
-		}
-	}
+        if (targetPosition.distance(target.getNode().getWorldTranslation()) > targetDistance) {
+            // target moved
+            this.targetPosition = target.getNode().getWorldTranslation()
+                    .clone();
+            start(ballMan);
+        }
+    }
 
-	@Override
-	public boolean isFinished(BallMan ballMan) {
-		if (ballMan.getLocation().distance(
-				target.getNode().getWorldTranslation()) < targetDistance
-				|| (path != null && path.isFinished(ballMan.getLocation()))) {
-			ballMan.setTargetVelocity(0f);
-			ballMan.lookTowards(target);
-			return true;
-		}
+    @Override
+    public boolean isFinished(BallMan ballMan) {
+        if (ballMan.getLocation().distance(
+                target.getNode().getWorldTranslation()) < targetDistance
+                || (path != null && path.isFinished(ballMan.getLocation()))) {
+            ballMan.setTargetVelocity(0f);
+            ballMan.lookTowards(target);
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	protected void start(BallMan ballMan) {
-		ballMan.setAnimation("walk", LoopMode.Loop);
+    @Override
+    protected boolean start(BallMan ballMan) {
+        ballMan.setAnimation("walk", LoopMode.Loop);
 
-		if (target instanceof Solid) {
-			path = pathfindingService.buildPath(
-					ballMan.getLocation(),
-					new Rectangle2f(new Vector2f(targetPosition.x
-							- target.getWidth() - 2, targetPosition.z
-							- target.getWidth() - 2), new Vector2f(
-							targetPosition.x + target.getWidth() + 2,
-							targetPosition.z + target.getWidth() + 2)));
-		} else {
-			path = pathfindingService.buildPath(ballMan.getLocation(),
-					new Rectangle2f(new Vector2f(targetPosition.x - 1,
-							targetPosition.z - 1), new Vector2f(
-							targetPosition.x + 1, targetPosition.z + 1)));
-		}
-	}
+        if (target instanceof Solid) {
+            path = pathfindingService.buildPath(
+                    ballMan.getLocation(),
+                    new Rectangle2f(new Vector2f(targetPosition.x
+                            - target.getWidth() - 2, targetPosition.z
+                            - target.getWidth() - 2), new Vector2f(
+                            targetPosition.x + target.getWidth() + 2,
+                            targetPosition.z + target.getWidth() + 2)));
+        } else {
+            path = pathfindingService.buildPath(ballMan.getLocation(),
+                    new Rectangle2f(new Vector2f(targetPosition.x - 1,
+                            targetPosition.z - 1), new Vector2f(
+                            targetPosition.x + 1, targetPosition.z + 1)));
+        }
+
+        return true;
+    }
 }
