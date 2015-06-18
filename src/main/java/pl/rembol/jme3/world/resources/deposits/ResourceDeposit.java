@@ -27,7 +27,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 
-public abstract class ResourceDeposit implements Selectable, Solid, ApplicationContextAware {
+public abstract class ResourceDeposit implements Selectable, Solid,
+        ApplicationContextAware {
 
     private BetterCharacterControl control;
     private Node node;
@@ -55,7 +56,7 @@ public abstract class ResourceDeposit implements Selectable, Solid, ApplicationC
     private UnitRegistry unitRegistry;
 
     protected ApplicationContext applicationContext;
-    
+
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -131,7 +132,8 @@ public abstract class ResourceDeposit implements Selectable, Solid, ApplicationC
     protected void setHp(int hp) {
         this.hp = hp;
 
-        node.setLocalScale(getPhysicsRadius() * (1f * this.hp + this.maxHp) / (2 * this.maxHp));
+        node.setLocalScale(getPhysicsRadius() * (1f * this.hp + this.maxHp)
+                / (2 * this.maxHp));
 
         if (hp < 0) {
             destroy();
@@ -192,6 +194,10 @@ public abstract class ResourceDeposit implements Selectable, Solid, ApplicationC
 
     protected abstract String getName();
 
-    public abstract ResourceUnit produceResource(int chopCounter);
+    public abstract ResourceUnit produceResource();
+
+    public abstract Class<? extends SmallObject> requiredTool();
+
+    public abstract Class<? extends ResourceUnit> givesResource();
 
 }

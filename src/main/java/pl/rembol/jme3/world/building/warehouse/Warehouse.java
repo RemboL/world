@@ -48,8 +48,10 @@ public class Warehouse extends Building {
             switch (resourceType) {
             case WOOD:
                 owner.addWood(resources);
+                break;
             case STONE:
                 owner.addStone(resources);
+                break;
             }
         }
     }

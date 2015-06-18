@@ -13,26 +13,22 @@ import pl.rembol.jme3.world.smallobject.SmallObject;
 
 public abstract class Action implements ApplicationContextAware {
 
-    protected int frame = 0;
     private boolean isStarted = false;
     protected ApplicationContext applicationContext;
 
     protected boolean start(BallMan ballMan) {
-        frame = 0;
         return true;
     }
 
     public void act(BallMan ballMan, float tpf) {
         if (!isStarted) {
             isStarted = start(ballMan);
-            
+
             if (!isStarted) {
                 return;
             }
         }
         doAct(ballMan, tpf);
-
-        frame++;
     }
 
     abstract protected void doAct(BallMan ballMan, float tpf);
@@ -52,32 +48,38 @@ public abstract class Action implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
-    
-    protected boolean assertWielded(BallMan ballMan, Class<? extends SmallObject> wieldedClass) {
+
+    protected boolean assertWielded(BallMan ballMan,
+            Class<? extends SmallObject> wieldedClass) {
         if (!wieldedClass.isInstance(ballMan.getWieldedObject(Hand.RIGHT))) {
             try {
                 ballMan.addActionOnStart(applicationContext
                         .getAutowireCapableBeanFactory()
                         .createBean(SwitchWeaponAction.class)
-                        .init(wieldedClass.newInstance().init(applicationContext)));
+                        .init(wieldedClass.newInstance().init(
+                                applicationContext)));
             } catch (BeansException | IllegalStateException
                     | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
-            
+
             return false;
         }
-        
+
         return true;
     }
 
-    protected void assertDistance(BallMan ballMan, WithNode target, float distance) {
+    protected boolean assertDistance(BallMan ballMan, WithNode target,
+            float distance) {
         if (!isCloseEnough(ballMan, target, distance)) {
             ballMan.addActionOnStart(applicationContext
                     .getAutowireCapableBeanFactory()
                     .createBean(MoveTowardsTargetAction.class)
                     .init(target, distance));
+            return false;
         }
+
+        return true;
     }
 
     protected boolean isCloseEnough(BallMan ballMan, WithNode target,

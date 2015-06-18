@@ -33,8 +33,12 @@ public abstract class ResourceUnit extends SmallObject {
                 .add(control);
 
         resources = chopCounter;
-        
+
         return this;
+    }
+
+    public void increaseCount(int count) {
+        resources += count;
     }
 
     public int getResourceCount() {

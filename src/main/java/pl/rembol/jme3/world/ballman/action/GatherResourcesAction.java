@@ -7,7 +7,6 @@ import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
-import pl.rembol.jme3.world.smallobject.tools.Axe;
 
 public class GatherResourcesAction extends Action {
 
@@ -39,7 +38,7 @@ public class GatherResourcesAction extends Action {
         } else {
             ballMan.addActionOnStart(applicationContext
                     .getAutowireCapableBeanFactory()
-                    .createBean(ChopTreeAction.class).init(resourceDeposit));
+                    .createBean(MineResourcesAction.class).init(resourceDeposit));
         }
     }
 

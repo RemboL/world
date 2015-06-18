@@ -3,17 +3,17 @@ package pl.rembol.jme3.world.ballman.action;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
-import pl.rembol.jme3.world.smallobject.tools.Axe;
+import pl.rembol.jme3.world.resources.units.ResourceUnit;
 
 import com.jme3.animation.LoopMode;
 
-public class ChopTreeAction extends Action {
+public class MineResourcesAction extends Action {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
 
     private static final int MAX_CHOPS = 10;
 
-    private static final float REQUIRED_DISTANCE = 2f;
+    private static final float REQUIRED_DISTANCE = 3f;
 
     private ResourceDeposit resourceDeposit;
 
@@ -23,14 +23,12 @@ public class ChopTreeAction extends Action {
 
     private boolean waitForAnimationToFinish = false;
 
-    private int chopCounter = 0;
-
     /**
      * 35 frames of animation * 1000 millis in second / 30 frames per second
      */
     private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-    public ChopTreeAction init(ResourceDeposit resourceDeposit) {
+    public MineResourcesAction init(ResourceDeposit resourceDeposit) {
         this.resourceDeposit = resourceDeposit;
 
         return this;
@@ -38,8 +36,15 @@ public class ChopTreeAction extends Action {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        assertDistance(ballMan, resourceDeposit, REQUIRED_DISTANCE);
-        return assertWielded(ballMan, Axe.class);
+        if (!assertWielded(ballMan, resourceDeposit.requiredTool())) {
+            return false;
+        }
+
+        if (!assertDistance(ballMan, resourceDeposit, REQUIRED_DISTANCE)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -51,17 +56,38 @@ public class ChopTreeAction extends Action {
             if (animationHit()) {
                 hit = true;
                 resourceDeposit.getChoppedBy(ballMan);
+                increaseHeldResourceCount(ballMan, 2);
                 chopCounter += 2;
             }
 
-            if (actionFinished()) {
+            if (actionFinished(ballMan)) {
                 waitForAnimationToFinish = true;
             }
         }
     }
 
-    private boolean actionFinished() {
-        return resourceDeposit.isDestroyed() || chopCounter >= MAX_CHOPS;
+    private void increaseHeldResourceCount(BallMan ballMan, int count) {
+        if (!resourceDeposit.givesResource().isInstance(
+                ballMan.getWieldedObject(Hand.LEFT))) {
+            ballMan.wield(resourceDeposit.produceResource(), Hand.LEFT);
+        }
+
+        ResourceUnit.class.cast(ballMan.getWieldedObject(Hand.LEFT))
+                .increaseCount(count);
+    }
+
+    private boolean actionFinished(BallMan ballMan) {
+        if (resourceDeposit.isDestroyed()) {
+            return true;
+        }
+        if (resourceDeposit.givesResource().isInstance(
+                ballMan.getWieldedObject(Hand.LEFT))
+                && ResourceUnit.class.cast(ballMan.getWieldedObject(Hand.LEFT))
+                        .getResourceCount() >= MAX_CHOPS) {
+            return true;
+        }
+
+        return false;
     }
 
     private void resetAnimation(BallMan ballMan) {
@@ -72,10 +98,8 @@ public class ChopTreeAction extends Action {
 
     @Override
     public boolean isFinished(BallMan ballMan) {
-        if (actionFinished() && animationEnded()) {
+        if (actionFinished(ballMan) && animationEnded()) {
 
-            ballMan.wield(resourceDeposit.produceResource(chopCounter),
-                    Hand.LEFT);
             return true;
         }
         return false;

@@ -95,35 +95,35 @@ public abstract class BuildAction extends Action {
             return true;
         }
 
-        if (assertWielded(ballMan, Hammer.class)) {
-            if (retrieveResources(ballMan)) {
-                resetAnimation(ballMan);
-
-                building.init(position, true);
-                building.setOwner(ballMan.getOwner());
-                constructionSite = new ConstructionSite(applicationContext,
-                        building, 5f);
-
-                minX = position.getX()
-                        - constructionSite.getBuilding().getWidth() - 5;
-                maxX = position.getX()
-                        + constructionSite.getBuilding().getWidth() + 5;
-                minY = position.getY()
-                        - constructionSite.getBuilding().getWidth() - 5;
-                maxY = position.getY()
-                        + constructionSite.getBuilding().getWidth() + 5;
-
-                for (int i = 0; i < 10; ++i) {
-                    particleEmitters.add(createParticleEmiter());
-                }
-            } else {
-                isFinished = true;
-            }
-
-            return true;
+        if (!assertWielded(ballMan, Hammer.class)) {
+            return false;
         }
 
-        return false;
+        if (retrieveResources(ballMan)) {
+            resetAnimation(ballMan);
+
+            building.init(position, true);
+            building.setOwner(ballMan.getOwner());
+            constructionSite = new ConstructionSite(applicationContext,
+                    building, 5f);
+
+            minX = position.getX() - constructionSite.getBuilding().getWidth()
+                    - 5;
+            maxX = position.getX() + constructionSite.getBuilding().getWidth()
+                    + 5;
+            minY = position.getY() - constructionSite.getBuilding().getWidth()
+                    - 5;
+            maxY = position.getY() + constructionSite.getBuilding().getWidth()
+                    + 5;
+
+            for (int i = 0; i < 10; ++i) {
+                particleEmitters.add(createParticleEmiter());
+            }
+        } else {
+            isFinished = true;
+        }
+
+        return true;
 
     }
 

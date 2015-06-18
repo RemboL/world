@@ -4,9 +4,10 @@ import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.resources.units.StoneBrick;
 import pl.rembol.jme3.world.save.StoneDepositDTO;
 import pl.rembol.jme3.world.save.UnitDTO;
+import pl.rembol.jme3.world.smallobject.SmallObject;
+import pl.rembol.jme3.world.smallobject.tools.PickAxe;
 
 import com.jme3.math.Vector2f;
-
 
 public class StoneDeposit extends ResourceDeposit {
 
@@ -41,10 +42,16 @@ public class StoneDeposit extends ResourceDeposit {
     }
 
     @Override
-    public ResourceUnit produceResource(int chopCounter) {
-       return (ResourceUnit) new StoneBrick().init(applicationContext, getLocation(), chopCounter);
+    public Class<? extends ResourceUnit> givesResource() {
+        return StoneBrick.class;
     }
-    
+
+    @Override
+    public ResourceUnit produceResource() {
+        return (ResourceUnit) new StoneBrick().init(applicationContext,
+                getLocation(), 0);
+    }
+
     @Override
     public UnitDTO save(String key) {
         return new StoneDepositDTO(key, this);
@@ -57,5 +64,10 @@ public class StoneDeposit extends ResourceDeposit {
             setHp(StoneDepositDTO.class.cast(unit).getHp());
         }
     }
-    
+
+    @Override
+    public Class<? extends SmallObject> requiredTool() {
+        return PickAxe.class;
+    }
+
 }

@@ -33,8 +33,13 @@ public class AttackAction extends Action {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        assertDistance(ballMan, target, REQUIRED_DISTANCE);
-        return assertWielded(ballMan, Sword.class);
+        if (!assertWielded(ballMan, Sword.class)) {
+            return false;
+        }
+        if (!assertDistance(ballMan, target, REQUIRED_DISTANCE)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
