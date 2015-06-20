@@ -1,19 +1,13 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.ballman.action.BuildAction;
-import pl.rembol.jme3.world.ballman.action.BuildWarehouseAction;
+import pl.rembol.jme3.world.building.BuildingFactory;
+import pl.rembol.jme3.world.building.warehouse.WarehouseFactory;
 
 public class BuildWarehouseOrder extends BuildOrder {
 
-	@Override
-	public Class<? extends BuildAction> getActionClass() {
-		return BuildWarehouseAction.class;
-	}
-
-	@Override
-	protected boolean hasResources(BallMan ballMan) {
-		return ballMan.getOwner().hasResources(150, 50, 0);
-	}
+    @Override
+    protected BuildingFactory createBuildingFactory() {
+        return new WarehouseFactory();
+    }
 
 }

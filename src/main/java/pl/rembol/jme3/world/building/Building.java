@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.Solid;
+import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.player.Player;
 import pl.rembol.jme3.world.player.PlayerService;
@@ -23,7 +22,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
@@ -88,8 +86,6 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
 		node.attachChild(building);
 		rootNode.attachChild(node);
-
-		ModelHelper.setColorToGeometry(building, ColorRGBA.Black, "");
 
 		control = new RigidBodyControl(new BoxCollisionShape(new Vector3f(
 				getWidth(), getHeight(), getWidth())), 0f);

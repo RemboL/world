@@ -10,6 +10,7 @@ import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.hud.ResourcesBar;
+import pl.rembol.jme3.world.resources.Cost;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -119,15 +120,15 @@ public class Player {
     public boolean hasResources(int wood, int stone, int housing) {
         if (wood > 0 && resourcesWood < wood) {
             if (active) {
-                consoleLog.addLine("Not enough wood");
+                consoleLog.addLine("Not enough wood ("+wood+" required)");
                 resourcesBar.blinkWood();
             }
             return false;
         }
-        
+
         if (stone > 0 && resourcesStone < stone) {
             if (active) {
-                consoleLog.addLine("Not enough stone");
+                consoleLog.addLine("Not enough stone ("+stone+" required)");
                 resourcesBar.blinkStone();
             }
             return false;
@@ -135,13 +136,17 @@ public class Player {
 
         if (housing > 0 && resourcesHousingLimit - resourcesHousing < housing) {
             if (active) {
-                consoleLog.addLine("Not enough housing");
+                consoleLog.addLine("Not enough housing ("+housing+" required)");
                 resourcesBar.blinkHousing();
             }
             return false;
         }
 
         return true;
+    }
+
+    public boolean hasResources(Cost cost) {
+        return hasResources(cost.wood(), cost.stone(), cost.housing());
     }
 
     public boolean retrieveResources(int wood, int stone, int housing) {
@@ -158,6 +163,10 @@ public class Player {
         }
     }
 
+    public boolean retrieveResources(Cost cost) {
+        return retrieveResources(cost.wood(), cost.stone(), cost.housing());
+    }
+
     public void setActive(boolean active) {
         this.active = active;
 
@@ -170,8 +179,8 @@ public class Player {
 
     private void updateResources() {
         if (active) {
-            resourcesBar.updateResources(resourcesWood, resourcesStone, resourcesHousing,
-                    resourcesHousingLimit);
+            resourcesBar.updateResources(resourcesWood, resourcesStone,
+                    resourcesHousing, resourcesHousingLimit);
         }
     }
 
@@ -187,4 +196,5 @@ public class Player {
                                 .distance(location))).findFirst();
 
     }
+
 }

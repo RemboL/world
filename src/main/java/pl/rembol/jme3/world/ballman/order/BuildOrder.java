@@ -9,6 +9,7 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
+import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.terrain.Terrain;
@@ -17,54 +18,61 @@ import com.jme3.math.Vector2f;
 
 public abstract class BuildOrder extends Order<BallMan> {
 
-	private float width;
+    @Autowired
+    protected Terrain terrain;
 
-	@Autowired
-	protected Terrain terrain;
+    @Autowired
+    protected ConsoleLog consoleLog;
 
-	@Autowired
-	protected ConsoleLog consoleLog;
+    @Autowired
+    protected UnitRegistry gameState;
 
-	@Autowired
-	protected UnitRegistry gameState;
+    protected BuildingFactory factory;
 
-	@PostConstruct
-	private void initWidth() {
-		width = applicationContext.getAutowireCapableBeanFactory()
-				.createBean(getActionClass()).createBuilding().getWidth();
-	}
+    @PostConstruct
+    private void initWidth() {
+        factory = createBuildingFactory();
+    }
 
-	@Override
-	protected void doPerform(BallMan ballMan, Vector2f location) {
-		if (!gameState.isSpaceFreeWithBuffer(
-				terrain.getGroundPosition(location), width)) {
-			consoleLog.addLine("Can't build here, something's in the way");
-			return;
-		}
-		if (hasResources(ballMan)) {
+    protected abstract BuildingFactory createBuildingFactory();
 
-			ballMan.setAction(applicationContext
-					.getAutowireCapableBeanFactory()
-					.createBean(MoveTowardsLocationAction.class)
-					.init(location, 10f));
-			ballMan.addAction(applicationContext
-					.getAutowireCapableBeanFactory()
-					.createBean(SmoothenTerrainAction.class)
-					.init(location.add(new Vector2f(-width, -width)),
-							location.add(new Vector2f(width, width)), 3));
-			ballMan.addAction(applicationContext
-					.getAutowireCapableBeanFactory()
-					.createBean(getActionClass()).init(location));
-		}
-	}
+    @Override
+    protected void doPerform(BallMan ballMan, Vector2f location) {
+        if (!gameState.isSpaceFreeWithBuffer(
+                terrain.getGroundPosition(location), factory.width())) {
+            consoleLog.addLine("Can't build here, something's in the way");
+            return;
+        }
+        if (hasResources(ballMan)) {
 
-	protected abstract boolean hasResources(BallMan ballMan);
+            ballMan.setAction(applicationContext
+                    .getAutowireCapableBeanFactory()
+                    .createBean(MoveTowardsLocationAction.class)
+                    .init(location, factory.width() + 5));
+            ballMan.addAction(applicationContext
+                    .getAutowireCapableBeanFactory()
+                    .createBean(SmoothenTerrainAction.class)
+                    .init(location.add(new Vector2f(-factory.width(), -factory
+                            .width())),
+                            location.add(new Vector2f(factory.width(), factory
+                                    .width())), 3));
+            ballMan.addAction(applicationContext
+                    .getAutowireCapableBeanFactory()
+                    .createBean(BuildAction.class).init(location, factory));
+        }
+    }
 
-	public abstract Class<? extends BuildAction> getActionClass();
+    protected boolean hasResources(BallMan ballMan) {
+        return ballMan.getOwner().hasResources(factory.cost());
+    }
 
-	@Override
-	protected void doPerform(BallMan ballMan, WithNode target) {
-		System.out.println("I cannot smoothen the " + target);
-	}
+    @Override
+    protected void doPerform(BallMan ballMan, WithNode target) {
+        System.out.println("I cannot smoothen the " + target);
+    }
+
+    public BuildingFactory factory() {
+        return factory;
+    }
 
 }

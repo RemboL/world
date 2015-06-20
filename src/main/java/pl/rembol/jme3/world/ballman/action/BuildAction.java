@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
@@ -22,7 +23,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-public abstract class BuildAction extends Action {
+public class BuildAction extends Action {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
 
@@ -61,9 +62,7 @@ public abstract class BuildAction extends Action {
     @Autowired
     private UnitRegistry gameState;
 
-    public abstract Building createBuilding();
-
-    protected abstract boolean retrieveResources(BallMan ballMan);
+    private BuildingFactory factory;
 
     @Override
     public boolean isFinished(BallMan ballMan) {
@@ -78,18 +77,17 @@ public abstract class BuildAction extends Action {
 
     }
 
-    public BuildAction init(Vector2f position) {
+    public BuildAction init(Vector2f position, BuildingFactory factory) {
         this.position = position;
+        this.factory = factory;
 
         return this;
     }
 
     @Override
     protected boolean start(BallMan ballMan) {
-        Building building = createBuilding();
-
         if (!gameState.isSpaceFree(terrain.getGroundPosition(position),
-                building.getWidth())) {
+                factory.width())) {
             consoleLog.addLine("Can't build here, something's in the way");
             isFinished = true;
             return true;
@@ -99,10 +97,11 @@ public abstract class BuildAction extends Action {
             return false;
         }
 
-        if (retrieveResources(ballMan)) {
+        if (ballMan.getOwner().retrieveResources(factory.cost())) {
             resetAnimation(ballMan);
 
-            building.init(position, true);
+            Building building = factory.create(applicationContext, position,
+                    true);
             building.setOwner(ballMan.getOwner());
             constructionSite = new ConstructionSite(applicationContext,
                     building, 5f);
@@ -117,7 +116,7 @@ public abstract class BuildAction extends Action {
                     + 5;
 
             for (int i = 0; i < 10; ++i) {
-                particleEmitters.add(createParticleEmiter());
+                particleEmitters.add(createParticleEmitter());
             }
         } else {
             isFinished = true;
@@ -127,7 +126,7 @@ public abstract class BuildAction extends Action {
 
     }
 
-    private DustParticleEmitter createParticleEmiter() {
+    private DustParticleEmitter createParticleEmitter() {
         return new DustParticleEmitter(applicationContext)
                 .doSetLocalTranslation(new Vector3f(position.x, terrain
                         .getTerrain().getHeight(position), position.y));
