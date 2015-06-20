@@ -20,7 +20,8 @@ public class OrderFactory implements ApplicationContextAware {
 	public static final String ORDER_DEFAULT = "order_default";
 	public static final String ORDER_FLATTEN = "order_flatten";
 	public static final String ORDER_BUILD_HOUSE = "order_buildHouse";
-	public static final String ORDER_BUILD_WAREHOUSE = "order_buildWarehouse";
+	public static final String ORDER_BUILD_TOOLSHOP = "order_buildToolshop";
+    public static final String ORDER_BUILD_WAREHOUSE = "order_buildWarehouse";
 	public static final String ORDER_SELECT = "order_select";
 	public static final String ORDER_RECRUIT = "order_recruit";
 
@@ -35,6 +36,7 @@ public class OrderFactory implements ApplicationContextAware {
 		registerOrder(ORDER_DEFAULT, DefaultActionOrder.class);
 		registerOrder(ORDER_FLATTEN, SmoothenTerrainOrder.class);
 		registerOrder(ORDER_BUILD_HOUSE, BuildHouseOrder.class);
+		registerOrder(ORDER_BUILD_TOOLSHOP, BuildToolshopOrder.class);
 		registerOrder(ORDER_BUILD_WAREHOUSE, BuildWarehouseOrder.class);
 		registerOrder(ORDER_SELECT, SelectOrder.class);
 		registerOrder(ORDER_RECRUIT, RecruitOrder.class);

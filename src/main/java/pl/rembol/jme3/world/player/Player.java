@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.hud.ResourcesBar;
@@ -120,7 +121,7 @@ public class Player {
     public boolean hasResources(int wood, int stone, int housing) {
         if (wood > 0 && resourcesWood < wood) {
             if (active) {
-                consoleLog.addLine("Not enough wood ("+wood+" required)");
+                consoleLog.addLine("Not enough wood (" + wood + " required)");
                 resourcesBar.blinkWood();
             }
             return false;
@@ -128,7 +129,7 @@ public class Player {
 
         if (stone > 0 && resourcesStone < stone) {
             if (active) {
-                consoleLog.addLine("Not enough stone ("+stone+" required)");
+                consoleLog.addLine("Not enough stone (" + stone + " required)");
                 resourcesBar.blinkStone();
             }
             return false;
@@ -136,7 +137,8 @@ public class Player {
 
         if (housing > 0 && resourcesHousingLimit - resourcesHousing < housing) {
             if (active) {
-                consoleLog.addLine("Not enough housing ("+housing+" required)");
+                consoleLog.addLine("Not enough housing (" + housing
+                        + " required)");
                 resourcesBar.blinkHousing();
             }
             return false;
@@ -194,7 +196,18 @@ public class Player {
                                 .distance(location)).compareTo(
                         second.getNode().getWorldTranslation()
                                 .distance(location))).findFirst();
+    }
 
+    public Optional<Toolshop> getClosestToolshop(final Vector3f location) {
+
+        return gameState
+                .getToolshopsByOwner(this)
+                .stream()
+                .sorted((first, second) -> Float.valueOf(
+                        first.getNode().getWorldTranslation()
+                                .distance(location)).compareTo(
+                        second.getNode().getWorldTranslation()
+                                .distance(location))).findFirst();
     }
 
 }

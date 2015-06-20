@@ -1,0 +1,102 @@
+<scene previous_export_time="1434795300.633689" export_time="1434795338.712867" exported_by="RemboL" formatVersion="1.0.1" >
+  <nodes >
+    <node name="anvil" >
+      <position y="1.253889" x="-1.679528" z="0.497605" />
+      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity friction_y="1.0" friction_x="1.0" friction_z="1.0" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_trans_z="False" lock_trans_y="False" lock_trans_x="False" lock_rot_x="False" lock_rot_y="False" lock_rot_z="False" damping_rot="0.10000000149011612" mass="1.0" damping_trans="0.03999999910593033" velocity_max="0.0" velocity_min="0.0" actor="False" anisotropic_friction="False" name="anvil" ghost="False" mass_radius="1.0" meshFile="anvil.mesh" />
+    </node>
+    <node name="flag" >
+      <position y="0.430403" x="0.499212" z="1.089338" />
+      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity friction_y="1.0" friction_x="1.0" friction_z="1.0" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_trans_z="False" lock_trans_y="False" lock_trans_x="False" lock_rot_x="False" lock_rot_y="False" lock_rot_z="False" damping_rot="0.10000000149011612" mass="1.0" damping_trans="0.03999999910593033" velocity_max="0.0" velocity_min="0.0" actor="False" anisotropic_friction="False" name="flag" ghost="False" mass_radius="1.0" meshFile="flag.mesh" />
+    </node>
+    <node name="roof" >
+      <position y="0.676528" x="-0.210790" z="0.256214" />
+      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity friction_y="1.0" friction_x="1.0" friction_z="1.0" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_trans_z="False" lock_trans_y="False" lock_trans_x="False" lock_rot_x="False" lock_rot_y="False" lock_rot_z="False" damping_rot="0.10000000149011612" mass="1.0" damping_trans="0.03999999910593033" velocity_max="0.0" velocity_min="0.0" actor="False" anisotropic_friction="False" name="roof" ghost="False" mass_radius="1.0" meshFile="roof.mesh" />
+    </node>
+    <node name="pole" >
+      <position y="0.676528" x="-0.210790" z="0.256214" />
+      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity friction_y="1.0" friction_x="1.0" friction_z="1.0" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_trans_z="False" lock_trans_y="False" lock_trans_x="False" lock_rot_x="False" lock_rot_y="False" lock_rot_z="False" damping_rot="0.10000000149011612" mass="1.0" damping_trans="0.03999999910593033" velocity_max="0.0" velocity_min="0.0" actor="False" anisotropic_friction="False" name="pole" ghost="False" mass_radius="1.0" meshFile="pole.mesh" />
+    </node>
+    <node name="wall" >
+      <position y="0.676528" x="-0.210790" z="0.256214" />
+      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity friction_y="1.0" friction_x="1.0" friction_z="1.0" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_trans_z="False" lock_trans_y="False" lock_trans_x="False" lock_rot_x="False" lock_rot_y="False" lock_rot_z="False" damping_rot="0.10000000149011612" mass="1.0" damping_trans="0.03999999910593033" velocity_max="0.0" velocity_min="0.0" actor="False" anisotropic_friction="False" name="wall" ghost="False" mass_radius="1.0" meshFile="wall.mesh" />
+    </node>
+    <node name="floor" >
+      <position y="0.732195" x="-0.670350" z="0.322591" />
+      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity friction_y="1.0" friction_x="1.0" friction_z="1.0" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_trans_z="False" lock_trans_y="False" lock_trans_x="False" lock_rot_x="False" lock_rot_y="False" lock_rot_z="False" damping_rot="0.10000000149011612" mass="1.0" damping_trans="0.03999999910593033" velocity_max="0.0" velocity_min="0.0" actor="False" anisotropic_friction="False" name="floor" ghost="False" mass_radius="1.0" meshFile="floor.mesh" />
+    </node>
+    <node name="Lamp" >
+      <position y="5.903862" x="4.076245" z="-1.005454" />
+      <rotation qw="0.570947" qy="0.755880" qx="0.169076" qz="-0.272171" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light type="point" name="Lamp" shadow="true" powerScale="1.0" >
+        <position y="5.903862" x="4.076245" z="-1.005454" />
+        <lightAttenuation constant="1.0" linear="0.03333335240683057" range="5000" quadratic="0.0" />
+        <colourDiffuse g="1.0" b="1.0" r="1.0" />
+        <colourSpecular g="1.0" b="1.0" r="1.0" />
+        <colourShadow g="1.0" b="1.0" r="1.0" />
+      </light>
+    </node>
+    <node name="Camera" >
+      <position y="5.343665" x="7.481132" z="6.507640" />
+      <rotation qw="0.781600" qy="0.334251" qx="0.481707" qz="-0.212922" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera name="Camera" projectionType="perspective" fov="0.5033799435163735" >
+        <clipping far="100.0" nearPlaneDist="0.10000000149011612" near="0.10000000149011612" farPlaneDist="100.0" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="C:\Users\RemboL\git\trashcan\JME3\world\src\main\resources\toolshop\toolshop.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourBackground g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+    <colourAmbient g="0.0" b="0.0" r="0.0" />
+    <colourDiffuse g="0.05087608844041824" b="0.05087608844041824" r="0.05087608844041824" />
+  </environment>
+</scene>

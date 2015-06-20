@@ -1,14 +1,14 @@
-package pl.rembol.jme3.world.building.warehouse;
+package pl.rembol.jme3.world.building.toolshop;
 
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.resources.Cost;
 
-public class WarehouseFactory extends BuildingFactory {
+public class ToolshopFactory extends BuildingFactory {
 
     @Override
     public Cost cost() {
-        return new Cost(50, 25, 0);
+        return new Cost(75, 25, 0);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class WarehouseFactory extends BuildingFactory {
 
     @Override
     protected Class<? extends Building> building() {
-        return Warehouse.class;
+        return Toolshop.class;
     }
 
 }

@@ -4,8 +4,8 @@ import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.resources.units.StoneBrick;
 import pl.rembol.jme3.world.save.StoneDepositDTO;
 import pl.rembol.jme3.world.save.UnitDTO;
-import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.PickAxe;
+import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 import com.jme3.math.Vector2f;
 
@@ -66,7 +66,7 @@ public class StoneDeposit extends ResourceDeposit {
     }
 
     @Override
-    public Class<? extends SmallObject> requiredTool() {
+    public Class<? extends Tool> requiredTool() {
         return PickAxe.class;
     }
 

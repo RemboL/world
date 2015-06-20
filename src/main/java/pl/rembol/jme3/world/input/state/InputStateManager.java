@@ -28,7 +28,9 @@ public class InputStateManager {
 
 	public static final String H = "command_h";
 
-	public static final String W = "command_w";
+    public static final String T = "command_t";
+
+    public static final String W = "command_w";
 
 	public static final String C = "command_c";
 

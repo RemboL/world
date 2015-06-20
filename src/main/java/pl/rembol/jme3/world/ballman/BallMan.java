@@ -18,6 +18,7 @@ import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.interfaces.WithDefaultAction;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.particles.SparkParticleEmitter;
@@ -31,6 +32,7 @@ import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.SmallObject;
+import pl.rembol.jme3.world.smallobject.tools.Tool;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.animation.AnimChannel;
@@ -91,6 +93,8 @@ public class BallMan extends AbstractControl implements Selectable,
     private AnimChannel animationChannel;
     private Player owner;
     private ApplicationContext applicationContext;
+
+    private Inventory inventory = new Inventory();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -207,7 +211,6 @@ public class BallMan extends AbstractControl implements Selectable,
                 hand.bone));
 
         wielded.put(hand, item);
-
     }
 
     public SmallObject getWieldedObject(Hand hand) {
@@ -315,15 +318,14 @@ public class BallMan extends AbstractControl implements Selectable,
     @Override
     protected void controlUpdate(float tpf) {
         if (!actionQueue.isEmpty()) {
-
             Action action = actionQueue.get(0);
-
             action.act(this, tpf);
 
-            if (action.isFinished(this)) {
+            if (action.isCancelled() || action.isFinished(this)) {
                 action.finish();
                 actionQueue.remove(action);
                 animationChannel.setAnim("stand");
+            } else {
             }
         }
 
@@ -342,7 +344,15 @@ public class BallMan extends AbstractControl implements Selectable,
     }
 
     @Override
-    public List<String> getStatusText() {
+    public StatusDetails getStatusDetails() {
+        if (playerService.getActivePlayer().equals(owner)) {
+            return new StatusDetails(getStatusText(), inventory.icons());
+        } else {
+            return new StatusDetails(getStatusText());
+        }
+    }
+
+    private List<String> getStatusText() {
         return Arrays.asList("BallMan", "hp: " + hp + " / " + MAX_HP, "owner: "
                 + owner.getName());
     }
@@ -382,6 +392,18 @@ public class BallMan extends AbstractControl implements Selectable,
             init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
             this.setOwner(playerService.getPlayer(BallManDTO.class.cast(unit)
                     .getPlayer()));
+        }
+    }
+
+    public Inventory inventory() {
+        return inventory;
+    }
+
+    public void addToInventory(Tool tool) {
+        inventory.add(tool);
+
+        if (selectionNode != null) {
+            selectionManager.updateSelectionText();
         }
     }
 

@@ -1,16 +1,15 @@
 package pl.rembol.jme3.world.selection;
 
-import java.util.List;
-
+import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.interfaces.WithNode;
 
 public interface Selectable extends WithNode {
 
-	void select();
+    void select();
 
-	void deselect();
+    void deselect();
 
-	List<String> getStatusText();
+    StatusDetails getStatusDetails();
 
-	String getIconName();
+    String getIconName();
 }

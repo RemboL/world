@@ -1,7 +1,6 @@
 package pl.rembol.jme3.world.resources.deposits;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,11 @@ import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionNode;
-import pl.rembol.jme3.world.smallobject.SmallObject;
+import pl.rembol.jme3.world.smallobject.tools.Tool;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.asset.AssetManager;
@@ -188,15 +188,16 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     }
 
     @Override
-    public List<String> getStatusText() {
-        return Arrays.asList(getName(), "Resources left: " + hp);
+    public StatusDetails getStatusDetails() {
+        return new StatusDetails(Arrays.asList(getName(), "Resources left: "
+                + hp));
     }
 
     protected abstract String getName();
 
     public abstract ResourceUnit produceResource();
 
-    public abstract Class<? extends SmallObject> requiredTool();
+    public abstract Class<? extends Tool> requiredTool();
 
     public abstract Class<? extends ResourceUnit> givesResource();
 

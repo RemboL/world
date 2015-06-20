@@ -6,7 +6,6 @@ import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.resources.ResourceType;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.save.UnitDTO;
-import pl.rembol.jme3.world.save.WarehouseDTO;
 
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;

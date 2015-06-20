@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import pl.rembol.jme3.world.building.house.HouseDTO;
+import pl.rembol.jme3.world.building.warehouse.WarehouseDTO;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.xml.DomDriver;

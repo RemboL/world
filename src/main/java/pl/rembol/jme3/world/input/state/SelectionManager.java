@@ -23,159 +23,159 @@ import com.jme3.math.Vector3f;
 @Component
 public class SelectionManager {
 
-	public static enum SelectionType {
-		UNIT, HOUSE;
-	}
+    public static enum SelectionType {
+        UNIT, HOUSE;
+    }
 
-	private List<Selectable> selected = new ArrayList<>();
+    private List<Selectable> selected = new ArrayList<>();
 
-	@Autowired
-	private PlayerService playerService;
+    @Autowired
+    private PlayerService playerService;
 
-	@Autowired
-	private ActionBox actionBox;
+    @Autowired
+    private ActionBox actionBox;
 
-	@Autowired
-	private StatusBar statusBar;
+    @Autowired
+    private StatusBar statusBar;
 
-	@Autowired
-	private ModifierKeysManager modifierKeysManager;
+    @Autowired
+    private ModifierKeysManager modifierKeysManager;
 
-	@Autowired
-	private UnitRegistry gameState;
+    @Autowired
+    private UnitRegistry gameState;
 
-	public void select(Selectable selectable) {
-		if (modifierKeysManager.isShiftPressed()) {
-			switchSelection(selectable);
-		} else {
-			clearSelection();
-			doSelect(selectable);
-		}
+    public void select(Selectable selectable) {
+        if (modifierKeysManager.isShiftPressed()) {
+            switchSelection(selectable);
+        } else {
+            clearSelection();
+            doSelect(selectable);
+        }
 
-		updateSelectionText();
-		actionBox.updateActionButtons();
-	}
+        updateSelectionText();
+        actionBox.updateActionButtons();
+    }
 
-	public void updateSelectionText() {
+    public void updateSelectionText() {
 
-		if (selected.size() == 0) {
-			statusBar.setText("");
-		} else if (selected.size() == 1) {
-			statusBar.setText(selected.get(0).getStatusText());
-		} else {
-			statusBar.setIcons(selected);
-		}
+        if (selected.size() == 0) {
+            statusBar.setText("");
+        } else if (selected.size() == 1) {
+            statusBar.setStatusDetails(selected.get(0).getStatusDetails());
+        } else {
+            statusBar.setIcons(selected);
+        }
 
-	}
+    }
 
-	private void switchSelection(Selectable selectable) {
-		if (selected.contains(selectable)) {
-			doDeselect(selectable);
-		} else {
-			doSelect(selectable);
-		}
-	}
+    private void switchSelection(Selectable selectable) {
+        if (selected.contains(selectable)) {
+            doDeselect(selectable);
+        } else {
+            doSelect(selectable);
+        }
+    }
 
-	public void deselect(Selectable selectable) {
-		doDeselect(selectable);
+    public void deselect(Selectable selectable) {
+        doDeselect(selectable);
 
-		updateSelectionText();
-		actionBox.updateActionButtons();
-	}
+        updateSelectionText();
+        actionBox.updateActionButtons();
+    }
 
-	private void clearSelection() {
-		for (Selectable previouslySelected : selected) {
-			previouslySelected.deselect();
-		}
+    private void clearSelection() {
+        for (Selectable previouslySelected : selected) {
+            previouslySelected.deselect();
+        }
 
-		selected.clear();
-	}
+        selected.clear();
+    }
 
-	private void doDeselect(Selectable selectable) {
-		selected.remove(selectable);
-		selectable.deselect();
-	}
+    private void doDeselect(Selectable selectable) {
+        selected.remove(selectable);
+        selectable.deselect();
+    }
 
-	private void doSelect(Selectable selectable) {
-		selected.add(selectable);
-		selectable.select();
-	}
+    private void doSelect(Selectable selectable) {
+        selected.add(selectable);
+        selectable.select();
+    }
 
-	public List<Selectable> getSelected() {
-		return selected;
-	}
+    public List<Selectable> getSelected() {
+        return selected;
+    }
 
-	public SelectionType getSelectionType() {
-		if (!selected.isEmpty()) {
-			if (selected.stream().allMatch(
-					selectedUnit -> BallMan.class.isInstance(selectedUnit)
-							&& isOwnedByActivePlayer(selectedUnit))) {
-				return SelectionType.UNIT;
-			}
+    public SelectionType getSelectionType() {
+        if (!selected.isEmpty()) {
+            if (selected.stream().allMatch(
+                    selectedUnit -> BallMan.class.isInstance(selectedUnit)
+                            && isOwnedByActivePlayer(selectedUnit))) {
+                return SelectionType.UNIT;
+            }
 
-			if (selected.stream().allMatch(
-					selectedUnit -> House.class.isInstance(selectedUnit)
-							&& isOwnedByActivePlayer(selectedUnit)
-							&& isNotUnderConstruction(selectedUnit))) {
-				return SelectionType.HOUSE;
-			}
-		}
+            if (selected.stream().allMatch(
+                    selectedUnit -> House.class.isInstance(selectedUnit)
+                            && isOwnedByActivePlayer(selectedUnit)
+                            && isNotUnderConstruction(selectedUnit))) {
+                return SelectionType.HOUSE;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private boolean isNotUnderConstruction(Selectable selectedUnit) {
-		return selectedUnit.getNode().getControl(ConstructionSite.class) == null;
-	}
+    private boolean isNotUnderConstruction(Selectable selectedUnit) {
+        return selectedUnit.getNode().getControl(ConstructionSite.class) == null;
+    }
 
-	private boolean isOwnedByActivePlayer(Selectable selectedUnit) {
-		return WithOwner.class.cast(selectedUnit).getOwner()
-				.equals(playerService.getActivePlayer());
-	}
+    private boolean isOwnedByActivePlayer(Selectable selectedUnit) {
+        return WithOwner.class.cast(selectedUnit).getOwner()
+                .equals(playerService.getActivePlayer());
+    }
 
-	public void dragSelect(Vector3f dragStart, Vector3f dragStop) {
+    public void dragSelect(Vector3f dragStart, Vector3f dragStop) {
 
-		List<Selectable> dragSelected = gameState.getSelectableByPosition(
-				dragStart, dragStop);
+        List<Selectable> dragSelected = gameState.getSelectableByPosition(
+                dragStart, dragStop);
 
-		if (modifierKeysManager.isShiftPressed()) {
-			for (Selectable selectable : dragSelected) {
-				if (!selected.contains(selectable)) {
-					doSelect(selectable);
-				}
-			}
-		} else {
-			clearSelection();
+        if (modifierKeysManager.isShiftPressed()) {
+            for (Selectable selectable : dragSelected) {
+                if (!selected.contains(selectable)) {
+                    doSelect(selectable);
+                }
+            }
+        } else {
+            clearSelection();
 
-			List<WithOwner> activePlayerOwned = dragSelected
-					.stream()
-					.filter(selectable -> WithOwner.class
-							.isInstance(selectable))
-					.map(selectable -> WithOwner.class.cast(selectable))
-					.filter(withOwner -> withOwner.getOwner().equals(
-							playerService.getActivePlayer()))
-					.collect(Collectors.toList());
+            List<WithOwner> activePlayerOwned = dragSelected
+                    .stream()
+                    .filter(selectable -> WithOwner.class
+                            .isInstance(selectable))
+                    .map(selectable -> WithOwner.class.cast(selectable))
+                    .filter(withOwner -> withOwner.getOwner().equals(
+                            playerService.getActivePlayer()))
+                    .collect(Collectors.toList());
 
-			if (!activePlayerOwned.isEmpty()) {
+            if (!activePlayerOwned.isEmpty()) {
 
-				if (activePlayerOwned.stream().anyMatch(
-						withOwner -> BallMan.class.isInstance(withOwner))) {
-					activePlayerOwned
-							.stream()
-							.filter(withOwner -> BallMan.class
-									.isInstance(withOwner))
-							.map(withOwner -> BallMan.class.cast(withOwner))
-							.forEach(ballMan -> doSelect(ballMan));
-				} else {
-					activePlayerOwned.stream()
-							.map(withOwner -> Selectable.class.cast(withOwner))
-							.forEach(selectable -> doSelect(selectable));
-				}
-			}
+                if (activePlayerOwned.stream().anyMatch(
+                        withOwner -> BallMan.class.isInstance(withOwner))) {
+                    activePlayerOwned
+                            .stream()
+                            .filter(withOwner -> BallMan.class
+                                    .isInstance(withOwner))
+                            .map(withOwner -> BallMan.class.cast(withOwner))
+                            .forEach(ballMan -> doSelect(ballMan));
+                } else {
+                    activePlayerOwned.stream()
+                            .map(withOwner -> Selectable.class.cast(withOwner))
+                            .forEach(selectable -> doSelect(selectable));
+                }
+            }
 
-		}
+        }
 
-		updateSelectionText();
-		actionBox.updateActionButtons();
-	}
+        updateSelectionText();
+        actionBox.updateActionButtons();
+    }
 }

@@ -34,11 +34,12 @@ public class GatherResourcesAction extends Action {
             ballMan.addActionOnStart(applicationContext
                     .getAutowireCapableBeanFactory()
                     .createBean(ReturnResourcesAction.class)
-                    .init(warehouse.get()));
+                    .init(warehouse.get()).withParent(this));
         } else {
             ballMan.addActionOnStart(applicationContext
                     .getAutowireCapableBeanFactory()
-                    .createBean(MineResourcesAction.class).init(resourceDeposit));
+                    .createBean(MineResourcesAction.class)
+                    .init(resourceDeposit).withParent(this));
         }
     }
 

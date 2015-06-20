@@ -56,8 +56,7 @@ public class MineResourcesAction extends Action {
             if (animationHit()) {
                 hit = true;
                 resourceDeposit.getChoppedBy(ballMan);
-                increaseHeldResourceCount(ballMan, 2);
-                chopCounter += 2;
+                increaseHeldResourceCount(ballMan, 1);
             }
 
             if (actionFinished(ballMan)) {
