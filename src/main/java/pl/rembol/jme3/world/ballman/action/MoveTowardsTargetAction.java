@@ -3,8 +3,8 @@ package pl.rembol.jme3.world.ballman.action;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.rembol.jme3.world.Solid;
-import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
@@ -14,7 +14,7 @@ import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
-public class MoveTowardsTargetAction extends Action {
+public class MoveTowardsTargetAction extends Action<WithMovingControl> {
 
     private Vector3f targetPosition;
     private WithNode target;
@@ -46,32 +46,31 @@ public class MoveTowardsTargetAction extends Action {
     }
 
     @Override
-    protected void doAct(BallMan ballMan, float tpf) {
-        path.updatePath(ballMan.getLocation());
+    protected void doAct(WithMovingControl unit, float tpf) {
+        path.updatePath(unit.getLocation());
 
         Vector3f checkpoint = path.getCheckPoint();
         if (checkpoint != null) {
-            ballMan.lookTowards(checkpoint);
-            ballMan.setTargetVelocity(5f);
+            unit.control().lookTowards(checkpoint);
+            unit.control().setTargetVelocity(5f);
         } else {
-            ballMan.setTargetVelocity(0f);
+            unit.control().setTargetVelocity(0f);
         }
 
         if (targetPosition.distance(target.getNode().getWorldTranslation()) > targetDistance) {
             // target moved
             this.targetPosition = target.getNode().getWorldTranslation()
                     .clone();
-            start(ballMan);
+            start(unit);
         }
     }
 
     @Override
-    public boolean isFinished(BallMan ballMan) {
-        if (ballMan.getLocation().distance(
-                target.getNode().getWorldTranslation()) < targetDistance
-                || (path != null && path.isFinished(ballMan.getLocation()))) {
-            ballMan.setTargetVelocity(0f);
-            ballMan.lookTowards(target);
+    public boolean isFinished(WithMovingControl unit) {
+        if (unit.getLocation().distance(target.getNode().getWorldTranslation()) < targetDistance
+                || (path != null && path.isFinished(unit.getLocation()))) {
+            unit.control().setTargetVelocity(0f);
+            unit.control().lookTowards(target);
             return true;
         }
 
@@ -79,19 +78,19 @@ public class MoveTowardsTargetAction extends Action {
     }
 
     @Override
-    protected boolean start(BallMan ballMan) {
-        ballMan.setAnimation("walk", LoopMode.Loop);
+    protected boolean start(WithMovingControl unit) {
+        unit.setAnimation("walk", LoopMode.Loop);
 
         if (target instanceof Solid) {
             path = pathfindingService.buildPath(
-                    ballMan.getLocation(),
+                    unit.getLocation(),
                     new Rectangle2f(new Vector2f(targetPosition.x
                             - target.getWidth() - 2, targetPosition.z
                             - target.getWidth() - 2), new Vector2f(
                             targetPosition.x + target.getWidth() + 2,
                             targetPosition.z + target.getWidth() + 2)));
         } else {
-            path = pathfindingService.buildPath(ballMan.getLocation(),
+            path = pathfindingService.buildPath(unit.getLocation(),
                     new Rectangle2f(new Vector2f(targetPosition.x - 1,
                             targetPosition.z - 1), new Vector2f(
                             targetPosition.x + 1, targetPosition.z + 1)));

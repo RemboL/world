@@ -7,14 +7,14 @@ import com.jme3.math.Vector2f;
 
 public class DefaultActionOrder extends Order<BallMan> {
 
-	@Override
-	protected void doPerform(BallMan ballMan, Vector2f location) {
-		ballMan.performDefaultAction(location);
-	}
+    @Override
+    protected void doPerform(BallMan ballMan, Vector2f location) {
+        ballMan.control().performDefaultAction(location);
+    }
 
-	@Override
-	protected void doPerform(BallMan ballMan, WithNode target) {
-		ballMan.performDefaultAction(target);
-	}
+    @Override
+    protected void doPerform(BallMan ballMan, WithNode target) {
+        ballMan.control().performDefaultAction(target);
+    }
 
 }

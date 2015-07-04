@@ -8,33 +8,39 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("player")
 public class PlayerDTO {
 
-	private String name;
+    private String name;
 
-	private ColorRGBA color;
+    private ColorRGBA color;
 
-	private Boolean active;
-	private int wood;
+    private Boolean active;
+    private int wood;
+    private int stone;
 
-	public PlayerDTO(Player player) {
-		this.name = player.getName();
-		this.color = player.getColor();
-		this.active = player.isActive();
-		this.wood = player.getResourcesWood();
-	}
+    public PlayerDTO(Player player) {
+        this.name = player.getName();
+        this.color = player.getColor();
+        this.active = player.isActive();
+        this.wood = player.getResourcesWood();
+        this.stone = player.getResourcesStone();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public ColorRGBA getColor() {
-		return color;
-	}
+    public ColorRGBA getColor() {
+        return color;
+    }
 
-	public Boolean getActive() {
-		return active;
-	}
+    public Boolean getActive() {
+        return active;
+    }
 
-	public int getWood() {
-		return wood;
-	}
+    public int getWood() {
+        return wood;
+    }
+
+    public int getStone() {
+        return stone;
+    }
 }

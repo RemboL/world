@@ -64,6 +64,7 @@ public class PlayerService implements ApplicationContextAware {
 			registerPlayer(playerDTO.getName(), playerDTO.getColor(),
 					playerDTO.getActive());
 			getPlayer(playerDTO.getName()).addWood(playerDTO.getWood());
+			getPlayer(playerDTO.getName()).addStone(playerDTO.getStone());
 		}
 
 	}

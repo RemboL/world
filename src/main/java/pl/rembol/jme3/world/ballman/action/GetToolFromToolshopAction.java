@@ -7,7 +7,7 @@ import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-public class GetToolFromToolshopAction extends Action {
+public class GetToolFromToolshopAction extends Action<BallMan> {
 
     private static final float REQUIRED_DISTANCE = 3;
     private Class<? extends Tool> toolClass;

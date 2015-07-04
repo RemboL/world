@@ -61,7 +61,7 @@
   </nodes>
   <externals >
     <item type="material" >
-      <file name="C:\Users\RemboL\Desktop\JAVA\git\trashcan\JME3\world\src\main\resources\house2\house2.material" />
+      <file name="house2.material" />
     </item>
   </externals>
   <environment >

@@ -5,7 +5,7 @@ import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 
-public class ReturnResourcesAction extends Action {
+public class ReturnResourcesAction extends Action<BallMan> {
 
     private float targetDistance = 3;
     private Warehouse warehouse;

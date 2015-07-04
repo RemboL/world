@@ -45,20 +45,22 @@ public abstract class BuildOrder extends Order<BallMan> {
         }
         if (hasResources(ballMan)) {
 
-            ballMan.setAction(applicationContext
-                    .getAutowireCapableBeanFactory()
-                    .createBean(MoveTowardsLocationAction.class)
-                    .init(location, factory.width() + 5));
-            ballMan.addAction(applicationContext
-                    .getAutowireCapableBeanFactory()
-                    .createBean(SmoothenTerrainAction.class)
-                    .init(location.add(new Vector2f(-factory.width(), -factory
-                            .width())),
-                            location.add(new Vector2f(factory.width(), factory
-                                    .width())), 3));
-            ballMan.addAction(applicationContext
-                    .getAutowireCapableBeanFactory()
-                    .createBean(BuildAction.class).init(location, factory));
+            ballMan.control().setAction(
+                    applicationContext.getAutowireCapableBeanFactory()
+                            .createBean(MoveTowardsLocationAction.class)
+                            .init(location, factory.width() + 5));
+            ballMan.control().addAction(
+                    applicationContext
+                            .getAutowireCapableBeanFactory()
+                            .createBean(SmoothenTerrainAction.class)
+                            .init(location.add(new Vector2f(-factory.width(),
+                                    -factory.width())),
+                                    location.add(new Vector2f(factory.width(),
+                                            factory.width())), 3));
+            ballMan.control().addAction(
+                    applicationContext.getAutowireCapableBeanFactory()
+                            .createBean(BuildAction.class)
+                            .init(location, factory));
         }
     }
 

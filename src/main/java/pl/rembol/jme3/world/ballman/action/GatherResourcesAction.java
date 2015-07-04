@@ -8,7 +8,7 @@ import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 
-public class GatherResourcesAction extends Action {
+public class GatherResourcesAction extends Action<BallMan> {
 
     private ResourceDeposit resourceDeposit;
 
@@ -31,15 +31,15 @@ public class GatherResourcesAction extends Action {
 
         if (ballMan.getWieldedObject(Hand.LEFT) instanceof ResourceUnit
                 && warehouse.isPresent()) {
-            ballMan.addActionOnStart(applicationContext
-                    .getAutowireCapableBeanFactory()
-                    .createBean(ReturnResourcesAction.class)
-                    .init(warehouse.get()).withParent(this));
+            ballMan.control().addActionOnStart(
+                    applicationContext.getAutowireCapableBeanFactory()
+                            .createBean(ReturnResourcesAction.class)
+                            .init(warehouse.get()).withParent(this));
         } else {
-            ballMan.addActionOnStart(applicationContext
-                    .getAutowireCapableBeanFactory()
-                    .createBean(MineResourcesAction.class)
-                    .init(resourceDeposit).withParent(this));
+            ballMan.control().addActionOnStart(
+                    applicationContext.getAutowireCapableBeanFactory()
+                            .createBean(MineResourcesAction.class)
+                            .init(resourceDeposit).withParent(this));
         }
     }
 

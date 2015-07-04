@@ -6,7 +6,7 @@ import pl.rembol.jme3.world.smallobject.tools.Sword;
 
 import com.jme3.animation.LoopMode;
 
-public class AttackAction extends Action {
+public class AttackAction extends Action<BallMan> {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
 

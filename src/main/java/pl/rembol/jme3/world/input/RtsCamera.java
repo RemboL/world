@@ -141,8 +141,8 @@ public class RtsCamera implements AnalogListener {
 	public void zoomIn(float value) {
 		zoomOut /= (1f + (zoomSpeed * value));
 
-		if (zoomOut < 10f) {
-			zoomOut = 10f;
+		if (zoomOut < 1f) {
+			zoomOut = 1f;
 		}
 
 		if (zoomOut > 100f) {

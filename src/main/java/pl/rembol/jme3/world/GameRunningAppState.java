@@ -5,7 +5,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
+import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.player.PlayerService;
+import pl.rembol.jme3.world.rabbit.Rabbit;
 import pl.rembol.jme3.world.save.SaveState;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -20,6 +23,7 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
@@ -88,9 +92,22 @@ public class GameRunningAppState extends AbstractAppState {
         playerService.loadPlayers(load.getPlayers());
         applicationContext.getBean(UnitRegistry.class).load(load.getUnits());
 
-//        new SaveState(terrain.save(), playerService.savePlayers(),
-//                applicationContext.getBean(UnitRegistry.class).save())
-//                .save("default.xml");
+        Building toolshop = applicationContext.getAutowireCapableBeanFactory()
+                .createBean(Toolshop.class).init(new Vector2f(15, -20));
+        toolshop.setOwner(playerService.getActivePlayer());
+
+        applicationContext.getAutowireCapableBeanFactory()
+                .createBean(Rabbit.class).init(new Vector2f(30, 0));
+        applicationContext.getAutowireCapableBeanFactory()
+                .createBean(Rabbit.class).init(new Vector2f(30, 10));
+        applicationContext.getAutowireCapableBeanFactory()
+                .createBean(Rabbit.class).init(new Vector2f(40, 10));
+        applicationContext.getAutowireCapableBeanFactory()
+                .createBean(Rabbit.class).init(new Vector2f(40, 0));
+
+        // new SaveState(terrain.save(), playerService.savePlayers(),
+        // applicationContext.getBean(UnitRegistry.class).save())
+        // .save("default.xml");
 
     }
 

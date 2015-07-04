@@ -7,7 +7,7 @@ import pl.rembol.jme3.world.resources.units.ResourceUnit;
 
 import com.jme3.animation.LoopMode;
 
-public class MineResourcesAction extends Action {
+public class MineResourcesAction extends Action<BallMan> {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
 
@@ -56,7 +56,7 @@ public class MineResourcesAction extends Action {
             if (animationHit()) {
                 hit = true;
                 resourceDeposit.getChoppedBy(ballMan);
-                increaseHeldResourceCount(ballMan, 1);
+                increaseHeldResourceCount(ballMan, 2);
             }
 
             if (actionFinished(ballMan)) {

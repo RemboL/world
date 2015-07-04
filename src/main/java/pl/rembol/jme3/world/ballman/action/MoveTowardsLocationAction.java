@@ -2,7 +2,7 @@ package pl.rembol.jme3.world.ballman.action;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
@@ -12,7 +12,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-public class MoveTowardsLocationAction extends Action {
+public class MoveTowardsLocationAction extends Action<WithMovingControl> {
 
     private Vector2f rectangleStart;
     private Vector2f rectangleEnd;
@@ -34,15 +34,15 @@ public class MoveTowardsLocationAction extends Action {
     }
 
     @Override
-    protected void doAct(BallMan ballMan, float tpf) {
-        path.updatePath(ballMan.getLocation());
+    protected void doAct(WithMovingControl unit, float tpf) {
+        path.updatePath(unit.getLocation());
 
         Vector3f checkpoint = path.getCheckPoint();
         if (checkpoint != null) {
-            ballMan.lookTowards(checkpoint);
-            ballMan.setTargetVelocity(5f);
+            unit.control().lookTowards(checkpoint);
+            unit.control().setTargetVelocity(5f);
         } else {
-            ballMan.setTargetVelocity(0f);
+            unit.control().setTargetVelocity(0f);
         }
     }
 
@@ -52,9 +52,9 @@ public class MoveTowardsLocationAction extends Action {
     }
 
     @Override
-    public boolean isFinished(BallMan ballMan) {
-        if ((path != null && path.isFinished(ballMan.getLocation()))) {
-            ballMan.setTargetVelocity(0f);
+    public boolean isFinished(WithMovingControl unit) {
+        if ((path != null && path.isFinished(unit.getLocation()))) {
+            unit.control().setTargetVelocity(0f);
             return true;
         }
 
@@ -62,10 +62,10 @@ public class MoveTowardsLocationAction extends Action {
     }
 
     @Override
-    protected boolean start(BallMan ballMan) {
-        ballMan.setAnimation("walk", LoopMode.Loop);
+    protected boolean start(WithMovingControl unit) {
+        unit.setAnimation("walk", LoopMode.Loop);
 
-        path = pathfindingService.buildPath(ballMan.getLocation(),
+        path = pathfindingService.buildPath(unit.getLocation(),
                 new Rectangle2f(rectangleStart, rectangleEnd));
 
         return true;

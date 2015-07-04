@@ -15,37 +15,37 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-public abstract class Action implements ApplicationContextAware {
+public abstract class Action<T extends WithNode> implements ApplicationContextAware {
 
     private boolean isStarted = false;
     private boolean isCancelled = false;
     protected ApplicationContext applicationContext;
 
-    protected Action parent = null;
-    protected List<Action> children = new ArrayList<>();
+    protected Action<?> parent = null;
+    protected List<Action<?>> children = new ArrayList<>();
 
-    protected boolean start(BallMan ballMan) {
+    protected boolean start(T unit) {
         return true;
     }
 
-    public void act(BallMan ballMan, float tpf) {
+    public void act(T unit, float tpf) {
         if (!isStarted) {
-            isStarted = start(ballMan);
+            isStarted = start(unit);
 
             if (!isStarted) {
                 return;
             }
         }
-        doAct(ballMan, tpf);
+        doAct(unit, tpf);
     }
 
-    abstract protected void doAct(BallMan ballMan, float tpf);
+    abstract protected void doAct(T unit, float tpf);
 
-    public boolean isFinished(BallMan ballMan) {
+    public boolean isFinished(T unit) {
         return false;
     }
 
-    protected Action superParent() {
+    protected Action<?> superParent() {
         if (parent == null) {
             return this;
         } else {
@@ -55,7 +55,7 @@ public abstract class Action implements ApplicationContextAware {
 
     protected void doCancel() {
         isCancelled = true;
-        for (Action child : children) {
+        for (Action<?> child : children) {
             child.doCancel();
         }
     }
@@ -88,16 +88,21 @@ public abstract class Action implements ApplicationContextAware {
                         wieldedClass);
                 System.out.println("toool " + toolFromInventory);
                 if (toolFromInventory.isPresent()) {
-                    ballMan.addActionOnStart(applicationContext
-                            .getAutowireCapableBeanFactory()
-                            .createBean(SwitchToolAction.class)
-                            .init(toolFromInventory.get()).withParent(this));
+                    ballMan.control().addActionOnStart(
+                            applicationContext.getAutowireCapableBeanFactory()
+                                    .createBean(SwitchToolAction.class)
+                                    .init(toolFromInventory.get())
+                                    .withParent(this));
                     return false;
                 } else {
-                    ballMan.addActionOnStart(applicationContext
-                            .getAutowireCapableBeanFactory()
-                            .createBean(GetToolFromToolshopAction.class)
-                            .init(wieldedClass).withParent(this));
+                    ballMan.control()
+                            .addActionOnStart(
+                                    applicationContext
+                                            .getAutowireCapableBeanFactory()
+                                            .createBean(
+                                                    GetToolFromToolshopAction.class)
+                                            .init(wieldedClass)
+                                            .withParent(this));
                     return false;
                 }
             } catch (BeansException | IllegalStateException e) {
@@ -110,32 +115,36 @@ public abstract class Action implements ApplicationContextAware {
         return true;
     }
 
-    protected boolean assertDistance(BallMan ballMan, WithNode target,
+    protected boolean assertDistance(WithNode unit, WithNode target,
             float distance) {
-        if (!isCloseEnough(ballMan, target, distance)) {
-            ballMan.addActionOnStart(applicationContext
-                    .getAutowireCapableBeanFactory()
-                    .createBean(MoveTowardsTargetAction.class)
-                    .init(target, distance).withParent(this));
+        if (!isCloseEnough(unit, target, distance)
+                && BallMan.class.isInstance(unit)) {
+            BallMan.class
+                    .cast(unit)
+                    .control()
+                    .addActionOnStart(
+                            applicationContext.getAutowireCapableBeanFactory()
+                                    .createBean(MoveTowardsTargetAction.class)
+                                    .init(target, distance).withParent(this));
             return false;
         }
 
         return true;
     }
 
-    protected boolean isCloseEnough(BallMan ballMan, WithNode target,
+    protected boolean isCloseEnough(WithNode unit, WithNode target,
             float distance) {
         if (target instanceof Solid) {
             return new Rectangle2f(Solid.class.cast(target), distance)
-                    .isInside(ballMan.getNode().getWorldTranslation());
+                    .isInside(unit.getNode().getWorldTranslation());
         } else {
-            return ballMan.getLocation().distance(
-                    target.getNode().getWorldTranslation()) < target.getWidth()
-                    + distance;
+            return unit.getNode().getWorldTranslation()
+                    .distance(target.getNode().getWorldTranslation()) < target
+                    .getWidth() + distance;
         }
     }
 
-    protected Action withParent(Action action) {
+    protected Action<?> withParent(Action<?> action) {
         parent = action;
         action.children.add(this);
         return this;

@@ -6,7 +6,7 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.smallobject.SmallObject;
 
-public class SwitchToolAction extends Action {
+public class SwitchToolAction extends Action<BallMan> {
 
     private static final int SWITCH_FRAME = 17 * 1000 / 30;
 
@@ -33,7 +33,6 @@ public class SwitchToolAction extends Action {
 
     @Override
     protected void doAct(BallMan ballMan, float tpf) {
-        System.out.println("switching");
         if (animationSwitch()) {
             switched = true;
             ballMan.wield(smallObject, Hand.RIGHT);

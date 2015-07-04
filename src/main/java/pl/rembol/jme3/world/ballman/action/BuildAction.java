@@ -23,7 +23,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
-public class BuildAction extends Action {
+public class BuildAction extends Action<BallMan> {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
 

@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +11,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.ballman.action.Action;
-import pl.rembol.jme3.world.ballman.action.AttackAction;
-import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.input.state.StatusDetails;
-import pl.rembol.jme3.world.interfaces.WithDefaultAction;
-import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.particles.SparkParticleEmitter;
 import pl.rembol.jme3.world.player.Player;
 import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
-import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.selection.Destructable;
@@ -37,7 +29,6 @@ import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.animation.LoopMode;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -47,14 +38,11 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import com.jme3.scene.control.AbstractControl;
 
-public class BallMan extends AbstractControl implements Selectable,
-        WithDefaultAction, WithOwner, Destructable, ApplicationContextAware {
+public class BallMan implements Selectable, WithOwner, Destructable,
+        WithMovingControl, ApplicationContextAware {
 
     @Autowired
     private Terrain terrain;
@@ -83,14 +71,8 @@ public class BallMan extends AbstractControl implements Selectable,
     private static final int MAX_HP = 50;
     private int hp = MAX_HP;
 
-    private Vector3f targetDirection;
-    private float targetVelocity = 0;
-    private List<Action> actionQueue = new ArrayList<>();
-
     private Map<Hand, SmallObject> wielded = new HashMap<>();
 
-    private AnimControl animationControl;
-    private AnimChannel animationChannel;
     private Player owner;
     private ApplicationContext applicationContext;
 
@@ -113,7 +95,7 @@ public class BallMan extends AbstractControl implements Selectable,
 
         control = new BetterCharacterControl(.6f, 10f, 1);
 
-        node.addControl(this);
+        node.addControl(new BallManControl(applicationContext, this));
 
         bulletAppState.getPhysicsSpace().add(control);
 
@@ -153,7 +135,7 @@ public class BallMan extends AbstractControl implements Selectable,
 
         unitRegistry.unregister(this);
         rootNode.detachChild(node);
-        node.removeControl(this);
+        node.removeControl(BallManControl.class);
         bulletAppState.getPhysicsSpace().remove(control);
     }
 
@@ -186,8 +168,12 @@ public class BallMan extends AbstractControl implements Selectable,
 
         rootNode.attachChild(node);
         node.setShadowMode(ShadowMode.Cast);
-        animationControl = node.getControl(AnimControl.class);
-        animationChannel = animationControl.createChannel();
+        initAnimation();
+    }
+
+    private void initAnimation() {
+        AnimControl animationControl = node.getControl(AnimControl.class);
+        AnimChannel animationChannel = animationControl.createChannel();
         animationChannel.setAnim("stand");
     }
 
@@ -231,49 +217,6 @@ public class BallMan extends AbstractControl implements Selectable,
         }
     }
 
-    public void lookTowards(WithNode target) {
-        lookTowards(target.getNode().getWorldTranslation());
-    }
-
-    public void lookTowards(Vector3f location) {
-        targetDirection = location.subtract(node.getWorldTranslation()).setY(0)
-                .normalize();
-    }
-
-    public void setTargetVelocity(float targetVelocity) {
-        this.targetVelocity = targetVelocity;
-    }
-
-    public Vector3f getLocation() {
-        return node.getWorldTranslation();
-    }
-
-    public void setAction(Action action) {
-        if (!actionQueue.isEmpty()) {
-            actionQueue.get(0).stop();
-        }
-
-        actionQueue.clear();
-        actionQueue.add(action);
-    }
-
-    public void addAction(Action action) {
-        actionQueue.add(action);
-    }
-
-    public void addActionOnStart(Action action) {
-        if (!actionQueue.isEmpty()) {
-            actionQueue.get(0).stop();
-        }
-
-        actionQueue.add(0, action);
-    }
-
-    public void setAnimation(String animationName, LoopMode loopMode) {
-        animationChannel.setAnim(animationName);
-        animationChannel.setLoopMode(loopMode);
-    }
-
     @Override
     public void select() {
         if (selectionNode == null) {
@@ -289,58 +232,6 @@ public class BallMan extends AbstractControl implements Selectable,
             node.detachChild(selectionNode);
             selectionNode = null;
         }
-    }
-
-    @Override
-    public void performDefaultAction(WithNode target) {
-        if (target instanceof ResourceDeposit) {
-            setAction(applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(GatherResourcesAction.class)
-                    .init(this, ResourceDeposit.class.cast(target)));
-        } else if (WithOwner.class.isInstance(target)
-                && !WithOwner.class.cast(target).getOwner().equals(owner)
-                && Destructable.class.isInstance(target)) {
-            setAction(applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(AttackAction.class)
-                    .init(Destructable.class.cast(target)));
-        } else {
-            setAction(applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(MoveTowardsTargetAction.class).init(target, 5f));
-        }
-    }
-
-    @Override
-    public void performDefaultAction(Vector2f target) {
-        setAction(applicationContext.getAutowireCapableBeanFactory()
-                .createBean(MoveTowardsLocationAction.class).init(target, 1f));
-    }
-
-    @Override
-    protected void controlUpdate(float tpf) {
-        if (!actionQueue.isEmpty()) {
-            Action action = actionQueue.get(0);
-            action.act(this, tpf);
-
-            if (action.isCancelled() || action.isFinished(this)) {
-                action.finish();
-                actionQueue.remove(action);
-                animationChannel.setAnim("stand");
-            } else {
-            }
-        }
-
-        if (targetDirection != null) {
-            control.setViewDirection(control.getViewDirection()
-                    .add(targetDirection).setY(0).normalize());
-        }
-
-        control.setWalkDirection(control.getViewDirection().mult(
-                (targetVelocity + getWalkSpeed()) / 2));
-    }
-
-    @Override
-    protected void controlRender(RenderManager paramRenderManager,
-            ViewPort paramViewPort) {
     }
 
     @Override
@@ -405,6 +296,10 @@ public class BallMan extends AbstractControl implements Selectable,
         if (selectionNode != null) {
             selectionManager.updateSelectionText();
         }
+    }
+
+    public BallManControl control() {
+        return node.getControl(BallManControl.class);
     }
 
 }

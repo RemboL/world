@@ -91,7 +91,7 @@
   </nodes>
   <externals >
     <item type="material" >
-      <file name="C:\Users\RemboL\git\trashcan\JME3\world\src\main\resources\toolshop\toolshop.material" />
+      <file name="toolshop.material" />
     </item>
   </externals>
   <environment >
