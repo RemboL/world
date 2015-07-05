@@ -1,9 +1,10 @@
-package pl.rembol.jme3.world.interfaces;
+package pl.rembol.jme3.world.controls;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.rembol.jme3.world.ballman.action.Action;
+import pl.rembol.jme3.world.interfaces.WithNode;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;

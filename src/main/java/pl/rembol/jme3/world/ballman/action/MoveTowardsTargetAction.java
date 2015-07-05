@@ -51,10 +51,10 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
 
         Vector3f checkpoint = path.getCheckPoint();
         if (checkpoint != null) {
-            unit.control().lookTowards(checkpoint);
-            unit.control().setTargetVelocity(5f);
+            unit.movingControl().lookTowards(checkpoint);
+            unit.movingControl().setTargetVelocity(5f);
         } else {
-            unit.control().setTargetVelocity(0f);
+            unit.movingControl().setTargetVelocity(0f);
         }
 
         if (targetPosition.distance(target.getNode().getWorldTranslation()) > targetDistance) {
@@ -69,8 +69,8 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
     public boolean isFinished(WithMovingControl unit) {
         if (unit.getLocation().distance(target.getNode().getWorldTranslation()) < targetDistance
                 || (path != null && path.isFinished(unit.getLocation()))) {
-            unit.control().setTargetVelocity(0f);
-            unit.control().lookTowards(target);
+            unit.movingControl().setTargetVelocity(0f);
+            unit.movingControl().lookTowards(target);
             return true;
         }
 

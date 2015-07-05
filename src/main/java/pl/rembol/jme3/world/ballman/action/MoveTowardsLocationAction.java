@@ -39,10 +39,10 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
 
         Vector3f checkpoint = path.getCheckPoint();
         if (checkpoint != null) {
-            unit.control().lookTowards(checkpoint);
-            unit.control().setTargetVelocity(5f);
+            unit.movingControl().lookTowards(checkpoint);
+            unit.movingControl().setTargetVelocity(5f);
         } else {
-            unit.control().setTargetVelocity(0f);
+            unit.movingControl().setTargetVelocity(0f);
         }
     }
 
@@ -54,7 +54,7 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
     @Override
     public boolean isFinished(WithMovingControl unit) {
         if ((path != null && path.isFinished(unit.getLocation()))) {
-            unit.control().setTargetVelocity(0f);
+            unit.movingControl().setTargetVelocity(0f);
             return true;
         }
 

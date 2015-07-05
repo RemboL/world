@@ -8,9 +8,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.controls.MovingControl;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.input.state.StatusDetails;
-import pl.rembol.jme3.world.interfaces.Moving;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.selection.Selectable;
@@ -80,6 +80,7 @@ public class Rabbit extends AbstractControl implements Selectable,
         control = new BetterCharacterControl(.6f, 10f, 1);
 
         node.addControl(new RabbitControl(applicationContext, this));
+        node.addControl(new MovingControl(this));
 
         bulletAppState.getPhysicsSpace().add(control);
 
@@ -150,11 +151,6 @@ public class Rabbit extends AbstractControl implements Selectable,
     @Override
     public String getIconName() {
         return "rabbit";
-    }
-
-    @Override
-    public Moving control() {
-        return node.getControl(RabbitControl.class);
     }
 
 }

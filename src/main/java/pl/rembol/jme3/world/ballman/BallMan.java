@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.controls.MovingControl;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
@@ -96,6 +97,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         control = new BetterCharacterControl(.6f, 10f, 1);
 
         node.addControl(new BallManControl(applicationContext, this));
+        node.addControl(new MovingControl(this));
 
         bulletAppState.getPhysicsSpace().add(control);
 
@@ -136,6 +138,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         unitRegistry.unregister(this);
         rootNode.detachChild(node);
         node.removeControl(BallManControl.class);
+        node.removeControl(MovingControl.class);
         bulletAppState.getPhysicsSpace().remove(control);
     }
 
