@@ -1,5 +1,9 @@
 package pl.rembol.jme3.world.player;
 
+import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +16,7 @@ import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.hud.ResourcesBar;
 import pl.rembol.jme3.world.resources.Cost;
+import pl.rembol.jme3.world.resources.ResourceType;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -25,9 +30,11 @@ public class Player {
     private static Integer playerCounter = 0;
     private Integer id;
 
-    private int resourcesWood = 0;
-    private int resourcesStone = 0;
-    private int resourcesHousing = 0;
+    // private int resourcesFood = 0;
+    // private int resourcesWood = 0;
+    // private int resourcesStone = 0;
+    // private int resourcesHousing = 0;
+    private Map<ResourceType, Integer> resources = new HashMap<>();
     private int resourcesHousingLimit = 0;
 
     private ColorRGBA color = null;
@@ -42,6 +49,12 @@ public class Player {
 
     @Autowired
     private UnitRegistry gameState;
+
+    public Player() {
+        for (ResourceType type : ResourceType.values()) {
+            resources.put(type, 0);
+        }
+    }
 
     @PostConstruct
     public void init() {
@@ -77,30 +90,8 @@ public class Player {
         return Player.class.cast(that).getId().equals(this.getId());
     }
 
-    public int getResourcesWood() {
-        return resourcesWood;
-    }
-
-    public int getResourcesStone() {
-        return resourcesStone;
-    }
-
-    public int getResourcesHousing() {
-        return resourcesHousing;
-    }
-
-    public int getResourcesHousingLimit() {
-        return resourcesHousingLimit;
-    }
-
-    public void addWood(int wood) {
-        resourcesWood += wood;
-
-        updateResources();
-    }
-
-    public void addStone(int stone) {
-        resourcesStone += stone;
+    public void addResource(ResourceType type, int count) {
+        resources.put(type, resources.get(type) + count);
 
         updateResources();
     }
@@ -113,60 +104,39 @@ public class Player {
     }
 
     public void updateHousing() {
-        resourcesHousing = gameState.getBallMenByOwner(this).size();
+        resources.put(HOUSING, gameState.getBallMenByOwner(this).size());
 
         updateResources();
     }
 
-    public boolean hasResources(int wood, int stone, int housing) {
-        if (wood > 0 && resourcesWood < wood) {
-            if (active) {
-                consoleLog.addLine("Not enough wood (" + wood + " required)");
-                resourcesBar.blinkWood();
+    public boolean hasResources(Cost cost) {
+        for (Map.Entry<ResourceType, Integer> entry : cost.map().entrySet()) {
+            if (entry.getValue() > 0
+                    && resources.get(entry.getKey()) < entry.getValue()) {
+                if (active) {
+                    consoleLog.addLine("Not enough "
+                            + entry.getKey().resourceName() + " ("
+                            + entry.getValue() + " required)");
+                    resourcesBar.blinkResource(entry.getKey());
+                }
+                return false;
             }
-            return false;
         }
-
-        if (stone > 0 && resourcesStone < stone) {
-            if (active) {
-                consoleLog.addLine("Not enough stone (" + stone + " required)");
-                resourcesBar.blinkStone();
-            }
-            return false;
-        }
-
-        if (housing > 0 && resourcesHousingLimit - resourcesHousing < housing) {
-            if (active) {
-                consoleLog.addLine("Not enough housing (" + housing
-                        + " required)");
-                resourcesBar.blinkHousing();
-            }
-            return false;
-        }
-
         return true;
     }
 
-    public boolean hasResources(Cost cost) {
-        return hasResources(cost.wood(), cost.stone(), cost.housing());
-    }
-
-    public boolean retrieveResources(int wood, int stone, int housing) {
-        if (hasResources(wood, stone, housing)) {
-            resourcesWood -= wood;
-            resourcesStone -= stone;
-            resourcesHousing += housing;
+    public boolean retrieveResources(Cost cost) {
+        if (hasResources(cost)) {
+            for (Map.Entry<ResourceType, Integer> entry : cost.map().entrySet()) {
+                resources.put(entry.getKey(), resources.get(entry.getKey())
+                        - entry.getValue());
+            }
 
             updateResources();
-
             return true;
         } else {
             return false;
         }
-    }
-
-    public boolean retrieveResources(Cost cost) {
-        return retrieveResources(cost.wood(), cost.stone(), cost.housing());
     }
 
     public void setActive(boolean active) {
@@ -181,8 +151,7 @@ public class Player {
 
     private void updateResources() {
         if (active) {
-            resourcesBar.updateResources(resourcesWood, resourcesStone,
-                    resourcesHousing, resourcesHousingLimit);
+            resourcesBar.updateResources(resources, resourcesHousingLimit);
         }
     }
 
@@ -208,6 +177,10 @@ public class Player {
                                 .distance(location)).compareTo(
                         second.getNode().getWorldTranslation()
                                 .distance(location))).findFirst();
+    }
+
+    public int getResource(ResourceType type) {
+        return resources.get(type);
     }
 
 }

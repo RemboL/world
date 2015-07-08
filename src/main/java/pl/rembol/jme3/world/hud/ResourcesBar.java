@@ -1,9 +1,19 @@
 package pl.rembol.jme3.world.hud;
 
+import static pl.rembol.jme3.world.resources.ResourceType.FOOD;
+import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
+import static pl.rembol.jme3.world.resources.ResourceType.STONE;
+import static pl.rembol.jme3.world.resources.ResourceType.WOOD;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import pl.rembol.jme3.world.resources.ResourceType;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
@@ -15,117 +25,100 @@ import com.jme3.ui.Picture;
 
 @Component
 public class ResourcesBar {
-	private Picture frame;
-	private Picture woodIcon;
-	private BitmapText woodText;
-    private Picture stoneIcon;
-    private BitmapText stoneText;
-	private Picture housingIcon;
-	private BitmapText housingText;
+    private Picture frame;
 
-	private static final float ICON_SIZE = 32;
+    private Map<ResourceType, Picture> icons = new HashMap<>();
+    private Map<ResourceType, BitmapText> texts = new HashMap<>();
 
-	private Vector2f framePosition;
+    private static final int ICON_SIZE = 32;
 
-	@Autowired
-	private Node guiNode;
+    private static final int WIDTH = 500;
 
-	@Autowired
-	private AssetManager assetManager;
+    private static final int HEIGHT = 60;
 
-	@Autowired
-	private AppSettings settings;
+    private static final int ICON_SIZE_PLUS = ICON_SIZE + 8;
 
-	@PostConstruct
-	public void init() {
+    private static final int RESOURCE_OFFSET_SIZE = 115;
 
-		frame = new Picture("Resources Box");
-		frame.setImage(assetManager, "interface/resources_bar.png", true);
-		framePosition = new Vector2f(settings.getWidth() - 400,
-				settings.getHeight() - 60);
-		frame.move(framePosition.x, framePosition.y, -2);
-		frame.setWidth(400);
-		frame.setHeight(60);
-		guiNode.attachChild(frame);
+    private Vector2f framePosition;
 
-		initIconsAndTexts(guiNode, settings, assetManager);
+    @Autowired
+    private Node guiNode;
 
-	}
+    @Autowired
+    private AssetManager assetManager;
 
-	private void initIconsAndTexts(Node guiNode, AppSettings settings,
-			AssetManager assetManager) {
-		BitmapFont guiFont = assetManager
-				.loadFont("Interface/Fonts/Default.fnt");
+    @Autowired
+    private AppSettings settings;
 
-		woodIcon = new Picture("Wood icon");
-		woodIcon.setImage(assetManager, "interface/resources/wood.png", true);
-		woodIcon.move(framePosition.x + 25, framePosition.y + 13, -1);
-		woodIcon.setWidth(ICON_SIZE);
-		woodIcon.setHeight(ICON_SIZE);
-		guiNode.attachChild(woodIcon);
+    @PostConstruct
+    public void init() {
 
-		woodText = new BitmapText(guiFont);
-		woodText.setSize(guiFont.getCharSet().getRenderedSize());
-		woodText.move(framePosition.x + 65,
-				framePosition.y + 16 + woodText.getLineHeight(), 0);
-		guiNode.attachChild(woodText);
-		
-		stoneIcon = new Picture("Stone icon");
-		stoneIcon.setImage(assetManager, "interface/resources/stone.png", true);
-		stoneIcon.move(framePosition.x + 125, framePosition.y + 13, -1);
-		stoneIcon.setWidth(ICON_SIZE);
-		stoneIcon.setHeight(ICON_SIZE);
-        guiNode.attachChild(stoneIcon);
+        frame = new Picture("Resources Box");
+        frame.setImage(assetManager, "interface/resources_bar.png", true);
+        framePosition = new Vector2f(settings.getWidth() - WIDTH,
+                settings.getHeight() - HEIGHT);
+        frame.move(framePosition.x, framePosition.y, -2);
+        frame.setWidth(WIDTH);
+        frame.setHeight(HEIGHT);
+        guiNode.attachChild(frame);
 
-        stoneText = new BitmapText(guiFont);
-        stoneText.setSize(guiFont.getCharSet().getRenderedSize());
-        stoneText.move(framePosition.x + 165,
-                framePosition.y + 16 + woodText.getLineHeight(), 0);
-        guiNode.attachChild(stoneText);
+        initIconsAndTexts(guiNode, settings, assetManager);
 
-		housingIcon = new Picture("Housing icon");
-		housingIcon.setImage(assetManager, "interface/resources/housing.png",
-				true);
-		housingIcon.move(framePosition.x + 225, framePosition.y + 13, -1);
-		housingIcon.setWidth(ICON_SIZE);
-		housingIcon.setHeight(ICON_SIZE);
-		guiNode.attachChild(housingIcon);
-
-		housingText = new BitmapText(guiFont);
-		housingText.setSize(guiFont.getCharSet().getRenderedSize());
-		housingText.move(framePosition.x + 265,
-				framePosition.y + 16 + woodText.getLineHeight(), 0);
-		guiNode.attachChild(housingText);
-
-	}
-
-	public void setWood(int wood) {
-		woodText.setText("" + wood);
-	}
-	
-	public void setStone(int stone) {
-        stoneText.setText("" + stone);
     }
 
-	public void setHousing(int housing, int housingLimit) {
-		housingText.setText("" + housing + " / " + housingLimit);
-	}
+    private void initIconsAndTexts(Node guiNode, AppSettings settings,
+            AssetManager assetManager) {
+        BitmapFont guiFont = assetManager
+                .loadFont("Interface/Fonts/Default.fnt");
 
-	public void blinkWood() {
-		new BlinkControl(woodIcon, ICON_SIZE);
-	}
+        initResource(guiNode, assetManager, guiFont, FOOD, 0);
+        initResource(guiNode, assetManager, guiFont, WOOD, 1);
+        initResource(guiNode, assetManager, guiFont, STONE, 2);
+        initResource(guiNode, assetManager, guiFont, HOUSING, 3);
 
-    public void blinkStone() {
-        new BlinkControl(stoneIcon, ICON_SIZE);
     }
-    
-	public void blinkHousing() {
-		new BlinkControl(housingIcon, ICON_SIZE);
-	}
 
-	public void updateResources(int wood, int stone, int housing, int housingLimit) {
-		setWood(wood);
-		setStone(stone);
-		setHousing(housing, housingLimit);
-	}
+    private void initResource(Node guiNode, AssetManager assetManager,
+            BitmapFont guiFont, ResourceType type, int offset) {
+        Picture icon = new Picture(type.toString() + " icon");
+        icon.setImage(assetManager,
+                "interface/resources/" + type.resourceName() + ".png", true);
+        icon.move(framePosition.x + 40 + RESOURCE_OFFSET_SIZE * offset,
+                framePosition.y + 13, -1);
+        icon.setWidth(ICON_SIZE);
+        icon.setHeight(ICON_SIZE);
+        guiNode.attachChild(icon);
+
+        BitmapText text = new BitmapText(guiFont);
+        text.setSize(guiFont.getCharSet().getRenderedSize());
+        text.move(framePosition.x + 40 + RESOURCE_OFFSET_SIZE * offset
+                + ICON_SIZE_PLUS, framePosition.y + 16 + text.getLineHeight(),
+                0);
+        guiNode.attachChild(text);
+
+        icons.put(type, icon);
+        texts.put(type, text);
+    }
+
+    private void setResource(Map.Entry<ResourceType, Integer> entry) {
+        texts.get(entry.getKey()).setText("" + entry.getValue());
+    }
+
+    private void setHousing(int housing, int housingLimit) {
+        texts.get(HOUSING).setText("" + housing + " / " + housingLimit);
+    }
+
+    public void blinkResource(ResourceType type) {
+        new BlinkControl(icons.get(type), ICON_SIZE);
+    }
+
+    public void updateResources(Map<ResourceType, Integer> resourcesMap,
+            int housingLimit) {
+        resourcesMap.entrySet().stream()
+                .filter(entry -> entry.getKey() != HOUSING)
+                .forEach(this::setResource);
+        setHousing(resourcesMap.get(HOUSING), housingLimit);
+    }
+
 }

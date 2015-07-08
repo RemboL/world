@@ -15,7 +15,8 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-public abstract class Action<T extends WithNode> implements ApplicationContextAware {
+public abstract class Action<T extends WithNode> implements
+        ApplicationContextAware {
 
     private boolean isStarted = false;
     private boolean isCancelled = false;
@@ -81,18 +82,28 @@ public abstract class Action<T extends WithNode> implements ApplicationContextAw
     }
 
     protected boolean assertWielded(BallMan ballMan,
-            Class<? extends Tool> wieldedClass) {
-        if (!wieldedClass.isInstance(ballMan.getWieldedObject(Hand.RIGHT))) {
+            Optional<Class<? extends Tool>> wieldedClass) {
+        if (!wieldedClass.isPresent()) {
+            if (ballMan.getWieldedObject(Hand.RIGHT) != null) {
+                ballMan.control().addActionOnStart(
+                        applicationContext.getAutowireCapableBeanFactory()
+                                .createBean(SwitchToolAction.class)
+                                .init(Optional.empty()).withParent(this));
+                return false;
+            }
+            return true;
+        }
+
+        if (!wieldedClass.get()
+                .isInstance(ballMan.getWieldedObject(Hand.RIGHT))) {
             try {
                 Optional<Tool> toolFromInventory = ballMan.inventory().get(
-                        wieldedClass);
-                System.out.println("toool " + toolFromInventory);
+                        wieldedClass.get());
                 if (toolFromInventory.isPresent()) {
                     ballMan.control().addActionOnStart(
                             applicationContext.getAutowireCapableBeanFactory()
                                     .createBean(SwitchToolAction.class)
-                                    .init(toolFromInventory.get())
-                                    .withParent(this));
+                                    .init(toolFromInventory).withParent(this));
                     return false;
                 } else {
                     ballMan.control()
@@ -101,7 +112,7 @@ public abstract class Action<T extends WithNode> implements ApplicationContextAw
                                             .getAutowireCapableBeanFactory()
                                             .createBean(
                                                     GetToolFromToolshopAction.class)
-                                            .init(wieldedClass)
+                                            .init(wieldedClass.get())
                                             .withParent(this));
                     return false;
                 }

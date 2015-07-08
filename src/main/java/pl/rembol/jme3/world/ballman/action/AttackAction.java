@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.smallobject.tools.Sword;
@@ -33,7 +35,7 @@ public class AttackAction extends Action<BallMan> {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        if (!assertWielded(ballMan, Sword.class)) {
+        if (!assertWielded(ballMan, Optional.of(Sword.class))) {
             return false;
         }
         if (!assertDistance(ballMan, target, REQUIRED_DISTANCE)) {

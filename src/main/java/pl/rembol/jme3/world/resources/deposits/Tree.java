@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.resources.deposits;
 
+import java.util.Optional;
+
 import pl.rembol.jme3.world.resources.units.Log;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.save.TreeDTO;
@@ -60,8 +62,8 @@ public class Tree extends ResourceDeposit {
     }
 
     @Override
-    public Class<? extends Tool> requiredTool() {
-        return Axe.class;
+    public Optional<Class<? extends Tool>> requiredTool() {
+        return Optional.of(Axe.class);
     }
 
     @Override

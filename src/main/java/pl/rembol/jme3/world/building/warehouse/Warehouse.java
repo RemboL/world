@@ -44,14 +44,7 @@ public class Warehouse extends Building {
 
     private void increaseResources(int resources, ResourceType resourceType) {
         if (owner != null) {
-            switch (resourceType) {
-            case WOOD:
-                owner.addWood(resources);
-                break;
-            case STONE:
-                owner.addStone(resources);
-                break;
-            }
+            owner.addResource(resourceType, resources);
         }
     }
 

@@ -1,6 +1,7 @@
 package pl.rembol.jme3.world.save;
 
 import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.resources.ResourceType;
 
 import com.jme3.math.ColorRGBA;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -20,8 +21,8 @@ public class PlayerDTO {
         this.name = player.getName();
         this.color = player.getColor();
         this.active = player.isActive();
-        this.wood = player.getResourcesWood();
-        this.stone = player.getResourcesStone();
+        this.wood = player.getResource(ResourceType.WOOD);
+        this.stone = player.getResource(ResourceType.STONE);
     }
 
     public String getName() {

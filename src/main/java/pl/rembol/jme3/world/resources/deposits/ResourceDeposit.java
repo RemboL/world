@@ -1,6 +1,7 @@
 package pl.rembol.jme3.world.resources.deposits;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,7 +198,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
     public abstract ResourceUnit produceResource();
 
-    public abstract Class<? extends Tool> requiredTool();
+    public abstract Optional<Class<? extends Tool>> requiredTool();
 
     public abstract Class<? extends ResourceUnit> givesResource();
 

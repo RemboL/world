@@ -1,0 +1,86 @@
+
+material _missing_material_
+{
+    receive_shadows off
+    technique
+    {
+        pass
+        {
+            ambient 0.1 0.1 0.1 1.0
+            diffuse 0.8 0.0 0.0 1.0
+            specular 0.5 0.5 0.5 1.0 12.5
+            emissive 0.3 0.3 0.3 1.0
+        }
+    }
+}
+
+// basket genrated by blender2ogre 0.6.0
+
+material basket 
+{
+    receive_shadows on 
+
+    technique
+    {
+        pass basket
+        {
+            ambient 0.581462025642395 0.3004436492919922 0.061692290008068085 1.0
+            diffuse 0.4651696274454835 0.24035492301516115 0.049353832741883874 1.0
+            specular 0.2904999852180481 0.15000000596046448 0.029999999329447746 1.0 12.5
+            emissive 0.0 0.0 0.0 1.0
+
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+
+        }
+    }
+}
+// fruits genrated by blender2ogre 0.6.0
+
+material fruits 
+{
+    receive_shadows on 
+
+    technique
+    {
+        pass fruits
+        {
+            ambient 0.800000011920929 0.03144650533795357 0.02126026153564453 1.0
+            diffuse 0.6400000190734865 0.02515720464523441 0.017008209481957692 1.0
+            specular 0.5 0.0 0.0 1.0 12.5
+            emissive 0.0 0.0 0.0 1.0
+
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+
+        }
+    }
+}

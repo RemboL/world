@@ -2,6 +2,7 @@ package pl.rembol.jme3.world.ballman.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +94,7 @@ public class BuildAction extends Action<BallMan> {
             return true;
         }
 
-        if (!assertWielded(ballMan, Hammer.class)) {
+        if (!assertWielded(ballMan, Optional.of(Hammer.class))) {
             return false;
         }
 

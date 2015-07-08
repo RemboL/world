@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,8 +105,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         node.addControl(control);
         control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
                 0f, new Random().nextFloat() - .5f).normalize());
-        control.setWalkDirection(control.getViewDirection().mult(
-                new Random().nextFloat() * 5f));
 
         unitRegistry.register(this);
     }
@@ -157,10 +156,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         return 1f;
     }
 
-    public float getWalkSpeed() {
-        return control.getWalkDirection().length();
-    }
-
     @Override
     public Node initNodeWithScale() {
         return (Node) assetManager.loadModel("ballman/ballman.mesh.xml");
@@ -191,15 +186,18 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     };
 
-    public void wield(SmallObject item, Hand hand) {
+    public void wield(Optional<? extends SmallObject> item, Hand hand) {
         if (wielded.get(hand) != null) {
             dropAndDestroy(hand);
         }
 
-        item.attach(node.getControl(SkeletonControl.class).getAttachmentsNode(
-                hand.bone));
+        if (item.isPresent()) {
+            item.get().attach(
+                    node.getControl(SkeletonControl.class).getAttachmentsNode(
+                            hand.bone));
 
-        wielded.put(hand, item);
+            wielded.put(hand, item.get());
+        }
     }
 
     public SmallObject getWieldedObject(Hand hand) {

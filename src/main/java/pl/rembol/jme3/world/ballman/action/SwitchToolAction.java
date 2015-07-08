@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
 import com.jme3.animation.LoopMode;
 
 import pl.rembol.jme3.world.ballman.BallMan;
@@ -12,13 +14,13 @@ public class SwitchToolAction extends Action<BallMan> {
 
     private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-    private SmallObject smallObject;
+    private Optional<? extends SmallObject> smallObject;
 
     private long animationStart;
 
     private boolean switched = false;
 
-    public SwitchToolAction init(SmallObject smallObject) {
+    public SwitchToolAction init(Optional<? extends SmallObject> smallObject) {
         this.smallObject = smallObject;
 
         return this;

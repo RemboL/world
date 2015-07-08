@@ -9,6 +9,7 @@ import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.rabbit.Rabbit;
+import pl.rembol.jme3.world.resources.deposits.FruitBush;
 import pl.rembol.jme3.world.save.SaveState;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -104,6 +105,9 @@ public class GameRunningAppState extends AbstractAppState {
                 .createBean(Rabbit.class).init(new Vector2f(40, 10));
         applicationContext.getAutowireCapableBeanFactory()
                 .createBean(Rabbit.class).init(new Vector2f(40, 0));
+
+        applicationContext.getAutowireCapableBeanFactory()
+                .createBean(FruitBush.class).init(new Vector2f(35, -20));
 
         // new SaveState(terrain.save(), playerService.savePlayers(),
         // applicationContext.getBean(UnitRegistry.class).save())

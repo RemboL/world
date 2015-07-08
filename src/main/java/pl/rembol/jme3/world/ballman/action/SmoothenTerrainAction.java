@@ -2,6 +2,7 @@ package pl.rembol.jme3.world.ballman.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class SmoothenTerrainAction extends Action<BallMan> {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        if (!assertWielded(ballMan, Shovel.class)) {
+        if (!assertWielded(ballMan, Optional.of(Shovel.class))) {
             return false;
         }
         resetAnimation(ballMan);

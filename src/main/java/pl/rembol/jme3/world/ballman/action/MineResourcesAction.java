@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
@@ -68,7 +70,8 @@ public class MineResourcesAction extends Action<BallMan> {
     private void increaseHeldResourceCount(BallMan ballMan, int count) {
         if (!resourceDeposit.givesResource().isInstance(
                 ballMan.getWieldedObject(Hand.LEFT))) {
-            ballMan.wield(resourceDeposit.produceResource(), Hand.LEFT);
+            ballMan.wield(Optional.of(resourceDeposit.produceResource()),
+                    Hand.LEFT);
         }
 
         ResourceUnit.class.cast(ballMan.getWieldedObject(Hand.LEFT))

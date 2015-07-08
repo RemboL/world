@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.resources.deposits;
 
+import java.util.Optional;
+
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.resources.units.StoneBrick;
 import pl.rembol.jme3.world.save.StoneDepositDTO;
@@ -66,8 +68,8 @@ public class StoneDeposit extends ResourceDeposit {
     }
 
     @Override
-    public Class<? extends Tool> requiredTool() {
-        return PickAxe.class;
+    public Optional<Class<? extends Tool>> requiredTool() {
+        return Optional.of(PickAxe.class);
     }
 
 }
