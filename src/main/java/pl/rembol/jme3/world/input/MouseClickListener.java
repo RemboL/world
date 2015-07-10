@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.ActionButton;
-import pl.rembol.jme3.world.hud.SelectionIcon;
-import pl.rembol.jme3.world.hud.StatusBar;
+import pl.rembol.jme3.world.hud.status.StatusBar;
 import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.collision.Collidable;

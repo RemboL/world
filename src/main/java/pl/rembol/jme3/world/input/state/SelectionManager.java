@@ -12,7 +12,7 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.hud.ActionBox;
-import pl.rembol.jme3.world.hud.StatusBar;
+import pl.rembol.jme3.world.hud.status.StatusBar;
 import pl.rembol.jme3.world.input.ModifierKeysManager;
 import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
@@ -52,11 +52,11 @@ public class SelectionManager {
             doSelect(selectable);
         }
 
-        updateSelectionText();
+        updateSelection();
         actionBox.updateActionButtons();
     }
 
-    public void updateSelectionText() {
+    public void updateSelection() {
 
         if (selected.size() == 0) {
             statusBar.setText("");
@@ -79,7 +79,7 @@ public class SelectionManager {
     public void deselect(Selectable selectable) {
         doDeselect(selectable);
 
-        updateSelectionText();
+        updateSelection();
         actionBox.updateActionButtons();
     }
 
@@ -175,7 +175,14 @@ public class SelectionManager {
 
         }
 
-        updateSelectionText();
+        updateSelection();
         actionBox.updateActionButtons();
+    }
+
+    public void updateStatusIfSingleSelected(Selectable selectable) {
+        if (selected.size() == 1 && selected.contains(selectable)) {
+            updateSelection();
+        }
+
     }
 }

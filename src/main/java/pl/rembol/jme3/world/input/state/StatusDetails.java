@@ -3,27 +3,29 @@ package pl.rembol.jme3.world.input.state;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.rembol.jme3.world.smallobject.tools.Tool;
+
 public class StatusDetails {
 
     private List<String> statusText;
 
-    private List<String> inventoryIcons = new ArrayList<>();
+    private List<Tool> inventory = new ArrayList<>();
 
     public StatusDetails(List<String> statusText) {
         this.statusText = statusText;
     }
 
-    public StatusDetails(List<String> statusText, List<String> inventoryIcons) {
+    public StatusDetails(List<String> statusText, List<Tool> inventoryIcons) {
         this.statusText = statusText;
-        this.inventoryIcons = inventoryIcons;
+        this.inventory = inventoryIcons;
     }
 
     public List<String> statusText() {
         return statusText;
     }
 
-    public List<String> inventoryIcons() {
-        return inventoryIcons;
+    public List<Tool> inventory() {
+        return inventory;
     }
 
 }

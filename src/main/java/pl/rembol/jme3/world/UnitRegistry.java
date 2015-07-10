@@ -14,12 +14,14 @@ import org.springframework.stereotype.Component;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.house.House;
+import pl.rembol.jme3.world.building.house.HouseControl;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.save.UnitsDTO;
 import pl.rembol.jme3.world.selection.Selectable;
@@ -38,6 +40,9 @@ public class UnitRegistry implements ApplicationContextAware {
 
     @Autowired
     private PathfindingService pathfindingService;
+
+    @Autowired
+    private PlayerService playerService;
 
     private ApplicationContext applicationContext;
 
@@ -96,38 +101,37 @@ public class UnitRegistry implements ApplicationContextAware {
     }
 
     public List<Building> getHousesByOwner(Player player) {
-        return units.values().stream()
-                .filter(selectable -> House.class.isInstance(selectable))
-                .map(selectable -> House.class.cast(selectable))
+        return units.values().stream().filter(House.class::isInstance)
+                .map(House.class::cast)
                 .filter(house -> house.getOwner().equals(player))
-                .filter(house -> house.isConstructed())
-                .collect(Collectors.toList());
+                .filter(House::isConstructed).collect(Collectors.toList());
     }
 
-    public List<BallMan> getBallMenByOwner(Player player) {
-        return units.values().stream()
-                .filter(selectable -> BallMan.class.isInstance(selectable))
-                .map(selectable -> BallMan.class.cast(selectable))
-                .filter(ballMan -> ballMan.getOwner().equals(player))
-                .collect(Collectors.toList());
+    public int countHousing(Player player) {
+        long count = units.values().stream().filter(BallMan.class::isInstance)
+                .map(BallMan.class::cast)
+                .filter(ballMan -> ballMan.getOwner().equals(player)).count();
+
+        count += units.values().stream().filter(House.class::isInstance)
+                .map(House.class::cast).map(House::control)
+                .filter(control -> control != null)
+                .filter(HouseControl::isRecruiting).count();
+
+        return (int) count;
     }
 
     public List<Warehouse> getWarehousesByOwner(Player player) {
-        return units.values().stream()
-                .filter(selectable -> Warehouse.class.isInstance(selectable))
-                .map(selectable -> Warehouse.class.cast(selectable))
+        return units.values().stream().filter(Warehouse.class::isInstance)
+                .map(Warehouse.class::cast)
                 .filter(warehouse -> warehouse.getOwner().equals(player))
-                .filter(warehouse -> warehouse.isConstructed())
-                .collect(Collectors.toList());
+                .filter(Warehouse::isConstructed).collect(Collectors.toList());
     }
 
     public List<Toolshop> getToolshopsByOwner(Player player) {
-        return units.values().stream()
-                .filter(selectable -> Toolshop.class.isInstance(selectable))
-                .map(selectable -> Toolshop.class.cast(selectable))
-                .filter(warehouse -> warehouse.getOwner().equals(player))
-                .filter(warehouse -> warehouse.isConstructed())
-                .collect(Collectors.toList());
+        return units.values().stream().filter(Toolshop.class::isInstance)
+                .map(Toolshop.class::cast)
+                .filter(toolshop -> toolshop.getOwner().equals(player))
+                .filter(Toolshop::isConstructed).collect(Collectors.toList());
     }
 
     public List<Selectable> getSelectableByPosition(Vector3f start,
@@ -140,8 +144,8 @@ public class UnitRegistry implements ApplicationContextAware {
         return units
                 .values()
                 .stream()
-                .filter(withNode -> Selectable.class.isInstance(withNode))
-                .map(withNode -> Selectable.class.cast(withNode))
+                .filter(Selectable.class::isInstance)
+                .map(Selectable.class::cast)
                 .filter(selectable -> selectable.getNode()
                         .getWorldTranslation().x >= minX)
                 .filter(selectable -> selectable.getNode()
@@ -227,5 +231,8 @@ public class UnitRegistry implements ApplicationContextAware {
         idSequence = units.getIdSequence();
 
         suspendRegistry = false;
+
+        playerService.players().forEach(Player::updateHousingLimit);
+        playerService.players().forEach(Player::updateHousing);
     }
 }

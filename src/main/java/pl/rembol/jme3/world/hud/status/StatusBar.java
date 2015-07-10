@@ -1,4 +1,4 @@
-package pl.rembol.jme3.world.hud;
+package pl.rembol.jme3.world.hud.status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,12 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import pl.rembol.jme3.world.hud.InventoryIcon;
+import pl.rembol.jme3.world.hud.InventoryIconCache;
 import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
+import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
@@ -41,6 +45,9 @@ public class StatusBar {
     @Autowired
     private AssetManager assetManager;
 
+    @Autowired
+    private InventoryIconCache inventoryIconCache;
+
     @PostConstruct
     public void init() {
         framePosition = new Vector2f(settings.getWidth() / 2 - 200, 0);
@@ -52,12 +59,11 @@ public class StatusBar {
         frame.setHeight(120);
         guiNode.attachChild(frame);
 
-        initText(guiNode, settings, assetManager);
+        initText();
 
     }
 
-    private void initText(Node guiNode, AppSettings settings,
-            AssetManager assetManager) {
+    private void initText() {
         BitmapFont guiFont = assetManager
                 .loadFont("Interface/Fonts/Default.fnt");
 
@@ -89,7 +95,7 @@ public class StatusBar {
         }
     }
 
-    public void setTextAndInventory(List<String> text, List<String> iconNames) {
+    public void setTextAndInventory(List<String> text, List<Tool> tools) {
         clear();
 
         for (int i = 0; i < text.size() && i < statusText.size(); ++i) {
@@ -97,9 +103,10 @@ public class StatusBar {
         }
 
         int offset = 0;
-        for (String iconName : iconNames) {
-            InventoryIcon icon = new InventoryIcon(iconName, assetManager);
-            icon.move(framePosition.x + 340 - offset, framePosition.y + 14, 1);
+        for (Tool tool : tools) {
+            InventoryIcon icon = inventoryIconCache.get(tool);
+            icon.setLocalTranslation(framePosition.x + 340 - offset,
+                    framePosition.y + 14, 1);
             guiNode.attachChild(icon);
             inventoryIcons.add(icon);
 
@@ -133,10 +140,10 @@ public class StatusBar {
         int index = 0;
         for (Selectable selectable : selectables.stream()
                 .limit(ICON_LINES * ICON_ROW_SIZE).collect(Collectors.toList())) {
-            SelectionIcon icon = new SelectionIcon(selectable, assetManager);
-            icon.move(framePosition.x + 40 + (index % ICON_ROW_SIZE) * 36,
-                    framePosition.y + 44 + (1 - (index / ICON_ROW_SIZE)) * 32,
-                    1);
+            SelectionIcon icon = selectable.getIcon();
+            icon.setLocalTranslation(framePosition.x + 40
+                    + (index % ICON_ROW_SIZE) * 36, framePosition.y + 44
+                    + (1 - (index / ICON_ROW_SIZE)) * 32, 1);
             guiNode.attachChild(icon);
             selectionIcons.add(icon);
 
@@ -150,11 +157,11 @@ public class StatusBar {
     }
 
     public void setStatusDetails(StatusDetails statusDetails) {
-        if (statusDetails.inventoryIcons().isEmpty()) {
+        if (statusDetails.inventory().isEmpty()) {
             setText(statusDetails.statusText());
         } else {
             setTextAndInventory(statusDetails.statusText(),
-                    statusDetails.inventoryIcons());
+                    statusDetails.inventory());
         }
     }
 

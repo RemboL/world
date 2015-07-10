@@ -8,13 +8,12 @@ import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.save.UnitDTO;
 
 import com.jme3.math.Vector2f;
-import com.jme3.scene.Node;
 
 public class Warehouse extends Building {
 
     @Override
-    public Node initNode() {
-        return (Node) assetManager.loadModel("warehouse/warehouse.scene");
+    public String getNodeFileName() {
+        return "warehouse/warehouse.scene";
     }
 
     @Override

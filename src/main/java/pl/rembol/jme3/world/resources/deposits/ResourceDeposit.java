@@ -16,6 +16,7 @@ import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 import pl.rembol.jme3.world.terrain.Terrain;
@@ -33,6 +34,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
     private BetterCharacterControl control;
     private Node node;
+    private SelectionIcon icon;
     private int hp = 1000;
     private int maxHp = 1000;
     private boolean destroyed = false;
@@ -71,6 +73,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     public void init(Vector3f position) {
 
         node = initNodeWithScale();
+        icon = new SelectionIcon(this, getIconName(), assetManager);
 
         node.setShadowMode(ShadowMode.Cast);
         rootNode.attachChild(node);
@@ -133,18 +136,18 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     protected void setHp(int hp) {
         this.hp = hp;
 
-        node.setLocalScale(getPhysicsRadius() * (1f * this.hp + this.maxHp)
+        node.setLocalScale(getPhysicsRadius() * (this.hp + this.maxHp)
                 / (2 * this.maxHp));
 
         if (hp < 0) {
             destroy();
         }
+
+        selectionManager.updateStatusIfSingleSelected(this);
     }
 
     protected void substractHp(int hp) {
         setHp(this.hp - hp);
-
-        selectionManager.updateSelectionText();
     }
 
     private void destroy() {
@@ -194,6 +197,11 @@ public abstract class ResourceDeposit implements Selectable, Solid,
                 + hp));
     }
 
+    @Override
+    public SelectionIcon getIcon() {
+        return icon;
+    }
+
     protected abstract String getName();
 
     public abstract ResourceUnit produceResource();
@@ -202,4 +210,5 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
     public abstract Class<? extends ResourceUnit> givesResource();
 
+    protected abstract String getIconName();
 }

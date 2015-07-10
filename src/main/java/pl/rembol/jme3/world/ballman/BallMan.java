@@ -24,6 +24,7 @@ import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
@@ -68,6 +69,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     private PlayerService playerService;
 
     private Node node;
+    private SelectionIcon icon;
     private Node selectionNode;
     private BetterCharacterControl control;
     private static final int MAX_HP = 50;
@@ -91,6 +93,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     public void init(Vector3f position) {
         initNode(rootNode);
+        icon = new SelectionIcon(this, "ballman", assetManager);
         node.setLocalTranslation(position);
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
@@ -115,18 +118,11 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         new SparkParticleEmitter(applicationContext, ColorRGBA.Red, strength,
                 node).emit();
 
-        boolean updateSelection = false;
-        if (selectionNode != null) {
-            updateSelection = true;
-        }
-
         if (hp <= 0) {
             destroy();
         }
 
-        if (updateSelection) {
-            selectionManager.updateSelectionText();
-        }
+        selectionManager.updateStatusIfSingleSelected(this);
     }
 
     private void destroy() {
@@ -238,7 +234,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public StatusDetails getStatusDetails() {
         if (playerService.getActivePlayer().equals(owner)) {
-            return new StatusDetails(getStatusText(), inventory.icons());
+            return new StatusDetails(getStatusText(), inventory.tools());
         } else {
             return new StatusDetails(getStatusText());
         }
@@ -269,11 +265,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     @Override
-    public String getIconName() {
-        return "ballman";
-    }
-
-    @Override
     public UnitDTO save(String key) {
         return new BallManDTO(key, this);
     }
@@ -293,14 +284,15 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     public void addToInventory(Tool tool) {
         inventory.add(tool);
-
-        if (selectionNode != null) {
-            selectionManager.updateSelectionText();
-        }
     }
 
     public BallManControl control() {
         return node.getControl(BallManControl.class);
+    }
+
+    @Override
+    public SelectionIcon getIcon() {
+        return icon;
     }
 
 }

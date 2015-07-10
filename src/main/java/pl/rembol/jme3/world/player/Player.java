@@ -30,10 +30,6 @@ public class Player {
     private static Integer playerCounter = 0;
     private Integer id;
 
-    // private int resourcesFood = 0;
-    // private int resourcesWood = 0;
-    // private int resourcesStone = 0;
-    // private int resourcesHousing = 0;
     private Map<ResourceType, Integer> resources = new HashMap<>();
     private int resourcesHousingLimit = 0;
 
@@ -104,7 +100,7 @@ public class Player {
     }
 
     public void updateHousing() {
-        resources.put(HOUSING, gameState.getBallMenByOwner(this).size());
+        resources.put(HOUSING, gameState.countHousing(this));
 
         updateResources();
     }
@@ -181,6 +177,10 @@ public class Player {
 
     public int getResource(ResourceType type) {
         return resources.get(type);
+    }
+
+    public boolean availableHousing(int i) {
+        return resourcesHousingLimit - resources.get(HOUSING) >= i;
     }
 
 }

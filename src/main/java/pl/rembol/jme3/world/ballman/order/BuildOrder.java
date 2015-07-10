@@ -70,7 +70,7 @@ public abstract class BuildOrder extends Order<BallMan> {
 
     @Override
     protected void doPerform(BallMan ballMan, WithNode target) {
-        System.out.println("I cannot smoothen the " + target);
+        consoleLog.addLine("I cannot build on the " + target);
     }
 
     public BuildingFactory factory() {

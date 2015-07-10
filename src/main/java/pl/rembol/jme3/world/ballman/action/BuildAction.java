@@ -18,7 +18,6 @@ import pl.rembol.jme3.world.smallobject.tools.Hammer;
 import pl.rembol.jme3.world.terrain.Terrain;
 
 import com.jme3.animation.LoopMode;
-import com.jme3.asset.AssetManager;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -50,9 +49,6 @@ public class BuildAction extends Action<BallMan> {
 
     @Autowired
     private Terrain terrain;
-
-    @Autowired
-    private AssetManager assetManager;
 
     @Autowired
     private Node rootNode;

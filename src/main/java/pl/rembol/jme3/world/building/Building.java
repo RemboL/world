@@ -1,6 +1,8 @@
 package pl.rembol.jme3.world.building;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +17,7 @@ import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -26,6 +29,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
+import com.jme3.scene.control.Control;
 
 public abstract class Building implements Selectable, WithOwner, Destructable,
         Solid, ApplicationContextAware {
@@ -33,10 +37,11 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     private RigidBodyControl control;
     private Node node;
     private Node building;
+    private SelectionIcon icon;
     private SelectionNode selectionNode;
     protected Player owner;
     private int hp;
-    private ApplicationContext applicationContext;
+    protected ApplicationContext applicationContext;
 
     @Autowired
     private Terrain terrain;
@@ -76,10 +81,13 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
         node = new Node();
         building = initNodeWithScale();
+        icon = new SelectionIcon(this, getIconName(), assetManager);
 
         building.setShadowMode(ShadowMode.Cast);
         if (startUnderGround) {
             building.setLocalTranslation(Vector3f.UNIT_Y.mult(-getHeight()));
+        } else {
+            finishBuilding();
         }
 
         node.setLocalTranslation(position);
@@ -130,15 +138,19 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     @Override
     public StatusDetails getStatusDetails() {
         if (isConstructed()) {
-            return new StatusDetails(Arrays.asList(getName(), //
-                    "hp: " + hp + " / " + getMaxHp(), //
-                    "owner: " + owner.getName()));
+            return new StatusDetails(statusLines());
 
         } else {
             return new StatusDetails(Arrays.asList(getName(), //
                     "owner: " + owner.getName(), //
                     "Under construction"));
         }
+    }
+
+    protected List<String> statusLines() {
+        return Arrays.asList(getName(), //
+                "hp: " + hp + " / " + getMaxHp(), //
+                "owner: " + owner.getName());
     }
 
     public boolean isConstructed() {
@@ -156,26 +168,29 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
         updateColor();
     }
 
-    public void finish() {
-        owner.updateHousingLimit();
+    public void finishBuilding() {
+        if (owner != null) {
+            owner.updateHousingLimit();
+        }
+
+        for (Control control : createControls()) {
+            building.addControl(control);
+        }
+    }
+
+    protected List<Control> createControls() {
+        return new ArrayList<>();
     }
 
     @Override
     public void strike(int strength) {
         hp -= strength;
 
-        boolean updateSelection = false;
-        if (selectionNode != null) {
-            updateSelection = true;
-        }
-
         if (hp <= 0) {
             destroy();
         }
 
-        if (updateSelection) {
-            selectionManager.updateSelectionText();
-        }
+        selectionManager.updateStatusIfSingleSelected(this);
     }
 
     public int getHp() {
@@ -187,10 +202,6 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
         return hp <= 0;
     }
 
-    public Node getBuildingNode() {
-        return building;
-    }
-
     public Node getParentNode() {
         return node;
     }
@@ -198,6 +209,10 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     private void destroy() {
         unitRegistry.unregister(this);
         bulletAppState.getPhysicsSpace().remove(control);
+
+        for (int i = getNode().getNumControls() - 1; i >= 0; --i) {
+            getNode().removeControl(getNode().getControl(i));
+        }
 
         applicationContext.getAutowireCapableBeanFactory()
                 .createBean(BuildingDestructionControl.class).init(this);
@@ -209,7 +224,16 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
         return node;
     }
 
-    public abstract Node initNode();
+    @Override
+    public SelectionIcon getIcon() {
+        return icon;
+    }
+
+    public Node initNode() {
+        return (Node) assetManager.loadModel(getNodeFileName());
+    }
+
+    protected abstract String getNodeFileName();
 
     public abstract float getHeight();
 

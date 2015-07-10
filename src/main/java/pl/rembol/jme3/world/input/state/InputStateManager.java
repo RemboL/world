@@ -153,7 +153,6 @@ public class InputStateManager {
 	}
 
 	public void type(String command) {
-		System.out.println("typing " + command);
 		getTransitionAndChangeState(command);
 
 		actionBox.updateActionButtons();

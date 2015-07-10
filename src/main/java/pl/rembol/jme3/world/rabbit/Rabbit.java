@@ -14,6 +14,7 @@ import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.terrain.Terrain;
 
@@ -59,6 +60,7 @@ public class Rabbit extends AbstractControl implements Selectable,
     private ApplicationContext applicationContext;
 
     private Node node;
+    private SelectionIcon icon;
     private BetterCharacterControl control;
     private Node selectionNode;
 
@@ -73,6 +75,7 @@ public class Rabbit extends AbstractControl implements Selectable,
 
     public void init(Vector3f position) {
         initNode(rootNode);
+        icon = new SelectionIcon(this, "rabbit", assetManager);
         node.setLocalTranslation(position);
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
@@ -149,8 +152,8 @@ public class Rabbit extends AbstractControl implements Selectable,
     }
 
     @Override
-    public String getIconName() {
-        return "rabbit";
+    public SelectionIcon getIcon() {
+        return icon;
     }
 
 }

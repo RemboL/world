@@ -13,7 +13,7 @@ import com.jme3.math.Vector2f;
 public class FruitBush extends ResourceDeposit {
 
     public float getWidth() {
-        return 5f;
+        return 3f;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class FruitBush extends ResourceDeposit {
 
     @Override
     protected float getPhysicsRadius() {
-        return 5f;
+        return 3f;
     }
 
     @Override

@@ -3,7 +3,6 @@ package pl.rembol.jme3.world.ballman;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
@@ -24,9 +23,8 @@ public class Inventory {
         return Optional.empty();
     }
 
-    public List<String> icons() {
-        return tools.stream().map(tool -> tool.iconName())
-                .collect(Collectors.toList());
+    public List<Tool> tools() {
+        return tools;
     }
 
 }

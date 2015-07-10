@@ -1,13 +1,19 @@
 package pl.rembol.jme3.world.ballman.order;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
+import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.interfaces.WithNode;
 
 import com.jme3.math.Vector2f;
 
 public class SmoothenTerrainOrder extends Order<BallMan> {
+
+    @Autowired
+    protected ConsoleLog consoleLog;
 
     @Override
     protected void doPerform(BallMan ballMan, Vector2f location) {
@@ -25,7 +31,7 @@ public class SmoothenTerrainOrder extends Order<BallMan> {
 
     @Override
     protected void doPerform(BallMan ballMan, WithNode target) {
-        System.out.println("I cannot smoothen the " + target);
+        consoleLog.addLine("I cannot smoothen the " + target);
     }
 
 }

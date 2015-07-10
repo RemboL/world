@@ -1,5 +1,6 @@
 package pl.rembol.jme3.world.player;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,5 +71,9 @@ public class PlayerService implements ApplicationContextAware {
                     playerDTO.getStone());
         }
 
+    }
+
+    public Collection<Player> players() {
+        return players.values();
     }
 }
