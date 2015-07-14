@@ -19,7 +19,6 @@ public abstract class Tool extends SmallObject {
         node = ModelHelper.rewriteDiffuseToAmbient((Node) applicationContext
                 .getBean(AssetManager.class).loadModel(modelFileName()));
         node.setShadowMode(ShadowMode.Cast);
-        applicationContext.getBean("rootNode", Node.class).attachChild(node);
 
         control = new RigidBodyControl(1f);
         node.addControl(control);

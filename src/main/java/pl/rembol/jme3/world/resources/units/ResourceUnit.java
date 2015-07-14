@@ -23,7 +23,6 @@ public abstract class ResourceUnit extends SmallObject {
         node = (Node) applicationContext.getBean(AssetManager.class).loadModel(
                 getModelFileName());
         node.setShadowMode(ShadowMode.Cast);
-        applicationContext.getBean("rootNode", Node.class).attachChild(node);
         node.setLocalTranslation(location);
 
         control = new RigidBodyControl(1f);

@@ -192,6 +192,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
                     node.getControl(SkeletonControl.class).getAttachmentsNode(
                             hand.bone));
 
+            item.get().getNode().setLocalRotation(Quaternion.IDENTITY);
             wielded.put(hand, item.get());
         }
     }
