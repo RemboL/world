@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContextAware;
 import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
+import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
@@ -126,7 +127,7 @@ public abstract class Action<T extends WithNode> implements
         return true;
     }
 
-    protected boolean assertDistance(WithNode unit, WithNode target,
+    protected boolean assertDistance(WithMovingControl unit, WithNode target,
             float distance) {
         if (!isCloseEnough(unit, target, distance)
                 && BallMan.class.isInstance(unit)) {
@@ -136,7 +137,8 @@ public abstract class Action<T extends WithNode> implements
                     .addActionOnStart(
                             applicationContext.getAutowireCapableBeanFactory()
                                     .createBean(MoveTowardsTargetAction.class)
-                                    .init(target, distance).withParent(this));
+                                    .init(unit, target, distance)
+                                    .withParent(this));
             return false;
         }
 
@@ -159,6 +161,18 @@ public abstract class Action<T extends WithNode> implements
         parent = action;
         action.children.add(this);
         return this;
+    }
+
+    public boolean isAssignableFrom(Class<? extends Action<?>> actionClass) {
+        if (this.getClass().isAssignableFrom(actionClass)) {
+            return true;
+        }
+
+        if (parent == null) {
+            return false;
+        }
+
+        return parent.isAssignableFrom(actionClass);
     }
 
 }

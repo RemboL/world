@@ -41,7 +41,7 @@ public class BallManControl extends ActionQueueControl<BallMan> implements
                     .init(Destructable.class.cast(target)));
         } else {
             setAction(applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(MoveTowardsTargetAction.class).init(target, 5f));
+                    .createBean(MoveTowardsTargetAction.class).init(unit, target, 5f));
         }
     }
 

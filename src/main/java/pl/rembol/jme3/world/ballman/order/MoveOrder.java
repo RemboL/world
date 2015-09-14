@@ -22,7 +22,7 @@ public class MoveOrder extends Order<BallMan> {
         ballMan.control().setAction(
                 applicationContext.getAutowireCapableBeanFactory()
                         .createBean(MoveTowardsTargetAction.class)
-                        .init(target, 5f));
+                        .init(ballMan, target, 5f));
     }
 
 }

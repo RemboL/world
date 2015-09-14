@@ -19,13 +19,16 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
     private Vector3f targetPosition;
     private WithNode target;
     private float targetDistance;
+    private WithMovingControl unit;
 
     @Autowired
     private PathfindingService pathfindingService;
 
     private IExternalPath path;
 
-    public MoveTowardsTargetAction init(WithNode target, float targetDistance) {
+    public MoveTowardsTargetAction init(WithMovingControl unit,
+            WithNode target, float targetDistance) {
+        this.unit = unit;
         this.target = target;
         this.targetDistance = targetDistance;
 
@@ -43,6 +46,7 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
         if (path != null) {
             path.clearPath();
         }
+        unit.movingControl().setTargetVelocity(0f);
     }
 
     @Override

@@ -68,4 +68,18 @@ public abstract class ActionQueueControl<T extends WithNode> extends
         actionQueue.add(0, action);
     }
 
+    public boolean isEmpty() {
+        return actionQueue.isEmpty();
+    }
+
+    public boolean contains(Class<? extends Action<?>> actionClass) {
+        return actionQueue.stream().anyMatch(
+                action -> action.isAssignableFrom(actionClass));
+    }
+
+    public boolean startsWith(Class<? extends Action<?>> actionClass) {
+        return actionQueue.isEmpty() ? false : actionQueue.get(0)
+                .isAssignableFrom(actionClass);
+    }
+
 }

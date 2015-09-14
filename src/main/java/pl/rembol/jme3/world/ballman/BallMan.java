@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.controls.MovingControl;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.input.state.StatusDetails;
@@ -102,6 +103,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
         node.addControl(new BallManControl(applicationContext, this));
         node.addControl(new MovingControl(this));
+        node.addControl(new HungerControl(applicationContext, this));
 
         bulletAppState.getPhysicsSpace().add(control);
 
@@ -134,6 +136,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         rootNode.detachChild(node);
         node.removeControl(BallManControl.class);
         node.removeControl(MovingControl.class);
+        node.removeControl(HungerControl.class);
         bulletAppState.getPhysicsSpace().remove(control);
     }
 
@@ -242,8 +245,9 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     private List<String> getStatusText() {
-        return Arrays.asList("BallMan", "hp: " + hp + " / " + MAX_HP, "owner: "
-                + owner.getName());
+        return Arrays.asList("BallMan", "hp: " + hp + " / " + MAX_HP
+               ,
+                "owner: " + owner.getName());
     }
 
     @Override
@@ -294,6 +298,10 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public SelectionIcon getIcon() {
         return icon;
+    }
+
+    public HungerControl hunger() {
+        return node.getControl(HungerControl.class);
     }
 
 }
