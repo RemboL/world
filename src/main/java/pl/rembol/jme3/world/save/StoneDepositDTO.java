@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.save;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.resources.deposits.StoneDeposit;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("stone_deposit")
 public class StoneDepositDTO extends UnitDTO {

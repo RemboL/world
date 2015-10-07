@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.controls;
 
-import pl.rembol.jme3.world.interfaces.WithNode;
-
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
+import pl.rembol.jme3.world.interfaces.WithNode;
 
 public class MovingControl extends AbstractControl {
 

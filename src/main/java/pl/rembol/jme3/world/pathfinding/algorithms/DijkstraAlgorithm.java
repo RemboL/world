@@ -1,19 +1,12 @@
 package pl.rembol.jme3.world.pathfinding.algorithms;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.function.Function;
-
+import com.jme3.math.Vector2f;
 import org.springframework.context.ApplicationContext;
-
 import pl.rembol.jme3.world.pathfinding.Vector2i;
 import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
 
-import com.jme3.math.Vector2f;
+import java.util.*;
+import java.util.function.Function;
 
 public class DijkstraAlgorithm {
 

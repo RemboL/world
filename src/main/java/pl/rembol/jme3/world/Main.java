@@ -1,10 +1,7 @@
 package pl.rembol.jme3.world;
 
-import java.io.File;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
-import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.blender.BlenderModelLoader;

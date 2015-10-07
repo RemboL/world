@@ -1,11 +1,11 @@
 package pl.rembol.jme3.world.terrain;
 
-import java.nio.ByteBuffer;
-
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
+
+import java.nio.ByteBuffer;
 
 public class AlphaMapManipulator {
 

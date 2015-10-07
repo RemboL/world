@@ -1,9 +1,5 @@
 package pl.rembol.jme3.world.particles;
 
-import org.springframework.context.ApplicationContext;
-
-import pl.rembol.jme3.world.controls.TimeToLiveControl;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -11,6 +7,8 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.controls.TimeToLiveControl;
 
 public class DustParticleEmitter extends ParticleEmitter {
 

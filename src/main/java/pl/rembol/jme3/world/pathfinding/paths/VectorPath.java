@@ -1,15 +1,13 @@
 package pl.rembol.jme3.world.pathfinding.paths;
 
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.terrain.Terrain;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.context.ApplicationContext;
-
-import pl.rembol.jme3.world.terrain.Terrain;
-
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 
 public class VectorPath implements IExternalPath {
 

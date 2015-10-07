@@ -1,18 +1,5 @@
 package pl.rembol.jme3.world.input.state;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.ballman.order.BuildOrder;
-import pl.rembol.jme3.world.ballman.order.Order;
-import pl.rembol.jme3.world.building.BuildingFactory;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -29,6 +16,17 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.ballman.order.BuildOrder;
+import pl.rembol.jme3.world.ballman.order.Order;
+import pl.rembol.jme3.world.building.BuildingFactory;
+import pl.rembol.jme3.world.terrain.Terrain;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class BuildingSilhouetteManager extends AbstractControl implements

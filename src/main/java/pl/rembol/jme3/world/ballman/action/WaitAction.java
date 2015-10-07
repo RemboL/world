@@ -1,8 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.interfaces.WithNode;
-
 import com.jme3.animation.LoopMode;
+import pl.rembol.jme3.world.interfaces.WithNode;
 
 public class WaitAction extends Action<WithNode> {
 

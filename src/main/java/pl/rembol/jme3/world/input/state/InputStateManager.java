@@ -1,12 +1,9 @@
 package pl.rembol.jme3.world.input.state;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.ballman.order.OrderFactory;
 import pl.rembol.jme3.world.hud.ActionBox;
@@ -14,8 +11,9 @@ import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.Selectable;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class InputStateManager {

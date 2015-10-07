@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.controls;
 
-import org.springframework.context.ApplicationContext;
-
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Control that counts down time to live of given control. When time to live

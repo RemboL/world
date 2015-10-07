@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.building.toolshop;
 
+import com.jme3.math.Vector2f;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.save.UnitDTO;
-
-import com.jme3.math.Vector2f;
 
 public class Toolshop extends Building {
 

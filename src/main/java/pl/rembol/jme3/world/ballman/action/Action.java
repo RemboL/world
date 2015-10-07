@@ -1,13 +1,8 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
 import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
@@ -15,6 +10,10 @@ import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class Action<T extends WithNode> implements
         ApplicationContextAware {

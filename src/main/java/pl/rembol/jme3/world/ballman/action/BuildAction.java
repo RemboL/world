@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
+import com.jme3.animation.LoopMode;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
@@ -17,11 +16,10 @@ import pl.rembol.jme3.world.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.smallobject.tools.Hammer;
 import pl.rembol.jme3.world.terrain.Terrain;
 
-import com.jme3.animation.LoopMode;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class BuildAction extends Action<BallMan> {
 

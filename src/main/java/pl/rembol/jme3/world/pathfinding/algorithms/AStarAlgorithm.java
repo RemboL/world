@@ -1,17 +1,8 @@
 package pl.rembol.jme3.world.pathfinding.algorithms;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.Function;
-
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import org.springframework.context.ApplicationContext;
-
 import pl.rembol.jme3.world.pathfinding.ClusterBorder;
 import pl.rembol.jme3.world.pathfinding.PathfindingCluster;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
@@ -21,8 +12,8 @@ import pl.rembol.jme3.world.pathfinding.paths.IPath2i;
 import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
 import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import java.util.*;
+import java.util.function.Function;
 
 public class AStarAlgorithm {
 

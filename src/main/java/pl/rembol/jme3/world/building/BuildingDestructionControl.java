@@ -1,16 +1,5 @@
 package pl.rembol.jme3.world.building;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
-import pl.rembol.jme3.world.particles.DustParticleEmitter;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -18,6 +7,15 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import pl.rembol.jme3.world.particles.DustParticleEmitter;
+import pl.rembol.jme3.world.terrain.Terrain;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class BuildingDestructionControl extends AbstractControl implements
         ApplicationContextAware {

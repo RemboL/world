@@ -1,18 +1,5 @@
 package pl.rembol.jme3.world;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
-
-import pl.rembol.jme3.world.building.Building;
-import pl.rembol.jme3.world.building.toolshop.Toolshop;
-import pl.rembol.jme3.world.player.PlayerService;
-import pl.rembol.jme3.world.rabbit.Rabbit;
-import pl.rembol.jme3.world.resources.deposits.FruitBush;
-import pl.rembol.jme3.world.save.SaveState;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -33,6 +20,17 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.building.toolshop.Toolshop;
+import pl.rembol.jme3.world.player.PlayerService;
+import pl.rembol.jme3.world.rabbit.Rabbit;
+import pl.rembol.jme3.world.resources.deposits.FruitBush;
+import pl.rembol.jme3.world.save.SaveState;
+import pl.rembol.jme3.world.terrain.Terrain;
 
 public class GameRunningAppState extends AbstractAppState {
 

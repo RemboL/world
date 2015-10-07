@@ -1,9 +1,9 @@
 package pl.rembol.jme3.world.pathfinding.paths;
 
+import com.jme3.math.Vector3f;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import com.jme3.math.Vector3f;
 
 public class FuturePath implements IExternalPath {
 

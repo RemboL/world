@@ -1,10 +1,9 @@
 package pl.rembol.jme3.world.pathfinding.algorithms;
 
-import java.util.function.Function;
-
+import com.jme3.math.FastMath;
 import pl.rembol.jme3.world.pathfinding.Vector2i;
 
-import com.jme3.math.FastMath;
+import java.util.function.Function;
 
 public class BresenhamAlgorithm {
 

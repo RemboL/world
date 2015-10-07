@@ -1,7 +1,9 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import com.jme3.animation.LoopMode;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
@@ -9,10 +11,6 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
-
-import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 
 public class MoveTowardsTargetAction extends Action<WithMovingControl> {
 

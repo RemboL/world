@@ -1,25 +1,16 @@
 package pl.rembol.jme3.world.input.state;
 
-import static pl.rembol.jme3.world.ballman.order.OrderFactory.ORDER_BUILD_HOUSE;
-import static pl.rembol.jme3.world.ballman.order.OrderFactory.ORDER_BUILD_TOOLSHOP;
-import static pl.rembol.jme3.world.ballman.order.OrderFactory.ORDER_BUILD_WAREHOUSE;
-import static pl.rembol.jme3.world.ballman.order.OrderFactory.ORDER_FLATTEN;
-import static pl.rembol.jme3.world.ballman.order.OrderFactory.ORDER_MOVE;
-import static pl.rembol.jme3.world.ballman.order.OrderFactory.ORDER_RECRUIT;
-import static pl.rembol.jme3.world.input.state.InputState.BUILD_MENU;
-import static pl.rembol.jme3.world.input.state.InputState.DEFAULT;
-import static pl.rembol.jme3.world.input.state.InputState.ISSUE_BUILD_ORDER;
-import static pl.rembol.jme3.world.input.state.InputState.ISSUE_ORDER;
-import static pl.rembol.jme3.world.input.state.InputState.ISSUE_ORDER_IMMEDIATELY;
-import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.HOUSE;
-import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.UNIT;
+import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
+import static pl.rembol.jme3.world.ballman.order.OrderFactory.*;
+import static pl.rembol.jme3.world.input.state.InputState.*;
+import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.HOUSE;
+import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.UNIT;
 
 public class StateTransitions {
 

@@ -1,19 +1,14 @@
 package pl.rembol.jme3.world.pathfinding;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import org.springframework.context.ApplicationContext;
-
 import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
 import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PathfindingCluster {
 

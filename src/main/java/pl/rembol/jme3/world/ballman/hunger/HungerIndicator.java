@@ -1,10 +1,5 @@
 package pl.rembol.jme3.world.ballman.hunger;
 
-import org.springframework.context.ApplicationContext;
-
-import pl.rembol.jme3.world.ModelHelper;
-import pl.rembol.jme3.world.ballman.BallMan;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
@@ -13,6 +8,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
+import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.ModelHelper;
+import pl.rembol.jme3.world.ballman.BallMan;
 
 public class HungerIndicator extends Node {
 

@@ -1,10 +1,9 @@
 package pl.rembol.jme3.world.pathfinding;
 
-import pl.rembol.jme3.world.Solid;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.Solid;
 
 public class Rectangle2f {
 

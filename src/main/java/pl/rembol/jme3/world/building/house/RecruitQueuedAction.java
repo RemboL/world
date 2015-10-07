@@ -1,11 +1,9 @@
 package pl.rembol.jme3.world.building.house;
 
-import org.springframework.context.ApplicationContext;
-
-import pl.rembol.jme3.world.ballman.BallMan;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
+import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.ballman.BallMan;
 
 public class RecruitQueuedAction {
 

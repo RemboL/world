@@ -1,14 +1,13 @@
 package pl.rembol.jme3.world.save;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.util.Base64Utils;
-
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.springframework.util.Base64Utils;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 @XStreamAlias("alphaMap")
 public class AlphaMapDTO {

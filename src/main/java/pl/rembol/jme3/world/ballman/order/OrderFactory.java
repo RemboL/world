@@ -1,17 +1,16 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.selection.Selectable;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class OrderFactory implements ApplicationContextAware {

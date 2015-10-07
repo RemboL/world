@@ -1,18 +1,11 @@
 package pl.rembol.jme3.world.pathfinding;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.context.ApplicationContext;
-
-import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
-
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
+
+import java.util.*;
 
 public class ClusterBorder {
 

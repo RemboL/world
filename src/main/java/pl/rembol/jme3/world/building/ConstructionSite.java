@@ -1,13 +1,11 @@
 package pl.rembol.jme3.world.building;
 
-import org.springframework.context.ApplicationContext;
-
-import pl.rembol.jme3.world.hud.ActionBox;
-
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
+import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.hud.ActionBox;
 
 public class ConstructionSite extends AbstractControl {
 

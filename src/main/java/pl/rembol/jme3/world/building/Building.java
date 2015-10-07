@@ -1,26 +1,5 @@
 package pl.rembol.jme3.world.building;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
-import pl.rembol.jme3.world.Solid;
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.input.state.StatusDetails;
-import pl.rembol.jme3.world.player.Player;
-import pl.rembol.jme3.world.player.PlayerService;
-import pl.rembol.jme3.world.player.WithOwner;
-import pl.rembol.jme3.world.selection.Destructable;
-import pl.rembol.jme3.world.selection.Selectable;
-import pl.rembol.jme3.world.selection.SelectionIcon;
-import pl.rembol.jme3.world.selection.SelectionNode;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -30,6 +9,23 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.Control;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import pl.rembol.jme3.world.Solid;
+import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.PlayerService;
+import pl.rembol.jme3.world.player.WithOwner;
+import pl.rembol.jme3.world.selection.Destructable;
+import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
+import pl.rembol.jme3.world.selection.SelectionNode;
+import pl.rembol.jme3.world.terrain.Terrain;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Building implements Selectable, WithOwner, Destructable,
         Solid, ApplicationContextAware {
@@ -42,7 +38,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     protected Player owner;
     private int hp;
     protected ApplicationContext applicationContext;
-
+    private BuildingStatus status;
     @Autowired
     private Terrain terrain;
 
@@ -136,21 +132,19 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     }
 
     @Override
-    public StatusDetails getStatusDetails() {
-        if (isConstructed()) {
-            return new StatusDetails(statusLines());
-
-        } else {
-            return new StatusDetails(Arrays.asList(getName(), //
-                    "owner: " + owner.getName(), //
-                    "Under construction"));
+    public Node getStatusDetails() {
+        if (status == null) {
+            status = new BuildingStatus(this, applicationContext);
         }
+
+        status.update();
+        return status;
     }
 
-    protected List<String> statusLines() {
-        return Arrays.asList(getName(), //
-                "hp: " + hp + " / " + getMaxHp(), //
-                "owner: " + owner.getName());
+    protected String[] statusLines() {
+        return new String[] { getName(),
+                "hp: " + hp + " / " + getMaxHp(),
+                "owner: " + owner.getName() };
     }
 
     public boolean isConstructed() {

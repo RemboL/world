@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.pathfinding.paths;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import pl.rembol.jme3.world.pathfinding.Vector2i;
-
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.pathfinding.Vector2i;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vector2iPath implements IPath2i {
 

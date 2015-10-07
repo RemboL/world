@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.interfaces;
 
-import pl.rembol.jme3.world.save.UnitDTO;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import pl.rembol.jme3.world.save.UnitDTO;
 
 public interface WithNode {
 

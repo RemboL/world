@@ -1,16 +1,14 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.Selectable;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Order<OrderedType extends Selectable> implements
 		ApplicationContextAware {

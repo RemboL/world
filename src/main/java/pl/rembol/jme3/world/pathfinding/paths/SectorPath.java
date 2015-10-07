@@ -1,17 +1,8 @@
 package pl.rembol.jme3.world.pathfinding.paths;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import org.springframework.context.ApplicationContext;
-
 import pl.rembol.jme3.world.pathfinding.PathfindingCluster;
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
@@ -22,8 +13,15 @@ import pl.rembol.jme3.world.terrain.Terrain;
 import pl.rembol.jme3.world.threads.Executor;
 import pl.rembol.jme3.world.threads.ThreadManager;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class SectorPath implements IExternalPath {
 

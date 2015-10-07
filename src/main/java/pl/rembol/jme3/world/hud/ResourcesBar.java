@@ -1,20 +1,5 @@
 package pl.rembol.jme3.world.hud;
 
-import static pl.rembol.jme3.world.resources.ResourceType.FOOD;
-import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
-import static pl.rembol.jme3.world.resources.ResourceType.STONE;
-import static pl.rembol.jme3.world.resources.ResourceType.WOOD;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import pl.rembol.jme3.world.resources.ResourceType;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -22,6 +7,15 @@ import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import pl.rembol.jme3.world.resources.ResourceType;
+
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
+
+import static pl.rembol.jme3.world.resources.ResourceType.*;
 
 @Component
 public class ResourcesBar {

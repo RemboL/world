@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.Optional;
-
 import com.jme3.animation.LoopMode;
-
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.smallobject.SmallObject;
+
+import java.util.Optional;
 
 public class SwitchToolAction extends Action<BallMan> {
 

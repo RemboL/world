@@ -1,10 +1,10 @@
 package pl.rembol.jme3.world.ballman;
 
+import pl.rembol.jme3.world.smallobject.tools.Tool;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 public class Inventory {
 

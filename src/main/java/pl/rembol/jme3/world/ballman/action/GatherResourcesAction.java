@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.Optional;
-
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
+
+import java.util.Optional;
 
 public class GatherResourcesAction extends Action<BallMan> {
 

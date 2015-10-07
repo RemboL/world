@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.building.toolshop;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.save.UnitDTO;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("toolshop")
 public class ToolshopDTO extends UnitDTO {

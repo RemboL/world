@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.Optional;
-
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.resources.Cost;
 import pl.rembol.jme3.world.resources.ResourceType;
+
+import java.util.Optional;
 
 public class EatFoodAction extends Action<BallMan> {
 

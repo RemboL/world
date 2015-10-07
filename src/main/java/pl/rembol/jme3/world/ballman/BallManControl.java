@@ -1,7 +1,8 @@
 package pl.rembol.jme3.world.ballman;
 
+import com.jme3.animation.LoopMode;
+import com.jme3.math.Vector2f;
 import org.springframework.context.ApplicationContext;
-
 import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
@@ -12,9 +13,6 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.selection.Destructable;
-
-import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector2f;
 
 public class BallManControl extends ActionQueueControl<BallMan> implements
         WithDefaultAction {

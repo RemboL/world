@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.save;
 
-import pl.rembol.jme3.world.interfaces.WithNode;
-
 import com.jme3.math.Vector3f;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import pl.rembol.jme3.world.interfaces.WithNode;
 
 @XStreamAlias("unit")
 public class UnitDTO {

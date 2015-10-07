@@ -1,13 +1,12 @@
 package pl.rembol.jme3.world.building.warehouse;
 
+import com.jme3.math.Vector2f;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.resources.ResourceType;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.save.UnitDTO;
-
-import com.jme3.math.Vector2f;
 
 public class Warehouse extends Building {
 

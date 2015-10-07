@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.Optional;
-
+import com.jme3.animation.LoopMode;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.smallobject.tools.Sword;
 
-import com.jme3.animation.LoopMode;
+import java.util.Optional;
 
 public class AttackAction extends Action<BallMan> {
 

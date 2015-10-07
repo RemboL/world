@@ -1,15 +1,8 @@
 package pl.rembol.jme3.world.player;
 
-import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
@@ -18,8 +11,12 @@ import pl.rembol.jme3.world.hud.ResourcesBar;
 import pl.rembol.jme3.world.resources.Cost;
 import pl.rembol.jme3.world.resources.ResourceType;
 
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
 
 public class Player {
 

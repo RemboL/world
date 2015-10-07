@@ -1,26 +1,5 @@
 package pl.rembol.jme3.world.resources.deposits;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
-import pl.rembol.jme3.world.ModelHelper;
-import pl.rembol.jme3.world.Solid;
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.input.state.StatusDetails;
-import pl.rembol.jme3.world.resources.units.ResourceUnit;
-import pl.rembol.jme3.world.selection.Selectable;
-import pl.rembol.jme3.world.selection.SelectionIcon;
-import pl.rembol.jme3.world.selection.SelectionNode;
-import pl.rembol.jme3.world.smallobject.tools.Tool;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -28,6 +7,23 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import pl.rembol.jme3.world.ModelHelper;
+import pl.rembol.jme3.world.Solid;
+import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.resources.units.ResourceUnit;
+import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
+import pl.rembol.jme3.world.selection.SelectionNode;
+import pl.rembol.jme3.world.smallobject.tools.Tool;
+import pl.rembol.jme3.world.terrain.Terrain;
+
+import java.util.Optional;
+import java.util.Random;
 
 public abstract class ResourceDeposit implements Selectable, Solid,
         ApplicationContextAware {
@@ -39,6 +35,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     private int maxHp = 1000;
     private boolean destroyed = false;
     private SelectionNode selectionNode;
+    private ResourceDepositStatus status;
 
     @Autowired
     private Terrain terrain;
@@ -91,23 +88,23 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
     private Vector3f getInitialDirection() {
         switch (getRandomDirectionMode()) {
-        case ONLY_4_DIRECTIONS:
-            int direction = new Random().nextInt(4);
-            switch (direction) {
-            case 1:
-                return Vector3f.UNIT_X;
-            case 2:
-                return Vector3f.UNIT_Z;
-            case 3:
-                return Vector3f.UNIT_Z.mult(-1);
-            case 0:
+            case ONLY_4_DIRECTIONS:
+                int direction = new Random().nextInt(4);
+                switch (direction) {
+                    case 1:
+                        return Vector3f.UNIT_X;
+                    case 2:
+                        return Vector3f.UNIT_Z;
+                    case 3:
+                        return Vector3f.UNIT_Z.mult(-1);
+                    case 0:
+                    default:
+                        return Vector3f.UNIT_X.mult(-1);
+                }
+            case WHOLE_CIRCLE:
             default:
-                return Vector3f.UNIT_X.mult(-1);
-            }
-        case WHOLE_CIRCLE:
-        default:
-            return new Vector3f(new Random().nextFloat() - .5f, 0f,
-                    new Random().nextFloat() - .5f).normalize();
+                return new Vector3f(new Random().nextFloat() - .5f, 0f,
+                        new Random().nextFloat() - .5f).normalize();
         }
     }
 
@@ -192,9 +189,13 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     }
 
     @Override
-    public StatusDetails getStatusDetails() {
-        return new StatusDetails(Arrays.asList(getName(), "Resources left: "
-                + hp));
+    public Node getStatusDetails() {
+        if (status == null) {
+            status = new ResourceDepositStatus(this, applicationContext);
+        }
+
+        status.update();
+        return status;
     }
 
     @Override

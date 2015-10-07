@@ -1,16 +1,12 @@
 package pl.rembol.jme3.world;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.jme3.collision.Collidable;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.house.House;
@@ -26,9 +22,11 @@ import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.save.UnitsDTO;
 import pl.rembol.jme3.world.selection.Selectable;
 
-import com.jme3.collision.Collidable;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class UnitRegistry implements ApplicationContextAware {

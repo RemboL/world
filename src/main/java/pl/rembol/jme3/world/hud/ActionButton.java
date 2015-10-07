@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.hud;
 
-import pl.rembol.jme3.world.input.state.Command;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.ui.Picture;
+import pl.rembol.jme3.world.input.state.Command;
 
 public class ActionButton extends Picture {
 

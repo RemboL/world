@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.save;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.interfaces.WithNode;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("ballman")
 public class BallManDTO extends UnitDTO {

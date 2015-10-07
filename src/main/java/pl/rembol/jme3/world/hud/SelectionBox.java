@@ -1,13 +1,12 @@
 package pl.rembol.jme3.world.hud;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class SelectionBox {

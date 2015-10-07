@@ -1,21 +1,21 @@
 package pl.rembol.jme3.world.ballman;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.SkeletonControl;
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.math.*;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.controls.MovingControl;
 import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.input.state.StatusDetails;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.particles.SparkParticleEmitter;
 import pl.rembol.jme3.world.player.Player;
@@ -31,19 +31,10 @@ import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 import pl.rembol.jme3.world.terrain.Terrain;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.SkeletonControl;
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Node;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 public class BallMan implements Selectable, WithOwner, Destructable,
         WithMovingControl, ApplicationContextAware {
@@ -73,8 +64,10 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     private SelectionIcon icon;
     private Node selectionNode;
     private BetterCharacterControl control;
-    private static final int MAX_HP = 50;
+    protected static final int MAX_HP = 50;
     private int hp = MAX_HP;
+
+    private BallManStatus status;
 
     private Map<Hand, SmallObject> wielded = new HashMap<>();
 
@@ -155,6 +148,8 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         return 1f;
     }
 
+    public int getHp() { return hp; }
+
     @Override
     public Node initNodeWithScale() {
         return (Node) assetManager.loadModel("ballman/ballman.mesh.xml");
@@ -197,6 +192,8 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
             item.get().getNode().setLocalRotation(Quaternion.IDENTITY);
             wielded.put(hand, item.get());
+
+            selectionManager.updateStatusIfSingleSelected(this);
         }
     }
 
@@ -213,7 +210,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     public void dropAndDestroy(Hand hand) {
         if (wielded.get(hand) != null) {
-            wielded.get(hand).detach(0);
+            wielded.get(hand).detach();
             wielded.remove(hand);
         }
     }
@@ -236,18 +233,13 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     @Override
-    public StatusDetails getStatusDetails() {
-        if (playerService.getActivePlayer().equals(owner)) {
-            return new StatusDetails(getStatusText(), inventory.tools());
-        } else {
-            return new StatusDetails(getStatusText());
+    public Node getStatusDetails() {
+        if (status == null) {
+            status = new BallManStatus(this, applicationContext);
         }
-    }
 
-    private List<String> getStatusText() {
-        return Arrays.asList("BallMan", "hp: " + hp + " / " + MAX_HP
-               ,
-                "owner: " + owner.getName());
+        status.update();
+        return status;
     }
 
     @Override
@@ -289,6 +281,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     public void addToInventory(Tool tool) {
         inventory.add(tool);
+        selectionManager.updateStatusIfSingleSelected(this);
     }
 
     public BallManControl control() {

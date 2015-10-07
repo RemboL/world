@@ -1,11 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.Optional;
-
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+
+import java.util.Optional;
 
 public class GetToolFromToolshopAction extends Action<BallMan> {
 

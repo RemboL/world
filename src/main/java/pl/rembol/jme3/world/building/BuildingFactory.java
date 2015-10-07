@@ -1,11 +1,9 @@
 package pl.rembol.jme3.world.building;
 
-import org.springframework.context.ApplicationContext;
-
-import pl.rembol.jme3.world.resources.Cost;
-
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
+import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.resources.Cost;
 
 public abstract class BuildingFactory {
 

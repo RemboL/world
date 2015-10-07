@@ -1,12 +1,11 @@
 package pl.rembol.jme3.world.pathfinding.paths;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.context.ApplicationContext;
-
 import pl.rembol.jme3.world.pathfinding.ClusterBorder;
 import pl.rembol.jme3.world.pathfinding.Vector2i;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComplexPath implements IPath2i {
 

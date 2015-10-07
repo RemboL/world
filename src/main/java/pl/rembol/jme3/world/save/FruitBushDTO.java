@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.save;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("fruitbush")
 public class FruitBushDTO extends UnitDTO {

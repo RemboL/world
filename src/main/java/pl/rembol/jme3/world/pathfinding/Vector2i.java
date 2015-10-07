@@ -1,19 +1,14 @@
 package pl.rembol.jme3.world.pathfinding;
 
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
+
+import java.util.*;
+
 import static com.jme3.math.FastMath.sqr;
 import static com.jme3.math.FastMath.sqrt;
 import static java.lang.Math.round;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
-
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 
 public class Vector2i {
 

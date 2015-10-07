@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.save;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.resources.deposits.Tree;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("tree")
 public class TreeDTO extends UnitDTO {

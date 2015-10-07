@@ -1,9 +1,7 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import javax.annotation.PostConstruct;
-
+import com.jme3.math.Vector2f;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
@@ -14,7 +12,7 @@ import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.terrain.Terrain;
 
-import com.jme3.math.Vector2f;
+import javax.annotation.PostConstruct;
 
 public abstract class BuildOrder extends Order<BallMan> {
 

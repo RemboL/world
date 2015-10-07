@@ -1,20 +1,5 @@
 package pl.rembol.jme3.world.input;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import pl.rembol.jme3.world.input.state.InputStateManager;
-import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -32,6 +17,19 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import pl.rembol.jme3.world.input.state.InputStateManager;
+import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.terrain.Terrain;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 @Component
 public class DragSelectionManager extends AbstractControl {

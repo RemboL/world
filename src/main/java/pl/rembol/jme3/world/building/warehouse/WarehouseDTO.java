@@ -1,9 +1,8 @@
 package pl.rembol.jme3.world.building.warehouse;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.save.UnitDTO;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("warehouse")
 public class WarehouseDTO extends UnitDTO {

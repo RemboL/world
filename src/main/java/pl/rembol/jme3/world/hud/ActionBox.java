@@ -1,19 +1,16 @@
 package pl.rembol.jme3.world.hud;
 
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import pl.rembol.jme3.world.input.state.Command;
-import pl.rembol.jme3.world.input.state.InputStateManager;
-
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import pl.rembol.jme3.world.input.state.Command;
+import pl.rembol.jme3.world.input.state.InputStateManager;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Component
 public class ActionBox {

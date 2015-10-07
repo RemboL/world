@@ -1,14 +1,12 @@
 package pl.rembol.jme3.world.ballman.order;
 
+import com.jme3.math.Vector2f;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
 import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.interfaces.WithNode;
-
-import com.jme3.math.Vector2f;
 
 public class SmoothenTerrainOrder extends Order<BallMan> {
 
