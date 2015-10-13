@@ -24,7 +24,7 @@ public class RabbitControl extends ActionQueueControl<Rabbit> {
         addAction(applicationContext
                 .getAutowireCapableBeanFactory()
                 .createBean(MoveTowardsLocationAction.class)
-                .init(new Vector2f(unit.getLocation().x
+                .init(unit, new Vector2f(unit.getLocation().x
                         + FastMath.nextRandomInt(-10, 10), unit.getLocation().z
                         + FastMath.nextRandomInt(-10, 10)), 2));
         addAction(applicationContext.getAutowireCapableBeanFactory()

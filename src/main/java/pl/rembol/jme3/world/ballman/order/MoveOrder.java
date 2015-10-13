@@ -13,7 +13,7 @@ public class MoveOrder extends Order<BallMan> {
         ballMan.control().setAction(
                 applicationContext.getAutowireCapableBeanFactory()
                         .createBean(MoveTowardsLocationAction.class)
-                        .init(location, 5f));
+                        .init(ballMan, location, 5f));
     }
 
     @Override

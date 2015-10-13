@@ -10,6 +10,10 @@ public class Rectangle2f {
 	private Vector2f start;
 	private Vector2f end;
 
+	public Rectangle2f(Vector2f middle, float buffer) {
+		this.start = new Vector2f(middle.x - buffer, middle.y - buffer);
+		this.end = new Vector2f(middle.x + buffer, middle.y + buffer);
+	}
 	public Rectangle2f(Solid solid, float buffer) {
 		this.start = new Vector2f(solid.getNode().getWorldTranslation().x
 				- solid.getWidth() - buffer, solid.getNode()

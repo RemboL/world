@@ -22,7 +22,7 @@ public abstract class ActionQueueControl<T extends WithNode> extends
 
     @Override
     protected void controlRender(RenderManager paramRenderManager,
-            ViewPort paramViewPort) {
+                                 ViewPort paramViewPort) {
     }
 
     @Override
@@ -77,8 +77,10 @@ public abstract class ActionQueueControl<T extends WithNode> extends
     }
 
     public boolean startsWith(Class<? extends Action<?>> actionClass) {
-        return actionQueue.isEmpty() ? false : actionQueue.get(0)
-                .isAssignableFrom(actionClass);
+        if (actionQueue.isEmpty()) {
+            return false;
+        }
+        return actionQueue.get(0).isAssignableFrom(actionClass);
     }
 
 }

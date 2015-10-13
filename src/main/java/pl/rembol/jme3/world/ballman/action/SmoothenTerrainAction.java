@@ -57,6 +57,9 @@ public class SmoothenTerrainAction extends Action<BallMan> {
         if (!assertWielded(ballMan, Optional.of(Shovel.class))) {
             return false;
         }
+        if (!assertDistance(ballMan, start.add(end).divideLocal(2), start.distance(end) / 2)) {
+            return false;
+        }
         resetAnimation(ballMan);
 
         minX = start.x - border;

@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -82,7 +84,7 @@ public abstract class Action<T extends WithNode> implements
     }
 
     protected boolean assertWielded(BallMan ballMan,
-            Optional<Class<? extends Tool>> wieldedClass) {
+                                    Optional<Class<? extends Tool>> wieldedClass) {
         if (!wieldedClass.isPresent()) {
             if (ballMan.getWieldedObject(Hand.RIGHT) != null) {
                 ballMan.control().addActionOnStart(
@@ -127,7 +129,7 @@ public abstract class Action<T extends WithNode> implements
     }
 
     protected boolean assertDistance(WithMovingControl unit, WithNode target,
-            float distance) {
+                                     float distance) {
         if (!isCloseEnough(unit, target, distance)
                 && BallMan.class.isInstance(unit)) {
             BallMan.class
@@ -144,16 +146,40 @@ public abstract class Action<T extends WithNode> implements
         return true;
     }
 
+    protected boolean assertDistance(WithMovingControl unit, Vector2f target,
+                                     float distance) {
+        if (!isCloseEnough(unit, target, distance)
+                && BallMan.class.isInstance(unit)) {
+            BallMan.class
+                    .cast(unit)
+                    .control()
+                    .addActionOnStart(
+                            applicationContext.getAutowireCapableBeanFactory()
+                                    .createBean(MoveTowardsLocationAction.class)
+                                    .init(unit, target, distance)
+                                    .withParent(this));
+            return false;
+        }
+
+        return true;
+    }
+
     protected boolean isCloseEnough(WithNode unit, WithNode target,
-            float distance) {
+                                    float distance) {
         if (target instanceof Solid) {
             return new Rectangle2f(Solid.class.cast(target), distance)
-                    .isInside(unit.getNode().getWorldTranslation());
+                    .isInside(unit.getLocation());
         } else {
             return unit.getNode().getWorldTranslation()
-                    .distance(target.getNode().getWorldTranslation()) < target
+                    .distance(target.getLocation()) < target
                     .getWidth() + distance;
         }
+    }
+
+    protected boolean isCloseEnough(WithNode unit, Vector2f target,
+                                    float distance) {
+        return new Rectangle2f(target, distance + 1)
+                .isInside(unit.getLocation());
     }
 
     protected Action<?> withParent(Action<?> action) {

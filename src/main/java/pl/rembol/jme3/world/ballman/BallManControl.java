@@ -46,7 +46,7 @@ public class BallManControl extends ActionQueueControl<BallMan> implements
     @Override
     public void performDefaultAction(Vector2f target) {
         setAction(applicationContext.getAutowireCapableBeanFactory()
-                .createBean(MoveTowardsLocationAction.class).init(target, 1f));
+                .createBean(MoveTowardsLocationAction.class).init(unit, target, 1f));
     }
 
     @Override

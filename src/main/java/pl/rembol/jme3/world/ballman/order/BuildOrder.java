@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.hud.ConsoleLog;
@@ -43,10 +42,6 @@ public abstract class BuildOrder extends Order<BallMan> {
         }
         if (hasResources(ballMan)) {
 
-            ballMan.control().setAction(
-                    applicationContext.getAutowireCapableBeanFactory()
-                            .createBean(MoveTowardsLocationAction.class)
-                            .init(location, factory.width() + 5));
             ballMan.control().addAction(
                     applicationContext
                             .getAutowireCapableBeanFactory()

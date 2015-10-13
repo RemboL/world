@@ -95,7 +95,6 @@ public class HungerControl extends AbstractControl {
 
     private void eatFoodFast() {
         if (!ballMan.control().startsWith(EatFoodAction.class)) {
-            System.out.println("very hungry!!!");
             ballMan.control().addActionOnStart(
                     applicationContext.getAutowireCapableBeanFactory()
                             .createBean(EatFoodAction.class)

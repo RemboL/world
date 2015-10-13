@@ -92,6 +92,10 @@ public class BuildAction extends Action<BallMan> {
             return false;
         }
 
+        if (!assertDistance(ballMan, position, factory.width() + 3)) {
+            return false;
+        }
+
         if (ballMan.getOwner().retrieveResources(factory.cost())) {
             resetAnimation(ballMan);
 

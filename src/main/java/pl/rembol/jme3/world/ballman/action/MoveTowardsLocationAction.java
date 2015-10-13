@@ -16,6 +16,7 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
     private Vector2f rectangleEnd;
 
     private IExternalPath path;
+    private WithMovingControl unit;
 
     @Autowired
     private Node rootNode;
@@ -23,7 +24,8 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
     @Autowired
     private PathfindingService pathfindingService;
 
-    public MoveTowardsLocationAction init(Vector2f point, float targetDistance) {
+    public MoveTowardsLocationAction init(WithMovingControl unit, Vector2f point, float targetDistance) {
+        this.unit = unit;
         this.rectangleStart = point.subtract(targetDistance, targetDistance);
         this.rectangleEnd = point.add(new Vector2f(targetDistance,
                 targetDistance));
@@ -46,7 +48,10 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
 
     @Override
     public void stop() {
-        path.clearPath();
+        if (path != null) {
+            path.clearPath();
+        }
+        unit.movingControl().setTargetVelocity(0f);
     }
 
     @Override
