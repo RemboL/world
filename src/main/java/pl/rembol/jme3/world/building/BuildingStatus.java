@@ -11,8 +11,6 @@ public class BuildingStatus extends DefaultStatus {
         super(gameState);
 
         this.building = building;
-
-        update();
     }
 
     @Override

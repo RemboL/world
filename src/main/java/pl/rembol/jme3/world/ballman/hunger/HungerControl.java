@@ -17,8 +17,7 @@ public class HungerControl extends AbstractControl {
     private GameState gameState;
 
     private static final int MAX_HUNGER = 50;
-
-    private float hunger = MAX_HUNGER * FastMath.nextRandomFloat();
+    private float hunger = MAX_HUNGER;
 
     private BallMan ballMan;
 
@@ -35,7 +34,7 @@ public class HungerControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        hunger -= tpf / 5;
+        hunger -= tpf / 10;
 
         if (ballMan.getOwner().isActive()) {
             updateHungerIndicator(tpf);

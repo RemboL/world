@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.input.state.SelectionManager;
@@ -38,7 +39,7 @@ public class HouseControl extends AbstractControl {
 
         currentAction.addProgress(tpf);
         if (currentAction.isFinished()) {
-            currentAction.execute(applicationContext, house);
+            currentAction.execute(house);
             queue.remove(currentAction);
 
             house.getOwner().updateHousing();
@@ -58,7 +59,7 @@ public class HouseControl extends AbstractControl {
     }
 
     public void addToQueue() {
-        queue.add(new RecruitQueuedAction());
+        queue.add(new RecruitQueuedAction(applicationContext));
 
         house.getOwner().updateHousing();
     }
@@ -67,18 +68,8 @@ public class HouseControl extends AbstractControl {
         return !queue.isEmpty();
     }
 
-    public String recruitingStatus() {
-        if (queue.isEmpty()) {
-            return null;
-        }
-
-        String recruitingStatus = "Recruiting... "
-                + queue.get(0).progressPercent() + "%";
-
-        if (queue.size() > 1) {
-            recruitingStatus += " + " + (queue.size() - 1) + " more";
-        }
-
-        return recruitingStatus;
+    public List<RecruitQueuedAction> getQueue() {
+        return queue;
     }
+
 }

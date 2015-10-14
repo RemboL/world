@@ -1,13 +1,19 @@
 package pl.rembol.jme3.world.building.house;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
+import com.jme3.ui.Picture;
 import org.springframework.context.ApplicationContext;
 import pl.rembol.jme3.world.ballman.BallMan;
 
 public class RecruitQueuedAction {
 
+    private final Picture actionIcon;
+
     private static final float TIME = 10;
+
+    private final ApplicationContext applicationContext;
 
     private float progress = 0;
 
@@ -19,7 +25,15 @@ public class RecruitQueuedAction {
         return progress >= TIME;
     }
 
-    public void execute(ApplicationContext applicationContext, House house) {
+    public RecruitQueuedAction(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        actionIcon = new Picture("recruit action icon");
+        actionIcon.setImage(applicationContext.getBean(AssetManager.class), "interface/icons/ballman.png", true);
+        actionIcon.setWidth(32);
+        actionIcon.setHeight(32);
+    }
+
+    public void execute(House house) {
         Vector2f location = new Vector2f(house.getLocation().x,
                 house.getLocation().z);
 
@@ -31,7 +45,11 @@ public class RecruitQueuedAction {
         ballMan.setOwner(house.getOwner());
     }
 
-    public int progressPercent() {
-        return Math.round(progress / TIME * 100);
+    public float progress() {
+        return progress / TIME;
+    }
+
+    public Picture getActionIcon() {
+        return actionIcon;
     }
 }
