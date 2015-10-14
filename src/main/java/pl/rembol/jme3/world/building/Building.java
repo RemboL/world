@@ -67,7 +67,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
         node = new Node();
         building = initNodeWithScale();
-        icon = new SelectionIcon(this, getIconName(), gameState);
+        icon = new SelectionIcon(gameState, this, getIconName());
 
         building.setShadowMode(ShadowMode.Cast);
         if (startUnderGround) {

@@ -14,17 +14,19 @@ import pl.rembol.jme3.world.ballman.BallMan;
 public class HungerIndicator extends Node {
 
     private Node node;
+
     private Material material;
 
     private static final ColorRGBA GREEN = new ColorRGBA(.5f, 1f, .5f, .2f);
+
     private static final ColorRGBA YELLOW = new ColorRGBA(1f, 1f, 0f, .2f);
+
     private static final ColorRGBA RED = new ColorRGBA(1f, 0f, 0f, .2f);
 
-    public HungerIndicator init(GameState gameState,
-            BallMan ballMan, float hungerFactor) {
+    public HungerIndicator(GameState gameState, BallMan ballMan, float hungerFactor) {
 
         node = ModelHelper.rewriteDiffuseToAmbient((Node) gameState.assetManager.loadModel(
-                        "hunger_indicator/hunger_indicator.mesh.xml"));
+                "hunger_indicator/hunger_indicator.mesh.xml"));
         node.setShadowMode(ShadowMode.Off);
 
         this.attachChild(node);
@@ -39,8 +41,6 @@ public class HungerIndicator extends Node {
 
         setMaterial(material);
         node.setQueueBucket(Bucket.Transparent);
-
-        return this;
     }
 
     public void hunger(float hungerFactor) {

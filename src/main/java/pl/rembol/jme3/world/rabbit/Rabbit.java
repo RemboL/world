@@ -3,8 +3,6 @@ package pl.rembol.jme3.world.rabbit;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -26,8 +24,7 @@ import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 
-public class Rabbit extends AbstractControl implements Selectable,
-        ApplicationContextAware, WithMovingControl {
+public class Rabbit extends AbstractControl implements Selectable, WithMovingControl {
 
     @Autowired
     private UnitRegistry unitRegistry;
@@ -35,33 +32,30 @@ public class Rabbit extends AbstractControl implements Selectable,
     @Autowired
     private GameState gameState;
 
-    private ApplicationContext applicationContext;
-
     private Node node;
+
     private SelectionIcon icon;
+
     private BetterCharacterControl control;
+
     private Node selectionNode;
+
     private RabbitStatus status;
 
     public void init(Vector2f position) {
         init(gameState.terrain.getGroundPosition(position));
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
     public void init(Vector3f position) {
         initNode(gameState.rootNode);
-        icon = new SelectionIcon(this, "rabbit", gameState);
+        icon = new SelectionIcon(gameState, this, "rabbit");
         node.setLocalTranslation(position);
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
         control = new BetterCharacterControl(.6f, 10f, 1);
 
-        node.addControl(new RabbitControl(applicationContext, this));
+        node.addControl(new RabbitControl(gameState, this));
         node.addControl(new MovingControl(this));
 
         gameState.bulletAppState.getPhysicsSpace().add(control);

@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world.ballman.hunger;
 
-import org.springframework.context.ApplicationContext;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -16,7 +14,7 @@ import pl.rembol.jme3.world.resources.ResourceType;
 
 public class HungerControl extends AbstractControl {
 
-    private ApplicationContext applicationContext;
+    private GameState gameState;
 
     private static final int MAX_HUNGER = 50;
 
@@ -26,9 +24,9 @@ public class HungerControl extends AbstractControl {
 
     private HungerIndicator hungerIndicator;
 
-    public HungerControl(ApplicationContext applicationContext, BallMan ballMan) {
+    public HungerControl(GameState gameState, BallMan ballMan) {
         this.ballMan = ballMan;
-        this.applicationContext = applicationContext;
+        this.gameState = gameState;
     }
 
     @Override
@@ -71,8 +69,7 @@ public class HungerControl extends AbstractControl {
             hungerIndicator = null;
         } else {
             if (hungerIndicator == null && isHungry()) {
-                hungerIndicator = new HungerIndicator().init(
-                        applicationContext.getBean(GameState.class), ballMan, hungerFactor());
+                hungerIndicator = new HungerIndicator(gameState, ballMan, hungerFactor());
             }
         }
 
@@ -90,15 +87,13 @@ public class HungerControl extends AbstractControl {
 
     private void eatFood() {
         if (!ballMan.control().contains(EatFoodAction.class)) {
-            ballMan.control().addAction(
-                    new EatFoodAction(applicationContext.getBean(GameState.class), MAX_HUNGER - hunger));
+            ballMan.control().addAction(new EatFoodAction(gameState, MAX_HUNGER - hunger));
         }
     }
 
     private void eatFoodFast() {
         if (!ballMan.control().startsWith(EatFoodAction.class)) {
-            ballMan.control().addActionOnStart(
-                    new EatFoodAction(applicationContext.getBean(GameState.class), MAX_HUNGER - hunger));
+            ballMan.control().addActionOnStart(new EatFoodAction(gameState, MAX_HUNGER - hunger));
         }
     }
 

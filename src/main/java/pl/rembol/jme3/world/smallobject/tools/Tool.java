@@ -24,7 +24,7 @@ public abstract class Tool extends SmallObject {
         gameState.bulletAppState.getPhysicsSpace()
                 .add(control);
 
-        icon = new InventoryIcon(iconName(), gameState);
+        icon = new InventoryIcon(gameState, iconName());
     }
 
     protected abstract String modelFileName();

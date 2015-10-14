@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world.particles;
 
-import org.springframework.context.ApplicationContext;
-
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
@@ -16,16 +14,13 @@ public class SparkParticleEmitter extends ParticleEmitter {
 
     private static final float TTL = 4f;
 
-    public SparkParticleEmitter(ApplicationContext applicationContext,
+    public SparkParticleEmitter(GameState gameState,
                                 ColorRGBA color, int numberOfParticles, Node parentNode) {
         super("spark", ParticleMesh.Type.Triangle, numberOfParticles);
-        Material sparkMat = new Material(
-                applicationContext.getBean(GameState.class).assetManager,
+        Material sparkMat = new Material(gameState.assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
-        sparkMat.setTexture(
-                "Texture",
-                applicationContext.getBean(GameState.class).assetManager.loadTexture(
-                        "Effects/Explosion/spark.png"));
+        sparkMat.setTexture("Texture", gameState.assetManager.loadTexture(
+                "Effects/Explosion/spark.png"));
         setMaterial(sparkMat);
         setImagesX(1);
         setImagesY(1);
@@ -42,7 +37,7 @@ public class SparkParticleEmitter extends ParticleEmitter {
 
         parentNode.attachChild(this);
 
-        addControl(new TimeToLiveControl(applicationContext.getBean(GameState.class), TTL));
+        addControl(new TimeToLiveControl(gameState, TTL));
 
     }
 

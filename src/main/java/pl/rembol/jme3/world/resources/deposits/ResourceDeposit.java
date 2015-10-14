@@ -60,7 +60,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     public void init(Vector3f position) {
 
         node = initNodeWithScale();
-        icon = new SelectionIcon(this, getIconName(), gameState);
+        icon = new SelectionIcon(gameState, this, getIconName());
 
         node.setShadowMode(ShadowMode.Cast);
         gameState.rootNode.attachChild(node);

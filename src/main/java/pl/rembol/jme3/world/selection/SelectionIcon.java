@@ -8,8 +8,7 @@ public class SelectionIcon extends Picture {
     public static final int SIZE = 32;
     private Selectable selectable;
 
-    public SelectionIcon(Selectable selectable, String iconName,
-            GameState gameState) {
+    public SelectionIcon(GameState gameState, Selectable selectable, String iconName) {
         super(iconName);
         this.selectable = selectable;
         setImage(gameState.assetManager, "interface/icons/" + iconName + ".png", true);

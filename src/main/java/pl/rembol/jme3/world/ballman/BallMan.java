@@ -6,8 +6,6 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -40,7 +38,7 @@ import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 public class BallMan implements Selectable, WithOwner, Destructable,
-        WithMovingControl, ApplicationContextAware {
+        WithMovingControl {
 
     @Autowired
     private UnitRegistry unitRegistry;
@@ -55,10 +53,15 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     private PlayerService playerService;
 
     private Node node;
+
     private SelectionIcon icon;
+
     private Node selectionNode;
+
     private BetterCharacterControl control;
+
     protected static final int MAX_HP = 50;
+
     private int hp = MAX_HP;
 
 //    private BallManStatus status;
@@ -66,14 +69,8 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     private Map<Hand, SmallObject> wielded = new HashMap<>();
 
     private Player owner;
-    private ApplicationContext applicationContext;
 
     private Inventory inventory = new Inventory();
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
 
     public void init(Vector2f position) {
         init(gameState.terrain.getGroundPosition(position));
@@ -81,16 +78,16 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     public void init(Vector3f position) {
         initNode(gameState.rootNode);
-        icon = new SelectionIcon(this, "ballman", gameState);
+        icon = new SelectionIcon(gameState, this, "ballman");
         node.setLocalTranslation(position);
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
         control = new BetterCharacterControl(.6f, 10f, 1);
 
-        node.addControl(new BallManControl(applicationContext, this));
+        node.addControl(new BallManControl(gameState, this));
         node.addControl(new MovingControl(this));
-        node.addControl(new HungerControl(applicationContext, this));
+        node.addControl(new HungerControl(gameState, this));
 
         gameState.bulletAppState.getPhysicsSpace().add(control);
 
@@ -104,8 +101,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public void strike(int strength) {
         hp -= strength;
-        new SparkParticleEmitter(applicationContext, ColorRGBA.Red, strength,
-                node).emit();
+        new SparkParticleEmitter(gameState, ColorRGBA.Red, strength, node).emit();
 
         if (hp <= 0) {
             destroy();
@@ -115,7 +111,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     private void destroy() {
-        new SparkParticleEmitter(applicationContext, ColorRGBA.Red, 1000,
+        new SparkParticleEmitter(gameState, ColorRGBA.Red, 1000,
                 gameState.rootNode).doSetLocalTranslation(node.getLocalTranslation())
                 .emit();
 
@@ -142,7 +138,9 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         return 1f;
     }
 
-    public int getHp() { return hp; }
+    public int getHp() {
+        return hp;
+    }
 
     @Override
     public Node initNodeWithScale() {
@@ -172,7 +170,9 @@ public class BallMan implements Selectable, WithOwner, Destructable,
             this.bone = bone;
         }
 
-    };
+    }
+
+    ;
 
     public void wield(Optional<? extends SmallObject> item, Hand hand) {
         if (wielded.get(hand) != null) {
@@ -253,7 +253,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[] { "skin" };
+        return new String[]{ "skin" };
     }
 
     @Override

@@ -82,7 +82,7 @@ public class GameRunningAppState extends AbstractAppState {
         applicationContext = new ClassPathXmlApplicationContext(
                 new String[]{ "/app-ctx.xml" }, parentApplicationContext);
 
-        initLightAndShadows(applicationContext.getBean(GameState.class), app.getViewPort());
+        initLightAndShadows(gameState, app.getViewPort());
         PlayerService playerService = applicationContext
                 .getBean(PlayerService.class);
 
