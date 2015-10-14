@@ -1,12 +1,5 @@
 package pl.rembol.jme3.world.building;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector2f;
@@ -16,18 +9,17 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.Control;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Solid;
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.player.Player;
-import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 
-public abstract class Building implements Selectable, WithOwner, Destructable,
-        Solid, ApplicationContextAware {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Building implements Selectable, WithOwner, Destructable, Solid {
 
     private RigidBodyControl control;
     private Node node;
@@ -36,23 +28,11 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     private SelectionNode selectionNode;
     protected Player owner;
     private int hp;
-    protected ApplicationContext applicationContext;
     private BuildingStatus status;
-    @Autowired
     protected GameState gameState;
 
-    @Autowired
-    private SelectionManager selectionManager;
-
-    @Autowired
-    private UnitRegistry unitRegistry;
-
-    @Autowired
-    protected PlayerService playerService;
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public Building(GameState gameState) {
+        this.gameState = gameState;
     }
 
     public Building init(Vector2f position) {
@@ -87,7 +67,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
         gameState.bulletAppState.getPhysicsSpace().add(control);
 
-        unitRegistry.register(this);
+        gameState.unitRegistry.register(this);
 
         hp = getMaxHp();
 
@@ -132,9 +112,9 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     }
 
     protected String[] statusLines() {
-        return new String[] { getName(),
+        return new String[]{getName(),
                 "hp: " + hp + " / " + getMaxHp(),
-                "owner: " + owner.getName() };
+                "owner: " + owner.getName()};
     }
 
     public boolean isConstructed() {
@@ -174,7 +154,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
             destroy();
         }
 
-        selectionManager.updateStatusIfSingleSelected(this);
+        gameState.selectionManager.updateStatusIfSingleSelected(this);
     }
 
     public int getHp() {
@@ -191,15 +171,14 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     }
 
     private void destroy() {
-        unitRegistry.unregister(this);
+        gameState.unitRegistry.unregister(this);
         gameState.bulletAppState.getPhysicsSpace().remove(control);
 
         for (int i = getNode().getNumControls() - 1; i >= 0; --i) {
             getNode().removeControl(getNode().getControl(i));
         }
 
-        applicationContext.getAutowireCapableBeanFactory()
-                .createBean(BuildingDestructionControl.class).init(this);
+        new BuildingDestructionControl(gameState, this);
     }
 
     public Node initNodeWithScale() {

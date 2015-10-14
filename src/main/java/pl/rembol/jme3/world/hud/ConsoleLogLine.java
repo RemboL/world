@@ -12,51 +12,51 @@ import pl.rembol.jme3.world.GameState;
 
 public class ConsoleLogLine extends AbstractControl {
 
-	private BitmapText textLine;
+    private BitmapText textLine;
 
-	private float timeToLive;
+    private float timeToLive;
 
-	public ConsoleLogLine(GameState gameState, Node node, String text) {
+    public ConsoleLogLine(GameState gameState, Node node, String text) {
 
-		for (Spatial spatial : node.getChildren()) {
-			if (spatial.getControl(ConsoleLogLine.class) != null) {
-				spatial.getControl(ConsoleLogLine.class).shiftUp();
-			}
-		}
+        for (Spatial spatial : node.getChildren()) {
+            if (spatial.getControl(ConsoleLogLine.class) != null) {
+                spatial.getControl(ConsoleLogLine.class).shiftUp();
+            }
+        }
 
-		BitmapFont guiFont = gameState.assetManager
-				.loadFont("Interface/Fonts/Default.fnt");
-		textLine = new BitmapText(guiFont);
-		textLine.setSize(guiFont.getCharSet().getRenderedSize());
-		textLine.setText(text);
-		node.attachChild(textLine);
-		textLine.addControl(this);
-		timeToLive = 10f;
+        BitmapFont guiFont = gameState.assetManager
+                .loadFont("Interface/Fonts/Default.fnt");
+        textLine = new BitmapText(guiFont);
+        textLine.setSize(guiFont.getCharSet().getRenderedSize());
+        textLine.setText(text);
+        node.attachChild(textLine);
+        textLine.addControl(this);
+        timeToLive = 10f;
 
-	}
+    }
 
-	private void shiftUp() {
-		textLine.move(0, textLine.getHeight(), 0);
-	}
+    private void shiftUp() {
+        textLine.move(0, textLine.getHeight(), 0);
+    }
 
-	@Override
-	protected void controlUpdate(float tpf) {
-		timeToLive -= tpf;
+    @Override
+    protected void controlUpdate(float tpf) {
+        timeToLive -= tpf;
 
-		if (timeToLive < 2 && timeToLive > 0) {
-			ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 0f);
-			color.interpolate(ColorRGBA.White, timeToLive / 2);
-			textLine.setColor(color);
-		}
+        if (timeToLive < 2 && timeToLive > 0) {
+            ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 0f);
+            color.interpolate(ColorRGBA.White, timeToLive / 2);
+            textLine.setColor(color);
+        }
 
-		if (timeToLive < 0) {
-			textLine.removeControl(this);
-			textLine.getParent().detachChild(textLine);
-		}
-	}
+        if (timeToLive < 0) {
+            textLine.removeControl(this);
+            textLine.getParent().detachChild(textLine);
+        }
+    }
 
-	@Override
-	protected void controlRender(RenderManager paramRenderManager,
-			ViewPort paramViewPort) {
-	}
+    @Override
+    protected void controlRender(RenderManager paramRenderManager,
+                                 ViewPort paramViewPort) {
+    }
 }

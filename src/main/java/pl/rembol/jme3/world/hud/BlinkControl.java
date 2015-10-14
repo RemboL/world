@@ -10,54 +10,54 @@ import com.jme3.ui.Picture;
 
 public class BlinkControl extends AbstractControl {
 
-	float timeToLive = 1;
-	private Picture picture;
-	private Material material;
-	private Vector3f startPosition;
-	private Vector3f finishPosition;
-	private float size;
+    float timeToLive = 1;
+    private Picture picture;
+    private Material material;
+    private Vector3f startPosition;
+    private Vector3f finishPosition;
+    private float size;
 
-	public BlinkControl(Picture picture, float size) {
-		if (picture.getControl(BlinkControl.class) == null) {
-			this.picture = picture;
-			this.material = picture.getMaterial();
-			this.size = size;
+    public BlinkControl(Picture picture, float size) {
+        if (picture.getControl(BlinkControl.class) == null) {
+            this.picture = picture;
+            this.material = picture.getMaterial();
+            this.size = size;
 
-			startPosition = picture.getLocalTranslation().clone()
-					.add(-size / 2, -size / 2, 0);
-			finishPosition = picture.getLocalTranslation().clone();
+            startPosition = picture.getLocalTranslation().clone()
+                    .add(-size / 2, -size / 2, 0);
+            finishPosition = picture.getLocalTranslation().clone();
 
-			picture.addControl(this);
-		}
-	}
+            picture.addControl(this);
+        }
+    }
 
-	@Override
-	protected void controlRender(RenderManager paramRenderManager,
-			ViewPort paramViewPort) {
-	}
+    @Override
+    protected void controlRender(RenderManager paramRenderManager,
+                                 ViewPort paramViewPort) {
+    }
 
-	@Override
-	protected void controlUpdate(float tpf) {
-		timeToLive -= tpf;
+    @Override
+    protected void controlUpdate(float tpf) {
+        timeToLive -= tpf;
 
-		if (timeToLive > 0) {
-			ColorRGBA color = new ColorRGBA();
-			color.interpolate(ColorRGBA.White, ColorRGBA.Red, timeToLive);
-			material.setColor("Color", color);
+        if (timeToLive > 0) {
+            ColorRGBA color = new ColorRGBA();
+            color.interpolate(ColorRGBA.White, ColorRGBA.Red, timeToLive);
+            material.setColor("Color", color);
 
-			Vector3f position = new Vector3f();
-			position.interpolate(finishPosition, startPosition, timeToLive);
-			picture.setLocalTranslation(position);
+            Vector3f position = new Vector3f();
+            position.interpolate(finishPosition, startPosition, timeToLive);
+            picture.setLocalTranslation(position);
 
-			float scale = size * (1 + timeToLive);
-			picture.setLocalScale(new Vector3f(scale, scale, 1f));
-		} else {
-			material.setColor("Color", ColorRGBA.White);
-			picture.setLocalTranslation(finishPosition);
-			picture.setLocalScale(new Vector3f(size, size, 1f));
+            float scale = size * (1 + timeToLive);
+            picture.setLocalScale(new Vector3f(scale, scale, 1f));
+        } else {
+            material.setColor("Color", ColorRGBA.White);
+            picture.setLocalTranslation(finishPosition);
+            picture.setLocalScale(new Vector3f(size, size, 1f));
 
-			picture.removeControl(this);
-		}
+            picture.removeControl(this);
+        }
 
-	}
+    }
 }

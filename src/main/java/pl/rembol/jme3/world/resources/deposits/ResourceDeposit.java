@@ -1,12 +1,5 @@
 package pl.rembol.jme3.world.resources.deposits;
 
-import java.util.Optional;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -15,17 +8,17 @@ import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.Solid;
-import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-public abstract class ResourceDeposit implements Selectable, Solid,
-        ApplicationContextAware {
+import java.util.Optional;
+import java.util.Random;
+
+public abstract class ResourceDeposit implements Selectable, Solid {
 
     private BetterCharacterControl control;
     private Node node;
@@ -36,19 +29,10 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     private SelectionNode selectionNode;
     private ResourceDepositStatus status;
 
-    @Autowired
     protected GameState gameState;
 
-    @Autowired
-    private SelectionManager selectionManager;
-
-    @Autowired
-    private UnitRegistry unitRegistry;
-
-    protected ApplicationContext applicationContext;
-
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public ResourceDeposit(GameState gameState) {
+        this.gameState = gameState;
     }
 
     public void init(Vector2f position) {
@@ -73,7 +57,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
         gameState.bulletAppState.getPhysicsSpace().add(control);
 
-        unitRegistry.register(this);
+        gameState.unitRegistry.register(this);
     }
 
     private Vector3f getInitialDirection() {
@@ -98,7 +82,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
         }
     }
 
-    public static enum RandomDirectionMode {
+    public enum RandomDirectionMode {
         ONLY_4_DIRECTIONS, WHOLE_CIRCLE
     }
 
@@ -130,7 +114,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
             destroy();
         }
 
-        selectionManager.updateStatusIfSingleSelected(this);
+        gameState.selectionManager.updateStatusIfSingleSelected(this);
     }
 
     protected void substractHp(int hp) {
@@ -138,7 +122,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     }
 
     private void destroy() {
-        unitRegistry.unregister(this);
+        gameState.unitRegistry.unregister(this);
         gameState.bulletAppState.getPhysicsSpace().remove(control);
         node.getParent().detachChild(node);
         this.destroyed = true;

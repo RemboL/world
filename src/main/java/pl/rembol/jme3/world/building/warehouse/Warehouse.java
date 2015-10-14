@@ -1,6 +1,7 @@
 package pl.rembol.jme3.world.building.warehouse;
 
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.Building;
@@ -9,6 +10,10 @@ import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.save.UnitDTO;
 
 public class Warehouse extends Building {
+
+    public Warehouse(GameState gameState) {
+        super(gameState);
+    }
 
     @Override
     public String getNodeFileName() {
@@ -32,7 +37,7 @@ public class Warehouse extends Building {
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[] { "Flag" };
+        return new String[]{"Flag"};
     }
 
     @Override
@@ -72,7 +77,7 @@ public class Warehouse extends Building {
     public void load(UnitDTO unit) {
         if (WarehouseDTO.class.isInstance(unit)) {
             init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
-            this.setOwner(playerService.getPlayer(WarehouseDTO.class.cast(unit)
+            this.setOwner(gameState.playerService.getPlayer(WarehouseDTO.class.cast(unit)
                     .getPlayer()));
         }
     }

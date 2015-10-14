@@ -4,11 +4,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import org.springframework.context.ApplicationContext;
-import pl.rembol.jme3.world.hud.ActionBox;
+import pl.rembol.jme3.world.GameState;
 
 public class ConstructionSite extends AbstractControl {
 
+    private GameState gameState;
     private Building building;
     private float buildingTimeInSeconds;
     private float progress = 0f;
@@ -16,12 +16,9 @@ public class ConstructionSite extends AbstractControl {
 
     private Vector3f finishedPosition;
     private Vector3f startingPosition;
-    private ApplicationContext applicationContext;
 
-    public ConstructionSite(ApplicationContext applicationContext,
-            Building building, float buildingTimeInSeconds) {
-        this.applicationContext = applicationContext;
-
+    public ConstructionSite(GameState gameState, Building building, float buildingTimeInSeconds) {
+        this.gameState = gameState;
         this.building = building;
         this.buildingTimeInSeconds = buildingTimeInSeconds;
         finishedPosition = new Vector3f(0, 0, 0);
@@ -49,7 +46,7 @@ public class ConstructionSite extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager paramRenderManager,
-            ViewPort paramViewPort) {
+                                 ViewPort paramViewPort) {
 
     }
 
@@ -70,7 +67,7 @@ public class ConstructionSite extends AbstractControl {
 
         building.finishBuilding();
 
-        applicationContext.getBean(ActionBox.class).updateActionButtons();
+        gameState.actionBox.updateActionButtons();
     }
 
 }

@@ -6,19 +6,19 @@ import java.util.List;
 
 @XStreamAlias("units")
 public class UnitsDTO {
-	private int idSequence;
-	private List<UnitDTO> units;
+    private int idSequence;
+    private List<UnitDTO> units;
 
-	public UnitsDTO(int idSequence, List<UnitDTO> units) {
-		this.idSequence = idSequence;
-		this.units = units;
-	}
+    public UnitsDTO(int idSequence, List<UnitDTO> units) {
+        this.idSequence = idSequence;
+        this.units = units;
+    }
 
-	public List<UnitDTO> getUnits() {
-		return units;
-	}
+    public List<UnitDTO> getUnits() {
+        return units;
+    }
 
-	public int getIdSequence() {
-		return idSequence;
-	}
+    public int getIdSequence() {
+        return idSequence;
+    }
 }

@@ -6,28 +6,28 @@ import pl.rembol.jme3.world.GameState;
 
 public class ConsoleLog {
 
-	private GameState gameState;
+    private GameState gameState;
 
-	private Node node;
+    private Node node;
 
-	public ConsoleLog(GameState gameState) {
-		this.gameState = gameState;
+    public ConsoleLog(GameState gameState) {
+        this.gameState = gameState;
 
-		Vector2f framePosition = new Vector2f(gameState.settings.getWidth() / 2 - 200, 150);
+        Vector2f framePosition = new Vector2f(gameState.settings.getWidth() / 2 - 200, 150);
 
-		node = new Node("console log");
-		node.setLocalTranslation(framePosition.x, framePosition.y, 0);
-		gameState.guiNode.attachChild(node);
-	}
+        node = new Node("console log");
+        node.setLocalTranslation(framePosition.x, framePosition.y, 0);
+        gameState.guiNode.attachChild(node);
+    }
 
-	public void addLine(String text) {
-		new ConsoleLogLine(gameState, node, text);
-	}
+    public void addLine(String text) {
+        new ConsoleLogLine(gameState, node, text);
+    }
 
-	public void addLineExternal(String text) {
-		gameState.simpleApplication.enqueue(() -> {
+    public void addLineExternal(String text) {
+        gameState.simpleApplication.enqueue(() -> {
             addLine(text);
             return null;
         });
-	}
+    }
 }

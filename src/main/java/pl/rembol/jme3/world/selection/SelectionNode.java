@@ -11,22 +11,22 @@ import pl.rembol.jme3.world.GameState;
 
 public class SelectionNode extends Node {
 
-	public SelectionNode(GameState gameState) {
-		setShadowMode(ShadowMode.Off);
-		Geometry geometry = new Geometry("selection", new Torus(20, 4, .05f,
-				1.5f));
-		geometry.rotate(FastMath.HALF_PI, 0, 0);
+    public SelectionNode(GameState gameState) {
+        setShadowMode(ShadowMode.Off);
+        Geometry geometry = new Geometry("selection", new Torus(20, 4, .05f,
+                1.5f));
+        geometry.rotate(FastMath.HALF_PI, 0, 0);
 
-		Material selectionMaterial = new Material(gameState.assetManager,
-				"Common/MatDefs/Light/Lighting.j3md");
-		selectionMaterial.setBoolean("UseMaterialColors", true);
-		selectionMaterial.setColor("Diffuse", ColorRGBA.Green);
-		selectionMaterial.setColor("Specular", ColorRGBA.Green);
-		selectionMaterial.setColor("Ambient", ColorRGBA.Green.mult(.1f));
-		selectionMaterial.setFloat("Shininess", 32f);
-		geometry.setMaterial(selectionMaterial);
+        Material selectionMaterial = new Material(gameState.assetManager,
+                "Common/MatDefs/Light/Lighting.j3md");
+        selectionMaterial.setBoolean("UseMaterialColors", true);
+        selectionMaterial.setColor("Diffuse", ColorRGBA.Green);
+        selectionMaterial.setColor("Specular", ColorRGBA.Green);
+        selectionMaterial.setColor("Ambient", ColorRGBA.Green.mult(.1f));
+        selectionMaterial.setFloat("Shininess", 32f);
+        geometry.setMaterial(selectionMaterial);
 
-		attachChild(geometry);
-	}
+        attachChild(geometry);
+    }
 
 }

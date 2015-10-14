@@ -1,15 +1,5 @@
 package pl.rembol.jme3.world;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-
 import com.jme3.collision.Collidable;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -19,29 +9,22 @@ import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.building.house.HouseControl;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.player.Player;
-import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.save.UnitsDTO;
 import pl.rembol.jme3.world.selection.Selectable;
 
-@Component
-public class UnitRegistry implements ApplicationContextAware {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class UnitRegistry {
 
     private static final String UNIT_DATA_KEY = "unit_data_key";
 
-    @Autowired
-    private SelectionManager selectionManager;
-
-    @Autowired
     private GameState gameState;
-
-    @Autowired
-    private PlayerService playerService;
-
-    private ApplicationContext applicationContext;
 
     private int idSequence = 0;
 
@@ -49,9 +32,8 @@ public class UnitRegistry implements ApplicationContextAware {
 
     private Map<String, WithNode> units = new HashMap<>();
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public UnitRegistry(GameState gameState) {
+        this.gameState = gameState;
     }
 
     public List<? extends Collidable> getSelectablesNodes() {
@@ -77,7 +59,7 @@ public class UnitRegistry implements ApplicationContextAware {
     public void unregister(Selectable selectable) {
         units.remove(selectable.getNode().getUserData(UNIT_DATA_KEY));
         selectable.getNode().setUserData(UNIT_DATA_KEY, null);
-        selectionManager.deselect(selectable);
+        gameState.selectionManager.deselect(selectable);
 
         if (selectable instanceof Solid) {
             gameState.pathfindingService.removeSolid(selectable.getNode()
@@ -215,8 +197,7 @@ public class UnitRegistry implements ApplicationContextAware {
         suspendRegistry = true;
 
         for (UnitDTO unit : units.getUnits()) {
-            WithNode bean = applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(unit.getUnitClass());
+            WithNode bean = unit.produce(gameState);
             bean.load(unit);
             register(bean, unit.getKey());
         }
@@ -224,7 +205,7 @@ public class UnitRegistry implements ApplicationContextAware {
 
         suspendRegistry = false;
 
-        playerService.players().forEach(Player::updateHousingLimit);
-        playerService.players().forEach(Player::updateHousing);
+        gameState.playerService.players().forEach(Player::updateHousingLimit);
+        gameState.playerService.players().forEach(Player::updateHousing);
     }
 }

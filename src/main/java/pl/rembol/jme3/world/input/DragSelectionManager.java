@@ -1,16 +1,5 @@
 package pl.rembol.jme3.world.input;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
@@ -25,26 +14,28 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.input.state.InputStateManager;
-import pl.rembol.jme3.world.input.state.SelectionManager;
 
-@Component
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class DragSelectionManager extends AbstractControl {
 
-    @Autowired
     private GameState gameState;
-
-    @Autowired
-    private SelectionManager selectionManager;
-
-    @Autowired
-    private InputStateManager inputStateManager;
 
     private Vector3f dragStart;
 
     private Vector3f dragStop;
 
     private Geometry geometry;
+
+    public DragSelectionManager(GameState gameState) {
+        this.gameState = gameState;
+    }
 
     @Override
     protected void controlUpdate(float paramFloat) {
@@ -86,11 +77,9 @@ public class DragSelectionManager extends AbstractControl {
         List<List<Vector3f>> result = new ArrayList<>();
 
         for (Float z : listOfZ) {
-            List<Vector3f> vectorList = new ArrayList<>();
-            for (Float x : listOfX) {
-                vectorList.add(gameState.terrain.getGroundPosition(new Vector2f(x, z))
-                        .add(Vector3f.UNIT_Y));
-            }
+            List<Vector3f> vectorList = listOfX.stream()
+                    .map(x -> gameState.terrain.getGroundPosition(new Vector2f(x, z))
+                            .add(Vector3f.UNIT_Y)).collect(Collectors.toList());
 
             result.add(vectorList);
         }
@@ -106,7 +95,7 @@ public class DragSelectionManager extends AbstractControl {
         list.add(min);
         list.addAll(IntStream.rangeClosed(Math.round(min), Math.round(max))
                 .filter(x -> x > min).filter(x -> x < max)
-                .filter(x -> x % STEP == 0).boxed().map(i -> new Float(i))
+                .filter(x -> x % STEP == 0).boxed().map(Float::new)
                 .collect(Collectors.toList()));
         list.add(max);
 
@@ -127,8 +116,8 @@ public class DragSelectionManager extends AbstractControl {
     public void confirm() {
 
         if (dragStart != null && dragStop != null) {
-            selectionManager.dragSelect(dragStart, dragStop);
-            inputStateManager.cancelOrder();
+            gameState.selectionManager.dragSelect(dragStart, dragStop);
+            gameState.inputStateManager.cancelOrder();
         }
 
         cancel();
@@ -145,8 +134,7 @@ public class DragSelectionManager extends AbstractControl {
                         new Vector2f(click2d.getX(), click2d.getY()), 1f)
                 .subtractLocal(click3d).normalize();
 
-        Ray ray = new Ray(click3d, dir);
-        return ray;
+        return new Ray(click3d, dir);
     }
 
     private Vector3f getCollisionWithTerrain() {

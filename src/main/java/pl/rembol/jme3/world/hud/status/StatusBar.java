@@ -1,15 +1,15 @@
 package pl.rembol.jme3.world.hud.status;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StatusBar {
 
@@ -20,7 +20,7 @@ public class StatusBar {
     private Vector2f framePosition;
 
     private GameState gameState;
-    
+
     public StatusBar(GameState gameState) {
         this.gameState = gameState;
 

@@ -1,25 +1,18 @@
 package pl.rembol.jme3.world.input.state;
 
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.building.ConstructionSite;
+import pl.rembol.jme3.world.building.house.House;
+import pl.rembol.jme3.world.player.WithOwner;
+import pl.rembol.jme3.world.selection.Selectable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.building.ConstructionSite;
-import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.world.hud.ActionBox;
-import pl.rembol.jme3.world.player.PlayerService;
-import pl.rembol.jme3.world.player.WithOwner;
-import pl.rembol.jme3.world.selection.Selectable;
-
-@Component
 public class SelectionManager {
 
     public enum SelectionType {
@@ -28,17 +21,11 @@ public class SelectionManager {
 
     private List<Selectable> selected = new ArrayList<>();
 
-    @Autowired
-    private PlayerService playerService;
-
-    @Autowired
-    private ActionBox actionBox;
-
-    @Autowired
     private GameState gameState;
 
-    @Autowired
-    private UnitRegistry unitRegistry;
+    public SelectionManager(GameState gameState) {
+        this.gameState = gameState;
+    }
 
     public void select(Selectable selectable) {
         if (gameState.modifierKeysManager.isShiftPressed()) {
@@ -49,7 +36,7 @@ public class SelectionManager {
         }
 
         updateSelection();
-        actionBox.updateActionButtons();
+        gameState.actionBox.updateActionButtons();
     }
 
     public void updateSelection() {
@@ -79,7 +66,7 @@ public class SelectionManager {
         doDeselect(selectable);
 
         updateSelection();
-        actionBox.updateActionButtons();
+        gameState.actionBox.updateActionButtons();
     }
 
     private void clearSelection() {
@@ -127,12 +114,12 @@ public class SelectionManager {
 
     private boolean isOwnedByActivePlayer(Selectable selectedUnit) {
         return WithOwner.class.cast(selectedUnit).getOwner()
-                .equals(playerService.getActivePlayer());
+                .equals(gameState.playerService.getActivePlayer());
     }
 
     public void dragSelect(Vector3f dragStart, Vector3f dragStop) {
 
-        List<Selectable> dragSelected = unitRegistry.getSelectableByPosition(
+        List<Selectable> dragSelected = gameState.unitRegistry.getSelectableByPosition(
                 dragStart, dragStop);
 
         if (gameState.modifierKeysManager.isShiftPressed()) {
@@ -145,7 +132,7 @@ public class SelectionManager {
                     .filter(WithOwner.class::isInstance)
                     .map(WithOwner.class::cast)
                     .filter(withOwner -> withOwner.getOwner().equals(
-                            playerService.getActivePlayer()))
+                            gameState.playerService.getActivePlayer()))
                     .collect(Collectors.toList());
 
             if (!activePlayerOwned.isEmpty()) {
@@ -167,7 +154,7 @@ public class SelectionManager {
         }
 
         updateSelection();
-        actionBox.updateActionButtons();
+        gameState.actionBox.updateActionButtons();
     }
 
     public void updateStatusIfSingleSelected(Selectable selectable) {

@@ -21,7 +21,7 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
     private IExternalPath path;
 
     public MoveTowardsTargetAction(GameState gameState, WithMovingControl unit,
-            WithNode target, float targetDistance) {
+                                   WithNode target, float targetDistance) {
         super(gameState);
         this.unit = unit;
         this.target = target;

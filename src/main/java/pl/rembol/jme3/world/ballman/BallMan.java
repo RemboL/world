@@ -1,32 +1,18 @@
 package pl.rembol.jme3.world.ballman;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.controls.MovingControl;
-import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.particles.SparkParticleEmitter;
 import pl.rembol.jme3.world.player.Player;
-import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.save.UnitDTO;
@@ -37,20 +23,15 @@ import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+
 public class BallMan implements Selectable, WithOwner, Destructable,
         WithMovingControl {
 
-    @Autowired
-    private UnitRegistry unitRegistry;
-
-    @Autowired
-    private SelectionManager selectionManager;
-
-    @Autowired
     private GameState gameState;
-
-    @Autowired
-    private PlayerService playerService;
 
     private Node node;
 
@@ -64,13 +45,17 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     private int hp = MAX_HP;
 
-//    private BallManStatus status;
+    private BallManStatus status;
 
     private Map<Hand, SmallObject> wielded = new HashMap<>();
 
     private Player owner;
 
     private Inventory inventory = new Inventory();
+
+    public BallMan(GameState gameState) {
+        this.gameState = gameState;
+    }
 
     public void init(Vector2f position) {
         init(gameState.terrain.getGroundPosition(position));
@@ -95,7 +80,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
                 0f, new Random().nextFloat() - .5f).normalize());
 
-        unitRegistry.register(this);
+        gameState.unitRegistry.register(this);
     }
 
     @Override
@@ -107,7 +92,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
             destroy();
         }
 
-        selectionManager.updateStatusIfSingleSelected(this);
+        gameState.selectionManager.updateStatusIfSingleSelected(this);
     }
 
     private void destroy() {
@@ -115,7 +100,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
                 gameState.rootNode).doSetLocalTranslation(node.getLocalTranslation())
                 .emit();
 
-        unitRegistry.unregister(this);
+        gameState.unitRegistry.unregister(this);
         gameState.rootNode.detachChild(node);
         node.removeControl(BallManControl.class);
         node.removeControl(MovingControl.class);
@@ -161,7 +146,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         animationChannel.setAnim("stand");
     }
 
-    public static enum Hand {
+    public enum Hand {
         LEFT("hand.L"), RIGHT("hand.R");
 
         private String bone;
@@ -187,7 +172,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
             item.get().getNode().setLocalRotation(Quaternion.IDENTITY);
             wielded.put(hand, item.get());
 
-            selectionManager.updateStatusIfSingleSelected(this);
+            gameState.selectionManager.updateStatusIfSingleSelected(this);
         }
     }
 
@@ -228,13 +213,12 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     @Override
     public Node getStatusDetails() {
-//        if (status == null) {
-//            status = new BallManStatus(this, applicationContext);
-//        }
-//
-//        status.update();
-//        return status;
-        return null;
+        if (status == null) {
+            status = new BallManStatus(this, gameState);
+        }
+
+        status.update();
+        return status;
     }
 
     @Override
@@ -253,7 +237,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[]{ "skin" };
+        return new String[]{"skin"};
     }
 
     @Override
@@ -265,7 +249,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     public void load(UnitDTO unit) {
         if (BallManDTO.class.isInstance(unit)) {
             init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
-            this.setOwner(playerService.getPlayer(BallManDTO.class.cast(unit)
+            this.setOwner(gameState.playerService.getPlayer(BallManDTO.class.cast(unit)
                     .getPlayer()));
         }
     }
@@ -276,7 +260,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     public void addToInventory(Tool tool) {
         inventory.add(tool);
-        selectionManager.updateStatusIfSingleSelected(this);
+        gameState.selectionManager.updateStatusIfSingleSelected(this);
     }
 
     public BallManControl control() {

@@ -37,13 +37,13 @@ public class StateTransitions {
     }
 
     private static void register(InputState startingState, SelectionType type,
-            Command commandButton, InputState finishState, String order) {
+                                 Command commandButton, InputState finishState, String order) {
         transitions.add(new StateTransition(startingState, type, commandButton
                 .getCommandKey(), commandButton, finishState, order));
     }
 
     public Optional<StateTransition> match(InputState state,
-            SelectionType type, String command) {
+                                           SelectionType type, String command) {
         return transitions.stream()
                 .filter(transition -> transition.match(state, type, command))
                 .findFirst();

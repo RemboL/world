@@ -1,13 +1,5 @@
 package pl.rembol.jme3.world.building;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -17,8 +9,11 @@ import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
 
-public class BuildingDestructionControl extends AbstractControl implements
-        ApplicationContextAware {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class BuildingDestructionControl extends AbstractControl {
 
     private static final float MAX_TIME = 5f;
 
@@ -28,8 +23,6 @@ public class BuildingDestructionControl extends AbstractControl implements
 
     private final List<DustParticleEmitter> particleEmitters = new ArrayList<>();
 
-    private ApplicationContext applicationContext;
-
     private Vector2f start;
 
     private float minX;
@@ -38,15 +31,10 @@ public class BuildingDestructionControl extends AbstractControl implements
     private float maxY;
     private Random random = new Random();
 
-    @Autowired
     private GameState gameState;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
-    public void init(Building building) {
+    public BuildingDestructionControl(GameState gameState, Building building) {
+        this.gameState = gameState;
         this.building = building;
 
         start = new Vector2f(building.getNode().getWorldTranslation().x,
@@ -66,7 +54,7 @@ public class BuildingDestructionControl extends AbstractControl implements
     }
 
     private DustParticleEmitter createParticleEmiter() {
-        return new DustParticleEmitter(applicationContext.getBean(GameState.class))
+        return new DustParticleEmitter(gameState)
                 .doSetLocalTranslation(new Vector3f(start.x, gameState.terrain
                         .getTerrain().getHeight(start), start.y));
     }
@@ -91,10 +79,10 @@ public class BuildingDestructionControl extends AbstractControl implements
                 (random.nextFloat() - .5f) * .1f,
                 (random.nextFloat() - .5f) * .1f);
 
-        particleEmitters.forEach(emitter -> randomizeEmitterLocation(emitter));
+        particleEmitters.forEach(this::randomizeEmitterLocation);
 
         if (timeToLive < 0) {
-            particleEmitters.forEach(emitter -> emitter.stopEmitting());
+            particleEmitters.forEach(DustParticleEmitter::stopEmitting);
             gameState.rootNode.detachChild(building.getParentNode());
             building.getNode().removeControl(this);
         }
@@ -102,7 +90,7 @@ public class BuildingDestructionControl extends AbstractControl implements
 
     @Override
     protected void controlRender(RenderManager paramRenderManager,
-            ViewPort paramViewPort) {
+                                 ViewPort paramViewPort) {
     }
 
 }

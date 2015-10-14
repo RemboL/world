@@ -1,26 +1,26 @@
 package pl.rembol.jme3.world.player;
 
+import com.jme3.math.ColorRGBA;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.world.save.PlayerDTO;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-
-import com.jme3.math.ColorRGBA;
-import pl.rembol.jme3.world.resources.ResourceType;
-import pl.rembol.jme3.world.save.PlayerDTO;
-
-@Component
-public class PlayerService implements ApplicationContextAware {
-    private ApplicationContext applicationContext;
+public class PlayerService {
+    private final GameState gameState;
 
     private Map<String, Player> players = new HashMap<>();
 
     private Player activePlayer;
+
+    public PlayerService(GameState gameState) {
+        this.gameState = gameState;
+    }
 
     public void registerPlayer(String name, ColorRGBA color, boolean active) {
 
@@ -30,8 +30,7 @@ public class PlayerService implements ApplicationContextAware {
             return;
         }
 
-        Player player = applicationContext.getAutowireCapableBeanFactory()
-                .createBean(Player.class);
+        Player player = new Player(gameState);
         player.setName(name);
         player.setColor(color);
         player.setActive(active);
@@ -40,11 +39,6 @@ public class PlayerService implements ApplicationContextAware {
         }
 
         players.put(player.getName(), player);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
     }
 
     public Player getPlayer(String name) {

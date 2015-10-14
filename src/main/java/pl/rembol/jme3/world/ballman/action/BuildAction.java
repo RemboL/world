@@ -1,24 +1,21 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-import org.springframework.context.ApplicationContext;
-
 import com.jme3.animation.LoopMode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.smallobject.tools.Hammer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class BuildAction extends Action<BallMan> {
 
@@ -48,17 +45,11 @@ public class BuildAction extends Action<BallMan> {
 
     private Vector2f position;
 
-    private UnitRegistry unitRegistry;
-
     private BuildingFactory factory;
 
-    private ApplicationContext applicationContext;
-
-    public BuildAction(GameState gameState, ApplicationContext applicationContext, Vector2f position,
+    public BuildAction(GameState gameState, Vector2f position,
                        BuildingFactory factory) {
         super(gameState);
-        this.unitRegistry = applicationContext.getBean(UnitRegistry.class);
-        this.applicationContext = applicationContext;
         this.position = position;
         this.factory = factory;
 
@@ -77,7 +68,7 @@ public class BuildAction extends Action<BallMan> {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        if (!unitRegistry.isSpaceFree(gameState.terrain.getGroundPosition(position),
+        if (!gameState.unitRegistry.isSpaceFree(gameState.terrain.getGroundPosition(position),
                 factory.width())) {
             gameState.consoleLog.addLine("Can't build here, something's in the way");
             isFinished = true;
@@ -95,11 +86,10 @@ public class BuildAction extends Action<BallMan> {
         if (ballMan.getOwner().retrieveResources(factory.cost())) {
             resetAnimation(ballMan);
 
-            Building building = factory.create(applicationContext, position,
+            Building building = factory.create(gameState, position,
                     true);
             building.setOwner(ballMan.getOwner());
-            constructionSite = new ConstructionSite(applicationContext,
-                    building, 5f);
+            constructionSite = new ConstructionSite(gameState, building, 5f);
 
             minX = position.getX() - constructionSite.getBuilding().getWidth()
                     - 5;
@@ -135,9 +125,7 @@ public class BuildAction extends Action<BallMan> {
         if (!isFinished) {
             constructionSite.addBuildProgress(tpf);
 
-            for (ParticleEmitter emitter : particleEmitters) {
-                randomizeEmitterLocation(emitter);
-            }
+            particleEmitters.forEach(this::randomizeEmitterLocation);
 
             if (animationEnded()) {
                 resetAnimation(ballMan);

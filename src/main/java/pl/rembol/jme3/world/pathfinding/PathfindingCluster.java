@@ -1,18 +1,14 @@
 package pl.rembol.jme3.world.pathfinding;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
 import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PathfindingCluster {
 
@@ -20,7 +16,7 @@ public class PathfindingCluster {
 
     private static final int MAX_PATHFINDING_ITERATIONS = 1000;
 
-    static enum Direction {
+    enum Direction {
         UP, //
         DOWN, //
         LEFT, //
@@ -283,13 +279,13 @@ public class PathfindingCluster {
 
     public String toString() {
         int minX = blocks.keySet().stream()
-                .reduce(999, (i, j) -> Math.min(i, j));
+                .reduce(999, Math::min);
         int maxX = blocks.keySet().stream()
-                .reduce(-999, (i, j) -> Math.max(i, j));
+                .reduce(-999, Math::max);
         int minY = blocks.get(minX).keySet().stream()
-                .reduce(999, (i, j) -> Math.min(i, j));
+                .reduce(999, Math::min);
         int maxY = blocks.get(maxX).keySet().stream()
-                .reduce(-999, (i, j) -> Math.max(i, j));
+                .reduce(-999, Math::max);
 
         return "(" + minX + ", " + minY + ") - (" + maxX + ", " + maxY + ")";
     }

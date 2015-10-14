@@ -1,12 +1,5 @@
 package pl.rembol.jme3.world.input.state;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
@@ -21,14 +14,11 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.order.BuildOrder;
 import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.building.BuildingFactory;
 
-@Component
-public class BuildingSilhouetteManager extends AbstractControl implements
-        ApplicationContextAware {
+public class BuildingSilhouetteManager extends AbstractControl {
 
     private Node silhouette;
 
@@ -36,23 +26,13 @@ public class BuildingSilhouetteManager extends AbstractControl implements
 
     private Material redMaterial;
 
-    @Autowired
     private GameState gameState;
-
-    @Autowired
-    private UnitRegistry unitRegistry;
-
-    private ApplicationContext applicationContext;
 
     private BuildingFactory buildingFactory;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
+    public BuildingSilhouetteManager(GameState gameState) {
+        this.gameState = gameState;
 
-    @PostConstruct
-    public void initMaterials() {
         greenMaterial = new Material(gameState.assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         greenMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
@@ -71,7 +51,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
             if (newPosition != null) {
                 buildingFactory = BuildOrder.class.cast(currentOrder).factory();
                 silhouette = buildingFactory
-                        .createNodeWithScale(applicationContext);
+                        .createNodeWithScale(gameState);
                 silhouette.setMaterial(greenMaterial);
                 silhouette.setLocalTranslation(newPosition);
                 silhouette.addControl(this);
@@ -110,7 +90,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
         Vector3f newPosition = getNewPosition();
         if (newPosition != null) {
             silhouette.setLocalTranslation(newPosition);
-            if (unitRegistry.isSpaceFreeWithBuffer(newPosition,
+            if (gameState.unitRegistry.isSpaceFreeWithBuffer(newPosition,
                     buildingFactory.width())) {
                 silhouette.setMaterial(greenMaterial);
             } else {

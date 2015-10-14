@@ -1,19 +1,16 @@
 package pl.rembol.jme3.world.hud;
 
-import static pl.rembol.jme3.world.resources.ResourceType.FOOD;
-import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
-import static pl.rembol.jme3.world.resources.ResourceType.STONE;
-import static pl.rembol.jme3.world.resources.ResourceType.WOOD;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector2f;
 import com.jme3.ui.Picture;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.resources.ResourceType;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static pl.rembol.jme3.world.resources.ResourceType.*;
 
 public class ResourcesBar {
 

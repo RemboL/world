@@ -8,17 +8,21 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 
 public class SmoothenTerrainOrder extends Order<BallMan> {
 
+    public SmoothenTerrainOrder(GameState gameState) {
+        super(gameState);
+    }
+
     @Override
     protected void doPerform(BallMan ballMan, Vector2f location) {
         ballMan.control().addAction(
-                new SmoothenTerrainAction(applicationContext.getBean(GameState.class),
+                new SmoothenTerrainAction(gameState,
                         location.add(new Vector2f(-5f, -5f)),
                         location.add(new Vector2f(5f, 5f)), 5));
     }
 
     @Override
     protected void doPerform(BallMan ballMan, WithNode target) {
-        applicationContext.getBean(GameState.class).consoleLog.addLine("I cannot smoothen the " + target);
+        gameState.consoleLog.addLine("I cannot smoothen the " + target);
     }
 
 }

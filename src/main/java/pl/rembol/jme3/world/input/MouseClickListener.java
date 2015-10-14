@@ -1,10 +1,5 @@
 package pl.rembol.jme3.world.input;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -19,231 +14,208 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.ActionButton;
-import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
-import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 
-@Component
 public class MouseClickListener implements ActionListener, AnalogListener {
 
-	@Autowired
-	private InputStateManager inputStateManager;
+    private GameState gameState;
 
-	@Autowired
-	private ActionBox actionBox;
+    private boolean isButtonDown = false;
 
-	@Autowired
-	private SelectionManager selectionManager;
+    private Vector2f dragStartPosition;
 
-	@Autowired
-	private GameState gameState;
+    private boolean isDragged = false;
 
-	@Autowired
-	private DragSelectionManager dragSelectionManager;
+    public MouseClickListener(GameState gameState) {
+        this.gameState = gameState;
 
-	@Autowired
-	private BuildingSilhouetteManager buildingSilhouetteManager;
+        gameState.inputManager.addMapping(InputStateManager.LEFT_CLICK,
+                new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        gameState.inputManager.addListener(this, InputStateManager.LEFT_CLICK);
 
-	@Autowired
-	private UnitRegistry unitRegistry;
+        gameState.inputManager.addMapping(InputStateManager.RIGHT_CLICK,
+                new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        gameState.inputManager.addListener(this, InputStateManager.RIGHT_CLICK);
 
-	private boolean isButtonDown = false;
+        gameState.inputManager.addMapping(InputStateManager.MOUSE_MOVE,
+                new MouseAxisTrigger(MouseInput.AXIS_X, false),
+                new MouseAxisTrigger(MouseInput.AXIS_X, true),
+                new MouseAxisTrigger(MouseInput.AXIS_Y, false),
+                new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+        gameState.inputManager.addListener(this, InputStateManager.MOUSE_MOVE);
+    }
 
-	private Vector2f dragStartPosition;
+    @Override
+    public void onAnalog(String name, float value, float tpf) {
+        if (isButtonDown
+                && dragStartPosition != null
+                && dragStartPosition.distance(gameState.inputManager.getCursorPosition()) > 5f) {
+            if (!isDragged) {
+                gameState.dragSelectionManager.startDragging();
+                gameState.buildingSilhouetteManager.removeSilhouette();
+            }
+            isDragged = true;
+        }
+    }
 
-	private boolean isDragged = false;
+    @Override
+    public void onAction(String name, boolean keyPressed, float tpf) {
 
-	@PostConstruct
-	public void registerInput() {
-		gameState.inputManager.addMapping(InputStateManager.LEFT_CLICK,
-				new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-		gameState.inputManager.addListener(this, InputStateManager.LEFT_CLICK);
+        if (name.equals(InputStateManager.LEFT_CLICK) && keyPressed) {
+            isButtonDown = true;
+            dragStartPosition = gameState.inputManager.getCursorPosition().clone();
+            isDragged = false;
+            gameState.dragSelectionManager.start();
+        }
 
-		gameState.inputManager.addMapping(InputStateManager.RIGHT_CLICK,
-				new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-		gameState.inputManager.addListener(this, InputStateManager.RIGHT_CLICK);
+        if ((name.equals(InputStateManager.LEFT_CLICK) || name
+                .equals(InputStateManager.RIGHT_CLICK)) && !keyPressed) {
+            if (!isDragged) {
+                if (!checkActionButtons(name)) {
+                    if (!checkSelectionIcons(name)) {
 
-		gameState.inputManager.addMapping(InputStateManager.MOUSE_MOVE, 
-				new MouseAxisTrigger(MouseInput.AXIS_X, false),
-				new MouseAxisTrigger(MouseInput.AXIS_X, true),
-				new MouseAxisTrigger(MouseInput.AXIS_Y, false),
-				new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-		gameState.inputManager.addListener(this, InputStateManager.MOUSE_MOVE);
-	}
+                        Collidable collided = getClosestCollidingObject();
 
-	@Override
-	public void onAnalog(String name, float value, float tpf) {
-		if (isButtonDown
-				&& dragStartPosition != null
-				&& dragStartPosition.distance(gameState.inputManager.getCursorPosition()) > 5f) {
-			if (!isDragged) {
-				dragSelectionManager.startDragging();
-				buildingSilhouetteManager.removeSilhouette();
-			}
-			isDragged = true;
-		}
-	}
+                        if (collidedWithNode(collided)) {
+                            WithNode withNode = gameState.unitRegistry
+                                    .getSelectable(Node.class.cast(collided));
+                            gameState.inputStateManager.click(name, withNode);
+                        } else {
+                            Vector3f collisionWithTerrain = getCollisionWithTerrain();
+                            if (collisionWithTerrain != null) {
+                                gameState.inputStateManager.click(name, new Vector2f(
+                                        collisionWithTerrain.x,
+                                        collisionWithTerrain.z));
+                            }
 
-	@Override
-	public void onAction(String name, boolean keyPressed, float tpf) {
+                        }
+                    }
+                }
+                gameState.dragSelectionManager.cancel();
+            } else if (name.equals(InputStateManager.LEFT_CLICK)) {
+                gameState.dragSelectionManager.confirm();
+            }
 
-		if (name.equals(InputStateManager.LEFT_CLICK) && keyPressed) {
-			isButtonDown = true;
-			dragStartPosition = gameState.inputManager.getCursorPosition().clone();
-			isDragged = false;
-			dragSelectionManager.start();
-		}
+            isButtonDown = false;
+            dragStartPosition = null;
+            isDragged = false;
+        }
 
-		if ((name.equals(InputStateManager.LEFT_CLICK) || name
-				.equals(InputStateManager.RIGHT_CLICK)) && !keyPressed) {
-			if (!isDragged) {
-				if (!checkActionButtons(name)) {
-					if (!checkSelectionIcons(name)) {
+    }
 
-						Collidable collided = getClosestCollidingObject();
+    private boolean checkActionButtons(String name) {
+        ActionButton button = getActionButtonClick();
+        if (button != null && name.equals(InputStateManager.LEFT_CLICK)) {
+            gameState.inputStateManager.type(button.getCommandKey());
+            return true;
+        }
+        return false;
+    }
 
-						if (collidedWithNode(collided)) {
-							WithNode withNode = unitRegistry
-									.getSelectable(Node.class.cast(collided));
-							inputStateManager.click(name, withNode);
-						} else {
-							Vector3f collisionWithTerrain = getCollisionWithTerrain();
-							if (collisionWithTerrain != null) {
-								inputStateManager.click(name, new Vector2f(
-										collisionWithTerrain.x,
-										collisionWithTerrain.z));
-							}
+    private boolean checkSelectionIcons(String name) {
+        SelectionIcon button = getSelectionIconClick();
+        if (button != null && name.equals(InputStateManager.LEFT_CLICK)) {
+            gameState.selectionManager.select(button.getSelectable());
+            return true;
+        }
+        return false;
+    }
 
-						}
-					}
-				}
-				dragSelectionManager.cancel();
-			} else if (name.equals(InputStateManager.LEFT_CLICK)) {
-				dragSelectionManager.confirm();
-			}
+    private SelectionIcon getSelectionIconClick() {
+        for (SelectionIcon button : gameState.statusBar.getSelectionIcons()) {
 
-			isButtonDown = false;
-			dragStartPosition = null;
-			isDragged = false;
-		}
+            Vector2f click2d = gameState.inputManager.getCursorPosition();
 
-	}
+            Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
+                    button.getWorldTranslation().y);
+            Vector2f buttonEnd = buttonStart.add(new Vector2f(
+                    ActionButton.SIZE, ActionButton.SIZE));
 
-	private boolean checkActionButtons(String name) {
-		ActionButton button = getActionButtonClick();
-		if (button != null && name.equals(InputStateManager.LEFT_CLICK)) {
-			inputStateManager.type(button.getCommandKey());
-			return true;
-		}
-		return false;
-	}
+            if (buttonStart.x <= click2d.x && buttonStart.y <= click2d.y
+                    && buttonEnd.x > click2d.x && buttonEnd.y > click2d.y) {
+                return button;
+            }
+        }
 
-	private boolean checkSelectionIcons(String name) {
-		SelectionIcon button = getSelectionIconClick();
-		if (button != null && name.equals(InputStateManager.LEFT_CLICK)) {
-			selectionManager.select(button.getSelectable());
-			return true;
-		}
-		return false;
-	}
+        return null;
+    }
 
-	private SelectionIcon getSelectionIconClick() {
-		for (SelectionIcon button : gameState.statusBar.getSelectionIcons()) {
+    private ActionButton getActionButtonClick() {
+        for (Spatial button : gameState.actionBox.getActionButtonNode().getChildren()) {
 
-			Vector2f click2d = gameState.inputManager.getCursorPosition();
+            Vector2f click2d = gameState.inputManager.getCursorPosition();
 
-			Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
-					button.getWorldTranslation().y);
-			Vector2f buttonEnd = buttonStart.add(new Vector2f(
-					ActionButton.SIZE, ActionButton.SIZE));
+            Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
+                    button.getWorldTranslation().y);
+            Vector2f buttonEnd = buttonStart.add(new Vector2f(
+                    ActionButton.SIZE, ActionButton.SIZE));
 
-			if (buttonStart.x <= click2d.x && buttonStart.y <= click2d.y
-					&& buttonEnd.x > click2d.x && buttonEnd.y > click2d.y) {
-				return button;
-			}
-		}
+            if (buttonStart.x <= click2d.x && buttonStart.y <= click2d.y
+                    && buttonEnd.x > click2d.x && buttonEnd.y > click2d.y) {
+                return ActionButton.class.cast(button);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private ActionButton getActionButtonClick() {
-		for (Spatial button : actionBox.getActionButtonNode().getChildren()) {
+    private boolean collidedWithNode(Collidable collided) {
+        return collided != null && collided instanceof Node;
+    }
 
-			Vector2f click2d = gameState.inputManager.getCursorPosition();
+    private Collidable getClosestCollidingObject() {
+        Ray ray = getClickRay();
 
-			Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
-					button.getWorldTranslation().y);
-			Vector2f buttonEnd = buttonStart.add(new Vector2f(
-					ActionButton.SIZE, ActionButton.SIZE));
+        Float collisionDistance = null;
+        Collidable collided = null;
 
-			if (buttonStart.x <= click2d.x && buttonStart.y <= click2d.y
-					&& buttonEnd.x > click2d.x && buttonEnd.y > click2d.y) {
-				return ActionButton.class.cast(button);
-			}
-		}
+        for (Collidable collidable : gameState.unitRegistry.getSelectablesNodes()) {
+            CollisionResults results = new CollisionResults();
+            collidable.collideWith(ray, results);
 
-		return null;
-	}
+            CollisionResult collision = results.getClosestCollision();
 
-	private boolean collidedWithNode(Collidable collided) {
-		return collided != null && collided instanceof Node;
-	}
+            if (collision != null) {
+                if (collisionDistance == null
+                        || collision.getDistance() < collisionDistance) {
+                    collisionDistance = collision.getDistance();
+                    collided = collidable;
+                }
+            }
+        }
+        return collided;
+    }
 
-	private Collidable getClosestCollidingObject() {
-		Ray ray = getClickRay();
+    private Ray getClickRay() {
+        Vector2f click2d = gameState.inputManager.getCursorPosition();
 
-		Float collisionDistance = null;
-		Collidable collided = null;
+        Vector3f click3d = gameState.camera.getWorldCoordinates(
+                new Vector2f(click2d.getX(), click2d.getY()), 0f);
 
-		for (Collidable collidable : unitRegistry.getSelectablesNodes()) {
-			CollisionResults results = new CollisionResults();
-			collidable.collideWith(ray, results);
+        Vector3f dir = gameState.camera
+                .getWorldCoordinates(
+                        new Vector2f(click2d.getX(), click2d.getY()), 1f)
+                .subtractLocal(click3d).normalize();
 
-			CollisionResult collision = results.getClosestCollision();
+        return new Ray(click3d, dir);
+    }
 
-			if (collision != null) {
-				if (collisionDistance == null
-						|| collision.getDistance() < collisionDistance) {
-					collisionDistance = collision.getDistance();
-					collided = collidable;
-				}
-			}
-		}
-		return collided;
-	}
+    private Vector3f getCollisionWithTerrain() {
+        Ray ray = getClickRay();
 
-	private Ray getClickRay() {
-		Vector2f click2d = gameState.inputManager.getCursorPosition();
+        CollisionResults results = new CollisionResults();
+        gameState.terrain.getTerrain().collideWith(ray, results);
 
-		Vector3f click3d = gameState.camera.getWorldCoordinates(
-				new Vector2f(click2d.getX(), click2d.getY()), 0f);
+        CollisionResult collision = results.getClosestCollision();
 
-		Vector3f dir = gameState.camera
-				.getWorldCoordinates(
-						new Vector2f(click2d.getX(), click2d.getY()), 1f)
-				.subtractLocal(click3d).normalize();
+        if (collision != null) {
+            return collision.getContactPoint();
+        }
 
-		return new Ray(click3d, dir);
-	}
-
-	private Vector3f getCollisionWithTerrain() {
-		Ray ray = getClickRay();
-
-		CollisionResults results = new CollisionResults();
-		gameState.terrain.getTerrain().collideWith(ray, results);
-
-		CollisionResult collision = results.getClosestCollision();
-
-		if (collision != null) {
-			return collision.getContactPoint();
-		}
-
-		return null;
-	}
+        return null;
+    }
 
 }

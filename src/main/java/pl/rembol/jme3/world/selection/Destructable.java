@@ -2,8 +2,8 @@ package pl.rembol.jme3.world.selection;
 
 public interface Destructable extends Selectable {
 
-	void strike(int strength);
+    void strike(int strength);
 
-	boolean isDestroyed();
+    boolean isDestroyed();
 
 }

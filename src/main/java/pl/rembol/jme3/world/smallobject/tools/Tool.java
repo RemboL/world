@@ -28,7 +28,7 @@ public abstract class Tool extends SmallObject {
     }
 
     protected abstract String modelFileName();
-    
+
     public abstract String iconName();
 
     public InventoryIcon icon() {

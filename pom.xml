@@ -55,15 +55,6 @@
 			<version>${jmonkey.version}</version>
 		</dependency>
 
-		<dependency>
-			<!-- WARNING: Large (40M) block of test data. Disable this dependency 
-				when not needed. -->
-			<groupId>com.jme3</groupId>
-			<artifactId>jME3-testdata</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-
-
 		<!-- The core library -->
 		<dependency>
 			<groupId>com.jme3</groupId>
@@ -153,63 +144,8 @@
 		<!-- Third party libs -->
 		<dependency>
 			<groupId>com.jme3</groupId>
-			<artifactId>jinput</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>eventbus</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>stack-alloc</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
 			<artifactId>vecmath</artifactId>
 			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>xmlpull-xpp3</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-
-		<!-- Nifty GUI -->
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>jME3-niftygui</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>nifty</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>nifty-default-controls</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<!-- WARNING : Large - about 20M -->
-			<groupId>com.jme3</groupId>
-			<artifactId>nifty-examples</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>nifty-style-black</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-
-		<!-- Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>4.1.5.RELEASE</version>
 		</dependency>
 
 		<!-- XStream -->

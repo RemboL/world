@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.hud.status;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 abstract public class DefaultStatus extends Node {
 

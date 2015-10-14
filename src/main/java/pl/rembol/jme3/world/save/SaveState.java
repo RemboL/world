@@ -14,57 +14,57 @@ import java.util.List;
 @XStreamAlias("save")
 public class SaveState {
 
-	private TerrainDTO terrain;
+    private TerrainDTO terrain;
 
-	private List<PlayerDTO> players;
+    private List<PlayerDTO> players;
 
-	private UnitsDTO units;
+    private UnitsDTO units;
 
-	public SaveState(TerrainDTO terrain, List<PlayerDTO> players, UnitsDTO units) {
-		this.terrain = terrain;
-		this.players = players;
-		this.units = units;
-	}
+    public SaveState(TerrainDTO terrain, List<PlayerDTO> players, UnitsDTO units) {
+        this.terrain = terrain;
+        this.players = players;
+        this.units = units;
+    }
 
-	private static XStream getXStream() {
-		XStream xStream = new XStream(new DomDriver());
-		xStream.processAnnotations(new Class[] { SaveState.class,
-				TerrainDTO.class, TerrainQuadDTO.class, AlphaMapDTO.class,
-				PlayerDTO.class, UnitsDTO.class, UnitDTO.class, HouseDTO.class,
-				BallManDTO.class, WarehouseDTO.class, TreeDTO.class, StoneDepositDTO.class });
+    private static XStream getXStream() {
+        XStream xStream = new XStream(new DomDriver());
+        xStream.processAnnotations(new Class[]{SaveState.class,
+                TerrainDTO.class, TerrainQuadDTO.class, AlphaMapDTO.class,
+                PlayerDTO.class, UnitsDTO.class, UnitDTO.class, HouseDTO.class,
+                BallManDTO.class, WarehouseDTO.class, TreeDTO.class, StoneDepositDTO.class});
 
-		return xStream;
-	}
+        return xStream;
+    }
 
-	public void save(String fileName) {
-		XStream xStream = getXStream();
+    public void save(String fileName) {
+        XStream xStream = getXStream();
 
-		try {
-			File file = new File(fileName);
+        try {
+            File file = new File(fileName);
 
-			xStream.toXML(this, new FileWriter(file));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+            xStream.toXML(this, new FileWriter(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static SaveState load(String fileName) {
-		XStream xStream = getXStream();
-		xStream.processAnnotations(TerrainQuadDTO.class);
+    public static SaveState load(String fileName) {
+        XStream xStream = getXStream();
+        xStream.processAnnotations(TerrainQuadDTO.class);
 
-		return SaveState.class.cast(xStream.fromXML(new File(fileName)));
-	}
+        return SaveState.class.cast(xStream.fromXML(new File(fileName)));
+    }
 
-	public TerrainDTO getTerrain() {
-		return terrain;
-	}
+    public TerrainDTO getTerrain() {
+        return terrain;
+    }
 
-	public List<PlayerDTO> getPlayers() {
-		return players;
-	}
+    public List<PlayerDTO> getPlayers() {
+        return players;
+    }
 
-	public UnitsDTO getUnits() {
-		return units;
-	}
+    public UnitsDTO getUnits() {
+        return units;
+    }
 
 }

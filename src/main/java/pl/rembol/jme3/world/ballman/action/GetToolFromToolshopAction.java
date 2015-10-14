@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
-
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public class GetToolFromToolshopAction extends Action<BallMan> {
 
@@ -47,7 +47,7 @@ public class GetToolFromToolshopAction extends Action<BallMan> {
 
             ballMan.addToInventory(toolClass.getDeclaredConstructor(GameState.class).newInstance(gameState));
             finished = true;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException 
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException
                 e) {
             e.printStackTrace();
         }

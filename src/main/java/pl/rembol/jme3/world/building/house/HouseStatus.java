@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.building.house;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -9,7 +8,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import com.jme3.ui.Picture;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.building.BuildingStatus;
 
 import java.util.List;
@@ -25,8 +24,8 @@ public class HouseStatus extends BuildingStatus {
 
     private Geometry progressRectangle;
 
-    public HouseStatus(House house, ApplicationContext applicationContext) {
-        super(house, applicationContext);
+    public HouseStatus(House house, GameState gameState) {
+        super(house, gameState);
         this.house = house;
 
 
@@ -35,7 +34,7 @@ public class HouseStatus extends BuildingStatus {
         recruitmentQueueNode.setLocalTranslation(45, 18, 2);
 
         progressRectangle = new Geometry("progress rectangle", new Quad(1f, 1f));
-        Material greenMaterial = new Material(applicationContext.getBean(AssetManager.class),
+        Material greenMaterial = new Material(gameState.assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         greenMaterial.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         greenMaterial.setColor("Color", new ColorRGBA(.5f, 1f, .5f, .2f));

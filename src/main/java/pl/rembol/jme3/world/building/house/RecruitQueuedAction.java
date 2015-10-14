@@ -1,10 +1,9 @@
 package pl.rembol.jme3.world.building.house;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.ui.Picture;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 
 public class RecruitQueuedAction {
@@ -13,7 +12,7 @@ public class RecruitQueuedAction {
 
     private static final float TIME = 10;
 
-    private final ApplicationContext applicationContext;
+    private final GameState gameState;
 
     private float progress = 0;
 
@@ -25,10 +24,10 @@ public class RecruitQueuedAction {
         return progress >= TIME;
     }
 
-    public RecruitQueuedAction(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public RecruitQueuedAction(GameState gameState) {
+        this.gameState = gameState;
         actionIcon = new Picture("recruit action icon");
-        actionIcon.setImage(applicationContext.getBean(AssetManager.class), "interface/icons/ballman.png", true);
+        actionIcon.setImage(gameState.assetManager, "interface/icons/ballman.png", true);
         actionIcon.setWidth(32);
         actionIcon.setHeight(32);
     }
@@ -37,8 +36,7 @@ public class RecruitQueuedAction {
         Vector2f location = new Vector2f(house.getLocation().x,
                 house.getLocation().z);
 
-        BallMan ballMan = applicationContext.getAutowireCapableBeanFactory()
-                .createBean(BallMan.class);
+        BallMan ballMan = new BallMan(gameState);
         ballMan.init(location.add(new Vector2f(
                 FastMath.nextRandomFloat() * 2 - 11,
                 FastMath.nextRandomFloat() * 2 - 1)));

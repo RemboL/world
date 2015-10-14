@@ -16,17 +16,17 @@ public interface WithNode {
     float getWidth();
 
     default UnitDTO save(String key) {
-        return new UnitDTO(key, getNode().getWorldTranslation());
+        return null;
     }
 
     default void load(UnitDTO unitDTO) {
     }
 
-    default public Vector3f getLocation() {
+    default Vector3f getLocation() {
         return getNode().getWorldTranslation();
     }
 
-    default public void setAnimation(String animationName, LoopMode loopMode) {
+    default void setAnimation(String animationName, LoopMode loopMode) {
         AnimControl animControl = getNode().getControl(AnimControl.class);
         if (animControl != null) {
             AnimChannel channel = animControl.getChannel(0);

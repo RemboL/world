@@ -13,7 +13,7 @@ public abstract class ResourceUnit extends SmallObject {
     private int resources = 5;
 
     public ResourceUnit(GameState gameState,
-            Vector3f location, int chopCounter) {
+                        Vector3f location, int chopCounter) {
         super(gameState);
 
         node = (Node) gameState.assetManager.loadModel(

@@ -1,6 +1,7 @@
 package pl.rembol.jme3.world.save;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
 
@@ -19,8 +20,8 @@ public class FruitBushDTO extends UnitDTO {
     }
 
     @Override
-    public Class<? extends WithNode> getUnitClass() {
-        return FruitBush.class;
+    public WithNode produce(GameState gameState) {
+        return new FruitBush(gameState);
     }
 
 }

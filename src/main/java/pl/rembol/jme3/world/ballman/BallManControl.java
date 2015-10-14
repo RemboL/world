@@ -16,7 +16,7 @@ import pl.rembol.jme3.world.selection.Destructable;
 
 public class BallManControl extends ActionQueueControl<BallMan> implements
         WithDefaultAction {
-    
+
     private GameState gameState;
 
     public BallManControl(GameState gameState, BallMan ballMan) {
@@ -30,7 +30,7 @@ public class BallManControl extends ActionQueueControl<BallMan> implements
             setAction(new GatherResourcesAction(gameState, unit, ResourceDeposit.class.cast(target)));
         } else if (WithOwner.class.isInstance(target)
                 && !WithOwner.class.cast(target).getOwner()
-                        .equals(unit.getOwner())
+                .equals(unit.getOwner())
                 && Destructable.class.isInstance(target)) {
             setAction(new AttackAction(gameState, Destructable.class.cast(target)));
         } else {

@@ -16,8 +16,8 @@ public enum Command {
     private String iconName;
     private String commandKey;
 
-    private Command(int positionX, int positionY, String iconName,
-            String commandKey) {
+    Command(int positionX, int positionY, String iconName,
+                    String commandKey) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.iconName = iconName;

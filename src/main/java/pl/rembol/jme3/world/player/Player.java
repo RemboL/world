@@ -1,22 +1,18 @@
 package pl.rembol.jme3.world.player;
 
-import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.Cost;
 import pl.rembol.jme3.world.resources.ResourceType;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
 
 public class Player {
 
@@ -34,20 +30,14 @@ public class Player {
 
     private boolean active = false;
 
-    @Autowired
     private GameState gameState;
 
-    @Autowired
-    private UnitRegistry unitRegistry;
-
-    public Player() {
+    public Player(GameState gameState) {
+        this.gameState = gameState;
         for (ResourceType type : ResourceType.values()) {
             resources.put(type, 0);
         }
-    }
 
-    @PostConstruct
-    public void init() {
         id = playerCounter++;
     }
 
@@ -87,14 +77,14 @@ public class Player {
     }
 
     public void updateHousingLimit() {
-        resourcesHousingLimit = unitRegistry.getHousesByOwner(this).size()
+        resourcesHousingLimit = gameState.unitRegistry.getHousesByOwner(this).size()
                 * HOUSING_PER_HOUSE;
 
         updateResources();
     }
 
     public void updateHousing() {
-        resources.put(HOUSING, unitRegistry.countHousing(this));
+        resources.put(HOUSING, gameState.unitRegistry.countHousing(this));
 
         updateResources();
     }
@@ -147,7 +137,7 @@ public class Player {
 
     public Optional<Warehouse> getClosestWarehouse(final Vector3f location) {
 
-        return unitRegistry
+        return gameState.unitRegistry
                 .getWarehousesByOwner(this)
                 .stream()
                 .sorted((first, second) -> Float.valueOf(
@@ -159,7 +149,7 @@ public class Player {
 
     public Optional<Toolshop> getClosestToolshop(final Vector3f location) {
 
-        return unitRegistry
+        return gameState.unitRegistry
                 .getToolshopsByOwner(this)
                 .stream()
                 .sorted((first, second) -> Float.valueOf(

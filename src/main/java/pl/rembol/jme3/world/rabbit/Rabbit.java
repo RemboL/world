@@ -1,9 +1,5 @@
 package pl.rembol.jme3.world.rabbit;
 
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -17,19 +13,16 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.controls.MovingControl;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 
+import java.util.Random;
+
 public class Rabbit extends AbstractControl implements Selectable, WithMovingControl {
 
-    @Autowired
-    private UnitRegistry unitRegistry;
-
-    @Autowired
     private GameState gameState;
 
     private Node node;
@@ -42,11 +35,13 @@ public class Rabbit extends AbstractControl implements Selectable, WithMovingCon
 
     private RabbitStatus status;
 
-    public void init(Vector2f position) {
-        init(gameState.terrain.getGroundPosition(position));
+    public Rabbit(GameState gameState, Vector2f position) {
+        this(gameState, gameState.terrain.getGroundPosition(position));
     }
 
-    public void init(Vector3f position) {
+    public Rabbit(GameState gameState, Vector3f position) {
+        this.gameState = gameState;
+
         initNode(gameState.rootNode);
         icon = new SelectionIcon(gameState, this, "rabbit");
         node.setLocalTranslation(position);
@@ -64,7 +59,7 @@ public class Rabbit extends AbstractControl implements Selectable, WithMovingCon
         control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
                 0f, new Random().nextFloat() - .5f).normalize());
 
-        unitRegistry.register(this);
+        gameState.unitRegistry.register(this);
     }
 
     @Override

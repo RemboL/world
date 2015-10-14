@@ -9,16 +9,20 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 
 public class MoveOrder extends Order<BallMan> {
 
+    public MoveOrder(GameState gameState) {
+        super(gameState);
+    }
+
     @Override
     protected void doPerform(BallMan ballMan, Vector2f location) {
         ballMan.control().setAction(
-                new MoveTowardsLocationAction(applicationContext.getBean(GameState.class), ballMan, location, 5f));
+                new MoveTowardsLocationAction(gameState, ballMan, location, 5f));
     }
 
     @Override
     protected void doPerform(BallMan ballMan, WithNode target) {
         ballMan.control().setAction(
-                new MoveTowardsTargetAction(applicationContext.getBean(GameState.class), ballMan, target, 5f));
+                new MoveTowardsTargetAction(gameState, ballMan, target, 5f));
     }
 
 }

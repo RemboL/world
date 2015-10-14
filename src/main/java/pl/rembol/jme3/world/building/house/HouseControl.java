@@ -1,26 +1,22 @@
 package pl.rembol.jme3.world.building.house;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.context.ApplicationContext;
-
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.input.state.SelectionManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HouseControl extends AbstractControl {
 
     private static final int MAX_QUEUE_SIZE = 5;
     private List<RecruitQueuedAction> queue = new ArrayList<>();
-    private ApplicationContext applicationContext;
+    private GameState gameState;
     private House house;
 
-    public HouseControl(ApplicationContext applicationContext, House house) {
-        this.applicationContext = applicationContext;
+    public HouseControl(GameState gameState, House house) {
+        this.gameState = gameState;
         this.house = house;
 
     }
@@ -45,21 +41,19 @@ public class HouseControl extends AbstractControl {
             house.getOwner().updateHousing();
         }
 
-        applicationContext.getBean(SelectionManager.class)
-                .updateStatusIfSingleSelected(house);
+        gameState.selectionManager.updateStatusIfSingleSelected(house);
     }
 
     public boolean canAddToQueue() {
         if (queue.size() >= MAX_QUEUE_SIZE) {
-            applicationContext.getBean(GameState.class).consoleLog.addLine(
-                    "Queue is full");
+            gameState.consoleLog.addLine("Queue is full");
             return false;
         }
         return true;
     }
 
     public void addToQueue() {
-        queue.add(new RecruitQueuedAction(applicationContext));
+        queue.add(new RecruitQueuedAction(gameState));
 
         house.getOwner().updateHousing();
     }

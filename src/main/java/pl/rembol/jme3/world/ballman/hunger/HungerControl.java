@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.hunger;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;

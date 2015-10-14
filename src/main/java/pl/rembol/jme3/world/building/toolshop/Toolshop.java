@@ -1,10 +1,15 @@
 package pl.rembol.jme3.world.building.toolshop;
 
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.save.UnitDTO;
 
 public class Toolshop extends Building {
+
+    public Toolshop(GameState gameState) {
+        super(gameState);
+    }
 
     @Override
     public String getNodeFileName() {
@@ -28,7 +33,7 @@ public class Toolshop extends Building {
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[] { "Flag" };
+        return new String[]{"Flag"};
     }
 
     @Override
@@ -50,7 +55,7 @@ public class Toolshop extends Building {
     public void load(UnitDTO unit) {
         if (ToolshopDTO.class.isInstance(unit)) {
             init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
-            this.setOwner(playerService.getPlayer(ToolshopDTO.class.cast(unit)
+            this.setOwner(gameState.playerService.getPlayer(ToolshopDTO.class.cast(unit)
                     .getPlayer()));
         }
     }

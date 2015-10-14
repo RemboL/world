@@ -1,10 +1,5 @@
 package pl.rembol.jme3.world.input;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
@@ -15,213 +10,212 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.world.GameState;
 
-@Component
 public class RtsCamera implements AnalogListener {
 
-	private static final String MOVE_FORWARD = "rtsCamera_moveForward";
+    private static final String MOVE_FORWARD = "rtsCamera_moveForward";
 
-	private static final String MOVE_BACKWARD = "rtsCamera_moveBackward";
+    private static final String MOVE_BACKWARD = "rtsCamera_moveBackward";
 
-	private static final String MOVE_LEFT = "rtsCamera_moveLeft";
+    private static final String MOVE_LEFT = "rtsCamera_moveLeft";
 
-	private static final String MOVE_RIGHT = "rtsCamera_moveRight";
+    private static final String MOVE_RIGHT = "rtsCamera_moveRight";
 
-	private static final String ROTATE_LEFT = "rtsCamera_rotateLeft";
+    private static final String ROTATE_LEFT = "rtsCamera_rotateLeft";
 
-	private static final String ROTATE_RIGHT = "rtsCamera_rotateRight";
+    private static final String ROTATE_RIGHT = "rtsCamera_rotateRight";
 
-	private static final String TILT_UP = "rtsCamera_tiltUp";
+    private static final String TILT_UP = "rtsCamera_tiltUp";
 
-	private static final String TILT_DOWN = "rtsCamera_tiltDown";
+    private static final String TILT_DOWN = "rtsCamera_tiltDown";
 
-	private static final String ZOOM_IN = "rtsCamera_zoomIn";
+    private static final String ZOOM_IN = "rtsCamera_zoomIn";
 
-	private static final String ZOOM_OUT = "rtsCamera_zoomOut";
+    private static final String ZOOM_OUT = "rtsCamera_zoomOut";
 
-	private float rotation = 0f;
+    private float rotation = 0f;
 
-	private float cameraSpeed = 30f;
+    private float cameraSpeed = 30f;
 
-	private float rotationSpeed = 1f;
+    private float rotationSpeed = 1f;
 
-	private float zoomSpeed = .5f;
+    private float zoomSpeed = .5f;
 
-	private float tilt = 45f * FastMath.DEG_TO_RAD;
+    private float tilt = 45f * FastMath.DEG_TO_RAD;
 
-	private float zoomOut = 50f;
+    private float zoomOut = 50f;
 
-	private Vector3f cameraCenter;
+    private Vector3f cameraCenter;
 
-	@Autowired
-	private GameState gameState;
+    private GameState gameState;
 
-	@PostConstruct
-	public void init() {
-		cameraCenter = gameState.camera.getLocation().clone();
+    public RtsCamera(GameState gameState) {
+        this.gameState = gameState;
 
-		updateCamera();
+        cameraCenter = gameState.camera.getLocation().clone();
 
-		registerInput();
-	}
+        updateCamera();
 
-	private void updateCamera() {
-		Quaternion rotationQuaternion = new Quaternion().fromAngleAxis(
-				rotation, Vector3f.UNIT_Y).mult(
-				new Quaternion().fromAngleAxis(tilt, Vector3f.UNIT_X));
-		gameState.camera.setRotation(rotationQuaternion);
-		gameState.camera.setLocation(cameraCenter.subtract(rotationQuaternion
-				.mult(Vector3f.UNIT_Z.mult(zoomOut))));
-	}
+        registerInput();
+    }
 
-	public void moveForward(float value) {
-		Quaternion rot = new Quaternion().fromAngleAxis(rotation,
-				Vector3f.UNIT_Y);
-		Vector3f move = rot.mult(Vector3f.UNIT_Z.mult(value * cameraSpeed));
-		cameraCenter.addLocal(move);
+    private void updateCamera() {
+        Quaternion rotationQuaternion = new Quaternion().fromAngleAxis(
+                rotation, Vector3f.UNIT_Y).mult(
+                new Quaternion().fromAngleAxis(tilt, Vector3f.UNIT_X));
+        gameState.camera.setRotation(rotationQuaternion);
+        gameState.camera.setLocation(cameraCenter.subtract(rotationQuaternion
+                .mult(Vector3f.UNIT_Z.mult(zoomOut))));
+    }
 
-		updateCamera();
-	}
+    public void moveForward(float value) {
+        Quaternion rot = new Quaternion().fromAngleAxis(rotation,
+                Vector3f.UNIT_Y);
+        Vector3f move = rot.mult(Vector3f.UNIT_Z.mult(value * cameraSpeed));
+        cameraCenter.addLocal(move);
 
-	public void moveBackward(float value) {
-		moveForward(-value);
-	}
+        updateCamera();
+    }
 
-	public void moveRight(float value) {
-		moveLeft(-value);
-	}
+    public void moveBackward(float value) {
+        moveForward(-value);
+    }
 
-	public void moveLeft(float value) {
-		Quaternion rot = new Quaternion().fromAngleAxis(rotation,
-				Vector3f.UNIT_Y);
-		Vector3f move = rot.mult(Vector3f.UNIT_X.mult(value * cameraSpeed));
-		cameraCenter.addLocal(move);
+    public void moveRight(float value) {
+        moveLeft(-value);
+    }
 
-		updateCamera();
-	}
+    public void moveLeft(float value) {
+        Quaternion rot = new Quaternion().fromAngleAxis(rotation,
+                Vector3f.UNIT_Y);
+        Vector3f move = rot.mult(Vector3f.UNIT_X.mult(value * cameraSpeed));
+        cameraCenter.addLocal(move);
 
-	public void rotateLeft(float value) {
-		rotation += value * rotationSpeed;
+        updateCamera();
+    }
 
-		if (rotation > FastMath.TWO_PI) {
-			rotation -= FastMath.TWO_PI;
-		}
+    public void rotateLeft(float value) {
+        rotation += value * rotationSpeed;
 
-		if (rotation < 0) {
-			rotation += FastMath.TWO_PI;
-		}
-		updateCamera();
-	}
+        if (rotation > FastMath.TWO_PI) {
+            rotation -= FastMath.TWO_PI;
+        }
 
-	public void rotateRight(float value) {
-		rotateLeft(-value);
-	}
+        if (rotation < 0) {
+            rotation += FastMath.TWO_PI;
+        }
+        updateCamera();
+    }
 
-	public void tiltUp(float value) {
-		tilt -= value;
+    public void rotateRight(float value) {
+        rotateLeft(-value);
+    }
 
-		if (tilt < 0) {
-			tilt = 0;
-		}
+    public void tiltUp(float value) {
+        tilt -= value;
 
-		if (tilt > FastMath.HALF_PI) {
-			tilt = FastMath.HALF_PI;
-		}
+        if (tilt < 0) {
+            tilt = 0;
+        }
 
-		updateCamera();
-	}
+        if (tilt > FastMath.HALF_PI) {
+            tilt = FastMath.HALF_PI;
+        }
 
-	public void tiltDown(float value) {
-		tiltUp(-value);
-	}
+        updateCamera();
+    }
 
-	public void zoomIn(float value) {
-		zoomOut /= (1f + (zoomSpeed * value));
+    public void tiltDown(float value) {
+        tiltUp(-value);
+    }
 
-		if (zoomOut < 1f) {
-			zoomOut = 1f;
-		}
+    public void zoomIn(float value) {
+        zoomOut /= (1f + (zoomSpeed * value));
 
-		if (zoomOut > 100f) {
-			zoomOut = 100f;
-		}
+        if (zoomOut < 1f) {
+            zoomOut = 1f;
+        }
 
-		updateCamera();
-	}
+        if (zoomOut > 100f) {
+            zoomOut = 100f;
+        }
 
-	public void zoomOut(float value) {
-		zoomOut *= (1f + (zoomSpeed * value));
+        updateCamera();
+    }
 
-		if (zoomOut < 10f) {
-			zoomOut = 10f;
-		}
+    public void zoomOut(float value) {
+        zoomOut *= (1f + (zoomSpeed * value));
 
-		if (zoomOut > 100f) {
-			zoomOut = 100f;
-		}
+        if (zoomOut < 10f) {
+            zoomOut = 10f;
+        }
 
-		updateCamera();
-	}
+        if (zoomOut > 100f) {
+            zoomOut = 100f;
+        }
 
-	@Override
-	public void onAnalog(String name, float value, float tpf) {
-		switch (name) {
-		case MOVE_FORWARD:
-			moveForward(value);
-			break;
-		case MOVE_BACKWARD:
-			moveBackward(value);
-			break;
-		case MOVE_LEFT:
-			moveLeft(value);
-			break;
-		case MOVE_RIGHT:
-			moveRight(value);
-			break;
-		case ROTATE_LEFT:
-			rotateLeft(value);
-			break;
-		case ROTATE_RIGHT:
-			rotateRight(value);
-			break;
-		case TILT_UP:
-			tiltUp(value);
-			break;
-		case TILT_DOWN:
-			tiltDown(value);
-			break;
-		case ZOOM_IN:
-			zoomIn(value);
-			break;
-		case ZOOM_OUT:
-			zoomOut(value);
-			break;
-		}
-	}
+        updateCamera();
+    }
 
-	public void registerInput() {
-		registerKey(MOVE_FORWARD, KeyInput.KEY_UP);
-		registerKey(MOVE_BACKWARD, KeyInput.KEY_DOWN);
-		registerKey(MOVE_LEFT, KeyInput.KEY_LEFT);
-		registerKey(MOVE_RIGHT, KeyInput.KEY_RIGHT);
+    @Override
+    public void onAnalog(String name, float value, float tpf) {
+        switch (name) {
+            case MOVE_FORWARD:
+                moveForward(value);
+                break;
+            case MOVE_BACKWARD:
+                moveBackward(value);
+                break;
+            case MOVE_LEFT:
+                moveLeft(value);
+                break;
+            case MOVE_RIGHT:
+                moveRight(value);
+                break;
+            case ROTATE_LEFT:
+                rotateLeft(value);
+                break;
+            case ROTATE_RIGHT:
+                rotateRight(value);
+                break;
+            case TILT_UP:
+                tiltUp(value);
+                break;
+            case TILT_DOWN:
+                tiltDown(value);
+                break;
+            case ZOOM_IN:
+                zoomIn(value);
+                break;
+            case ZOOM_OUT:
+                zoomOut(value);
+                break;
+        }
+    }
 
-		registerKey(ROTATE_LEFT, KeyInput.KEY_DELETE);
-		registerKey(ROTATE_RIGHT, KeyInput.KEY_PGDN);
+    public void registerInput() {
+        registerKey(MOVE_FORWARD, KeyInput.KEY_UP);
+        registerKey(MOVE_BACKWARD, KeyInput.KEY_DOWN);
+        registerKey(MOVE_LEFT, KeyInput.KEY_LEFT);
+        registerKey(MOVE_RIGHT, KeyInput.KEY_RIGHT);
 
-		registerKey(TILT_UP, KeyInput.KEY_HOME);
-		registerKey(TILT_DOWN, KeyInput.KEY_END);
+        registerKey(ROTATE_LEFT, KeyInput.KEY_DELETE);
+        registerKey(ROTATE_RIGHT, KeyInput.KEY_PGDN);
 
-		registerKey(ZOOM_IN, KeyInput.KEY_INSERT);
-		registerKey(ZOOM_OUT, KeyInput.KEY_PGUP);
+        registerKey(TILT_UP, KeyInput.KEY_HOME);
+        registerKey(TILT_DOWN, KeyInput.KEY_END);
 
-		gameState.inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(
-				MouseInput.AXIS_WHEEL, false));
-		gameState.inputManager.addMapping(ZOOM_OUT, new MouseAxisTrigger(
-				MouseInput.AXIS_WHEEL, true));
-	}
+        registerKey(ZOOM_IN, KeyInput.KEY_INSERT);
+        registerKey(ZOOM_OUT, KeyInput.KEY_PGUP);
 
-	private void registerKey(String name, int key) {
-		gameState.inputManager.addMapping(name, new KeyTrigger(key));
-		gameState.inputManager.addListener(this, name);
-	}
+        gameState.inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(
+                MouseInput.AXIS_WHEEL, false));
+        gameState.inputManager.addMapping(ZOOM_OUT, new MouseAxisTrigger(
+                MouseInput.AXIS_WHEEL, true));
+    }
+
+    private void registerKey(String name, int key) {
+        gameState.inputManager.addMapping(name, new KeyTrigger(key));
+        gameState.inputManager.addListener(this, name);
+    }
 
 }

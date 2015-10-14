@@ -1,13 +1,13 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.Optional;
-
 import com.jme3.animation.LoopMode;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
+
+import java.util.Optional;
 
 public class MineResourcesAction extends Action<BallMan> {
 
@@ -84,7 +84,7 @@ public class MineResourcesAction extends Action<BallMan> {
         if (resourceDeposit.givesResource().isInstance(
                 ballMan.getWieldedObject(Hand.LEFT))
                 && ResourceUnit.class.cast(ballMan.getWieldedObject(Hand.LEFT))
-                        .getResourceCount() >= MAX_CHOPS) {
+                .getResourceCount() >= MAX_CHOPS) {
             return true;
         }
 

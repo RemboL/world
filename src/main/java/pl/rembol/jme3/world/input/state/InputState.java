@@ -2,14 +2,14 @@ package pl.rembol.jme3.world.input.state;
 
 public enum InputState {
 
-	DEFAULT,
+    DEFAULT,
 
-	ISSUE_ORDER,
+    ISSUE_ORDER,
 
-	BUILD_MENU,
+    BUILD_MENU,
 
-	ISSUE_BUILD_ORDER,
+    ISSUE_BUILD_ORDER,
 
-	ISSUE_ORDER_IMMEDIATELY;
+    ISSUE_ORDER_IMMEDIATELY
 
 }

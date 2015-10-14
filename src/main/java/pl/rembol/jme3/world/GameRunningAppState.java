@@ -1,10 +1,5 @@
 package pl.rembol.jme3.world;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
-
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -23,14 +18,11 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
-import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.rabbit.Rabbit;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
 import pl.rembol.jme3.world.save.SaveState;
 
 public class GameRunningAppState extends AbstractAppState {
-
-    private BulletAppState bulletAppState;
 
     private DirectionalLight directional;
 
@@ -40,8 +32,6 @@ public class GameRunningAppState extends AbstractAppState {
 
     private AppSettings settings;
 
-    private ApplicationContext applicationContext;
-    
     private GameState gameState;
 
     public GameRunningAppState(AppSettings settings) {
@@ -63,7 +53,6 @@ public class GameRunningAppState extends AbstractAppState {
 
     @Override
     public void cleanup() {
-        ConfigurableApplicationContext.class.cast(applicationContext).close();
         if (gameState != null) {
             gameState.threadManager.tearDown();
         }
@@ -73,57 +62,33 @@ public class GameRunningAppState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         SimpleApplication simpleApp = (SimpleApplication) app;
 
-        bulletAppState = new BulletAppState();
+        BulletAppState bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         // bulletAppState.setDebugEnabled(true);
 
-        ConfigurableApplicationContext parentApplicationContext = initializeParentApplicationContext(simpleApp);
-
-        applicationContext = new ClassPathXmlApplicationContext(
-                new String[]{ "/app-ctx.xml" }, parentApplicationContext);
+        gameState = new GameState(simpleApp, settings, bulletAppState);
 
         initLightAndShadows(gameState, app.getViewPort());
-        PlayerService playerService = applicationContext
-                .getBean(PlayerService.class);
 
         SaveState load = SaveState.load("save.xml");
         gameState.terrain.init(load.getTerrain());
-        playerService.loadPlayers(load.getPlayers());
-        applicationContext.getBean(UnitRegistry.class).load(load.getUnits());
+        gameState.playerService.loadPlayers(load.getPlayers());
+        gameState.unitRegistry.load(load.getUnits());
 
-        Building toolshop = applicationContext.getAutowireCapableBeanFactory()
-                .createBean(Toolshop.class).init(new Vector2f(15, -20));
-        toolshop.setOwner(playerService.getActivePlayer());
+        Building toolshop = new Toolshop(gameState).init(new Vector2f(15, -20));
+        toolshop.setOwner(gameState.playerService.getActivePlayer());
 
-        applicationContext.getAutowireCapableBeanFactory()
-                .createBean(Rabbit.class).init(new Vector2f(30, 0));
-        applicationContext.getAutowireCapableBeanFactory()
-                .createBean(Rabbit.class).init(new Vector2f(30, 10));
-        applicationContext.getAutowireCapableBeanFactory()
-                .createBean(Rabbit.class).init(new Vector2f(40, 10));
-        applicationContext.getAutowireCapableBeanFactory()
-                .createBean(Rabbit.class).init(new Vector2f(40, 0));
+        new Rabbit(gameState, new Vector2f(30, 0));
+        new Rabbit(gameState, new Vector2f(30, 10));
+        new Rabbit(gameState, new Vector2f(40, 10));
+        new Rabbit(gameState, new Vector2f(40, 0));
 
-        applicationContext.getAutowireCapableBeanFactory()
-                .createBean(FruitBush.class).init(new Vector2f(35, -20));
+        new FruitBush(gameState).init(new Vector2f(35, -20));
 
-        // new SaveState(terrain.save(), playerService.savePlayers(),
-        // applicationContext.getBean(UnitRegistry.class).save())
-        // .save("default.xml");
+//        new SaveState(gameState.terrain.save(), gameState.playerService.savePlayers(),
+//                gameState.unitRegistry.save())
+//                .save("default.xml");
 
-    }
-
-    private ConfigurableApplicationContext initializeParentApplicationContext(
-            SimpleApplication simpleApp) {
-        ConfigurableApplicationContext parentApplicationContext = new GenericApplicationContext();
-
-        gameState = new GameState(simpleApp, settings, bulletAppState); 
-        parentApplicationContext.getBeanFactory().registerSingleton(GameState.class.getSimpleName(),
-                gameState);
-
-        parentApplicationContext.refresh();
-
-        return parentApplicationContext;
     }
 
     private void initLightAndShadows(GameState gameState, ViewPort viewPort) {
