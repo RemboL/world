@@ -1,32 +1,31 @@
 package pl.rembol.jme3.world.input.state;
 
-import com.jme3.asset.AssetManager;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.order.BuildOrder;
 import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.terrain.Terrain;
-
-import javax.annotation.PostConstruct;
 
 @Component
 public class BuildingSilhouetteManager extends AbstractControl implements
@@ -39,22 +38,13 @@ public class BuildingSilhouetteManager extends AbstractControl implements
     private Material redMaterial;
 
     @Autowired
-    private AssetManager assetManager;
+    private GameState gameState;
 
     @Autowired
     private Terrain terrain;
 
     @Autowired
-    private InputManager inputManager;
-
-    @Autowired
-    private Camera camera;
-
-    @Autowired
-    private Node rootNode;
-
-    @Autowired
-    private UnitRegistry gameState;
+    private UnitRegistry unitRegistry;
 
     private ApplicationContext applicationContext;
 
@@ -67,12 +57,12 @@ public class BuildingSilhouetteManager extends AbstractControl implements
 
     @PostConstruct
     public void initMaterials() {
-        greenMaterial = new Material(assetManager,
+        greenMaterial = new Material(gameState.assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         greenMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         greenMaterial.setColor("Color", new ColorRGBA(.5f, 1f, .5f, .2f));
 
-        redMaterial = new Material(assetManager,
+        redMaterial = new Material(gameState.assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         redMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         redMaterial.setColor("Color", new ColorRGBA(1f, .5f, .5f, .2f));
@@ -90,7 +80,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
                 silhouette.setLocalTranslation(newPosition);
                 silhouette.addControl(this);
                 silhouette.setQueueBucket(Bucket.Transparent);
-                rootNode.attachChild(silhouette);
+                gameState.rootNode.attachChild(silhouette);
             }
         }
     }
@@ -109,7 +99,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
                 silhouette.removeControl(this);
             }
 
-            rootNode.detachChild(silhouette);
+            gameState.rootNode.detachChild(silhouette);
             silhouette = null;
         }
         buildingFactory = null;
@@ -124,7 +114,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
         Vector3f newPosition = getNewPosition();
         if (newPosition != null) {
             silhouette.setLocalTranslation(newPosition);
-            if (gameState.isSpaceFreeWithBuffer(newPosition,
+            if (unitRegistry.isSpaceFreeWithBuffer(newPosition,
                     buildingFactory.width())) {
                 silhouette.setMaterial(greenMaterial);
             } else {
@@ -146,12 +136,12 @@ public class BuildingSilhouetteManager extends AbstractControl implements
     }
 
     private Ray getClickRay() {
-        Vector2f click2d = inputManager.getCursorPosition();
+        Vector2f click2d = gameState.inputManager.getCursorPosition();
 
-        Vector3f click3d = camera.getWorldCoordinates(
+        Vector3f click3d = gameState.camera.getWorldCoordinates(
                 new Vector2f(click2d.getX(), click2d.getY()), 0f);
 
-        Vector3f dir = camera
+        Vector3f dir = gameState.camera
                 .getWorldCoordinates(
                         new Vector2f(click2d.getX(), click2d.getY()), 1f)
                 .subtractLocal(click3d).normalize();

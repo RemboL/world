@@ -1,15 +1,18 @@
 package pl.rembol.jme3.world.resources.deposits;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
+import java.util.Optional;
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.UnitRegistry;
@@ -21,9 +24,6 @@ import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 import pl.rembol.jme3.world.terrain.Terrain;
-
-import java.util.Optional;
-import java.util.Random;
 
 public abstract class ResourceDeposit implements Selectable, Solid,
         ApplicationContextAware {
@@ -41,13 +41,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     private Terrain terrain;
 
     @Autowired
-    private AssetManager assetManager;
-
-    @Autowired
-    private Node rootNode;
-
-    @Autowired
-    private BulletAppState bulletAppState;
+    private GameState gameState;
 
     @Autowired
     private SelectionManager selectionManager;
@@ -70,10 +64,10 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     public void init(Vector3f position) {
 
         node = initNodeWithScale();
-        icon = new SelectionIcon(this, getIconName(), assetManager);
+        icon = new SelectionIcon(this, getIconName(), gameState);
 
         node.setShadowMode(ShadowMode.Cast);
-        rootNode.attachChild(node);
+        gameState.rootNode.attachChild(node);
         node.setLocalTranslation(position);
 
         control = new BetterCharacterControl(getPhysicsRadius(), 5f, 0);
@@ -81,7 +75,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
         control.setViewDirection(getInitialDirection());
 
-        bulletAppState.getPhysicsSpace().add(control);
+        gameState.bulletAppState.getPhysicsSpace().add(control);
 
         unitRegistry.register(this);
     }
@@ -118,7 +112,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
     @Override
     public Node initNodeWithScale() {
-        Node node = ModelHelper.rewriteDiffuseToAmbient((Node) assetManager
+        Node node = ModelHelper.rewriteDiffuseToAmbient((Node) gameState.assetManager
                 .loadModel(getModelFileName()));
         node.setLocalScale(getPhysicsRadius());
         return node;
@@ -149,7 +143,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
 
     private void destroy() {
         unitRegistry.unregister(this);
-        bulletAppState.getPhysicsSpace().remove(control);
+        gameState.bulletAppState.getPhysicsSpace().remove(control);
         node.getParent().detachChild(node);
         this.destroyed = true;
     }
@@ -174,7 +168,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     @Override
     public void select() {
         if (selectionNode == null) {
-            selectionNode = new SelectionNode(assetManager);
+            selectionNode = new SelectionNode(gameState);
             node.attachChild(selectionNode);
             selectionNode.setLocalTranslation(0, .1f, 0);
         }

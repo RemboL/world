@@ -1,16 +1,19 @@
 package pl.rembol.jme3.world.hud.status;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
-import com.jme3.scene.Node;
-import org.springframework.context.ApplicationContext;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
+import com.jme3.scene.Node;
+import pl.rembol.jme3.world.GameState;
+
 abstract public class DefaultStatus extends Node {
+
     protected final ApplicationContext applicationContext;
+
     private List<BitmapText> statusText = new ArrayList<>();
 
     public DefaultStatus(ApplicationContext applicationContext) {
@@ -32,7 +35,7 @@ abstract public class DefaultStatus extends Node {
     }
 
     private void initStatusLines(ApplicationContext applicationContext) {
-        BitmapFont guiFont = applicationContext.getBean(AssetManager.class)
+        BitmapFont guiFont = applicationContext.getBean(GameState.class).assetManager
                 .loadFont("Interface/Fonts/Default.fnt");
 
         for (int i = 0; i < getTextLineNumber(); ++i) {
@@ -45,6 +48,5 @@ abstract public class DefaultStatus extends Node {
     }
 
     abstract protected int getTextLineNumber();
-
 
 }

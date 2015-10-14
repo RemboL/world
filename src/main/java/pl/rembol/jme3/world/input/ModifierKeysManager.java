@@ -1,13 +1,14 @@
 package pl.rembol.jme3.world.input;
 
-import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
+import pl.rembol.jme3.world.GameState;
 
 @Component
 public class ModifierKeysManager implements ActionListener {
@@ -21,7 +22,7 @@ public class ModifierKeysManager implements ActionListener {
 	private boolean controlPressed = false;
 
 	@Autowired
-	private InputManager inputManager;
+	private GameState gameState;
 
 	@Override
 	public void onAction(String name, boolean keyPressed, float tpf) {
@@ -38,13 +39,13 @@ public class ModifierKeysManager implements ActionListener {
 
 	@PostConstruct
 	public void registerInput() {
-		inputManager.addMapping(SHIFT, new KeyTrigger(KeyInput.KEY_RSHIFT),
+		gameState.inputManager.addMapping(SHIFT, new KeyTrigger(KeyInput.KEY_RSHIFT),
 				new KeyTrigger(KeyInput.KEY_LSHIFT));
-		inputManager.addListener(this, SHIFT);
+		gameState.inputManager.addListener(this, SHIFT);
 
-		inputManager.addMapping(CONTROL, new KeyTrigger(KeyInput.KEY_RCONTROL),
+		gameState.inputManager.addMapping(CONTROL, new KeyTrigger(KeyInput.KEY_RCONTROL),
 				new KeyTrigger(KeyInput.KEY_LCONTROL));
-		inputManager.addListener(this, CONTROL);
+		gameState.inputManager.addListener(this, CONTROL);
 	}
 
 	public boolean isShiftPressed() {

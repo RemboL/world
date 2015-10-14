@@ -1,21 +1,23 @@
 package pl.rembol.jme3.world.hud;
 
-import com.jme3.asset.AssetManager;
+import static pl.rembol.jme3.world.resources.ResourceType.FOOD;
+import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
+import static pl.rembol.jme3.world.resources.ResourceType.STONE;
+import static pl.rembol.jme3.world.resources.ResourceType.WOOD;
+
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector2f;
-import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.resources.ResourceType;
-
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
-
-import static pl.rembol.jme3.world.resources.ResourceType.*;
 
 @Component
 public class ResourcesBar {
@@ -37,59 +39,51 @@ public class ResourcesBar {
     private Vector2f framePosition;
 
     @Autowired
-    private Node guiNode;
-
-    @Autowired
-    private AssetManager assetManager;
-
-    @Autowired
-    private AppSettings settings;
+    private GameState gameState;
 
     @PostConstruct
     public void init() {
 
         frame = new Picture("Resources Box");
-        frame.setImage(assetManager, "interface/resources_bar.png", true);
-        framePosition = new Vector2f(settings.getWidth() - WIDTH,
-                settings.getHeight() - HEIGHT);
+        frame.setImage(gameState.assetManager, "interface/resources_bar.png", true);
+        framePosition = new Vector2f(gameState.settings.getWidth() - WIDTH,
+                gameState.settings.getHeight() - HEIGHT);
         frame.move(framePosition.x, framePosition.y, -2);
         frame.setWidth(WIDTH);
         frame.setHeight(HEIGHT);
-        guiNode.attachChild(frame);
+        gameState.guiNode.attachChild(frame);
 
-        initIconsAndTexts(guiNode, settings, assetManager);
+        initIconsAndTexts(gameState);
 
     }
 
-    private void initIconsAndTexts(Node guiNode, AppSettings settings,
-            AssetManager assetManager) {
-        BitmapFont guiFont = assetManager
+    private void initIconsAndTexts(GameState gameState) {
+        BitmapFont guiFont = gameState.assetManager
                 .loadFont("Interface/Fonts/Default.fnt");
 
-        initResource(guiNode, assetManager, guiFont, FOOD, 0);
-        initResource(guiNode, assetManager, guiFont, WOOD, 1);
-        initResource(guiNode, assetManager, guiFont, STONE, 2);
-        initResource(guiNode, assetManager, guiFont, HOUSING, 3);
+        initResource(gameState, guiFont, FOOD, 0);
+        initResource(gameState, guiFont, WOOD, 1);
+        initResource(gameState, guiFont, STONE, 2);
+        initResource(gameState, guiFont, HOUSING, 3);
 
     }
 
-    private void initResource(Node guiNode, AssetManager assetManager,
-            BitmapFont guiFont, ResourceType type, int offset) {
+    private void initResource(GameState gameState, BitmapFont guiFont, ResourceType type, int offset) {
         Picture icon = new Picture(type.toString() + " icon");
-        icon.setImage(assetManager,
+        icon.setImage(gameState.assetManager,
                 "interface/resources/" + type.resourceName() + ".png", true);
         icon.move(framePosition.x + 40 + RESOURCE_OFFSET_SIZE * offset,
                 framePosition.y + 13, -1);
         icon.setWidth(ICON_SIZE);
         icon.setHeight(ICON_SIZE);
-        guiNode.attachChild(icon);
+        gameState.guiNode.attachChild(icon);
 
         BitmapText text = new BitmapText(guiFont);
         text.setSize(guiFont.getCharSet().getRenderedSize());
         text.move(framePosition.x + 40 + RESOURCE_OFFSET_SIZE * offset
                 + ICON_SIZE_PLUS, framePosition.y + 16 + text.getLineHeight(),
                 0);
-        guiNode.attachChild(text);
+        gameState.guiNode.attachChild(text);
 
         icons.put(type, icon);
         texts.put(type, text);

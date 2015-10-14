@@ -1,11 +1,12 @@
 package pl.rembol.jme3.world.smallobject.tools;
 
-import com.jme3.asset.AssetManager;
+import org.springframework.context.ApplicationContext;
+
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.hud.InventoryIcon;
 import pl.rembol.jme3.world.smallobject.SmallObject;
@@ -18,7 +19,7 @@ public abstract class Tool extends SmallObject {
         super.init(applicationContext);
 
         node = ModelHelper.rewriteDiffuseToAmbient((Node) applicationContext
-                .getBean(AssetManager.class).loadModel(modelFileName()));
+                .getBean(GameState.class).assetManager.loadModel(modelFileName()));
         node.setShadowMode(ShadowMode.Cast);
 
         control = new RigidBodyControl(1f);
@@ -27,7 +28,7 @@ public abstract class Tool extends SmallObject {
         applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
                 .add(control);
 
-        icon = new InventoryIcon(iconName(), applicationContext.getBean(AssetManager.class));
+        icon = new InventoryIcon(iconName(), applicationContext.getBean(GameState.class));
 
         return this;
     }

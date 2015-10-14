@@ -1,61 +1,52 @@
 package pl.rembol.jme3.world.hud.status;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.math.Vector2f;
-import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
-import com.jme3.ui.Picture;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import pl.rembol.jme3.world.selection.Selectable;
-import pl.rembol.jme3.world.selection.SelectionIcon;
-
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.jme3.math.Vector2f;
+import com.jme3.scene.Node;
+import com.jme3.ui.Picture;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.world.selection.SelectionIcon;
 
 @Component
 public class StatusBar {
 
     private static final int ICON_ROW_SIZE = 9;
     private static final int ICON_LINES = 3;
-    private static final int LINES = 3;
     private List<SelectionIcon> selectionIcons = new ArrayList<>();
 
     private Vector2f framePosition;
 
     @Autowired
-    private Node guiNode;
-
-    @Autowired
-    private AppSettings settings;
-
-    @Autowired
-    private AssetManager assetManager;
+    private GameState gameState;
 
     private Node statusDetails = new Node("status details connector");
 
     @PostConstruct
     public void init() {
-        framePosition = new Vector2f(settings.getWidth() / 2 - 200, 0);
+        framePosition = new Vector2f(gameState.settings.getWidth() / 2 - 200, 0);
 
         Picture frame = new Picture("Status Bar");
-        frame.setImage(assetManager, "interface/status_bar.png", true);
+        frame.setImage(gameState.assetManager, "interface/status_bar.png", true);
         frame.move(framePosition.x, framePosition.y, -2);
         frame.setWidth(400);
         frame.setHeight(120);
-        guiNode.attachChild(frame);
+        gameState.guiNode.attachChild(frame);
 
-        guiNode.attachChild(statusDetails);
+        gameState.guiNode.attachChild(statusDetails);
         statusDetails.move(framePosition.x, framePosition.y, 0);
 
     }
 
     public void clearIcons() {
-        for (SelectionIcon icon : selectionIcons) {
-            guiNode.detachChild(icon);
-        }
+        selectionIcons.forEach(gameState.guiNode::detachChild);
 
         selectionIcons.clear();
     }
@@ -75,7 +66,7 @@ public class StatusBar {
             icon.setLocalTranslation(framePosition.x + 40
                     + (index % ICON_ROW_SIZE) * 36, framePosition.y + 44
                     + (1 - (index / ICON_ROW_SIZE)) * 32, 1);
-            guiNode.attachChild(icon);
+            gameState.guiNode.attachChild(icon);
             selectionIcons.add(icon);
 
             index++;

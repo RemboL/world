@@ -1,7 +1,12 @@
 package pl.rembol.jme3.world.building;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector2f;
@@ -9,9 +14,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.Control;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.input.state.SelectionManager;
@@ -23,9 +26,6 @@ import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.terrain.Terrain;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Building implements Selectable, WithOwner, Destructable,
         Solid, ApplicationContextAware {
@@ -43,13 +43,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     private Terrain terrain;
 
     @Autowired
-    private Node rootNode;
-
-    @Autowired
-    private BulletAppState bulletAppState;
-
-    @Autowired
-    protected AssetManager assetManager;
+    protected GameState gameState;
 
     @Autowired
     private SelectionManager selectionManager;
@@ -77,7 +71,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
         node = new Node();
         building = initNodeWithScale();
-        icon = new SelectionIcon(this, getIconName(), assetManager);
+        icon = new SelectionIcon(this, getIconName(), gameState);
 
         building.setShadowMode(ShadowMode.Cast);
         if (startUnderGround) {
@@ -89,13 +83,13 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
         node.setLocalTranslation(position);
 
         node.attachChild(building);
-        rootNode.attachChild(node);
+        gameState.rootNode.attachChild(node);
 
         control = new RigidBodyControl(new BoxCollisionShape(new Vector3f(
                 getWidth(), getHeight(), getWidth())), 0f);
         building.addControl(control);
 
-        bulletAppState.getPhysicsSpace().add(control);
+        gameState.bulletAppState.getPhysicsSpace().add(control);
 
         unitRegistry.register(this);
 
@@ -116,7 +110,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     @Override
     public void select() {
         if (selectionNode == null) {
-            selectionNode = new SelectionNode(assetManager);
+            selectionNode = new SelectionNode(gameState);
             node.attachChild(selectionNode);
             selectionNode.setLocalScale(getWidth());
             selectionNode.setLocalTranslation(0, .2f, 0);
@@ -202,7 +196,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
 
     private void destroy() {
         unitRegistry.unregister(this);
-        bulletAppState.getPhysicsSpace().remove(control);
+        gameState.bulletAppState.getPhysicsSpace().remove(control);
 
         for (int i = getNode().getNumControls() - 1; i >= 0; --i) {
             getNode().removeControl(getNode().getControl(i));
@@ -224,7 +218,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     }
 
     public Node initNode() {
-        return (Node) assetManager.loadModel(getNodeFileName());
+        return (Node) gameState.assetManager.loadModel(getNodeFileName());
     }
 
     protected abstract String getNodeFileName();

@@ -1,20 +1,20 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import com.jme3.animation.LoopMode;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import org.springframework.beans.factory.annotation.Autowired;
-import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.particles.DustParticleEmitter;
-import pl.rembol.jme3.world.smallobject.tools.Shovel;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.jme3.animation.LoopMode;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.particles.DustParticleEmitter;
+import pl.rembol.jme3.world.smallobject.tools.Shovel;
+import pl.rembol.jme3.world.terrain.Terrain;
 
 public class SmoothenTerrainAction extends Action<BallMan> {
 
@@ -37,9 +37,6 @@ public class SmoothenTerrainAction extends Action<BallMan> {
     private float minY;
     private float maxY;
     private Random random = new Random();
-
-    @Autowired
-    private Node rootNode;
 
     @Autowired
     private Terrain terrain;

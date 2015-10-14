@@ -1,28 +1,36 @@
 package pl.rembol.jme3.world.pathfinding;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import pl.rembol.jme3.world.hud.ConsoleLog;
+
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import pl.rembol.jme3.world.pathfinding.PathfindingCluster.Direction;
 import pl.rembol.jme3.world.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.world.pathfinding.algorithms.DijkstraAlgorithm;
-import pl.rembol.jme3.world.pathfinding.paths.*;
+import pl.rembol.jme3.world.pathfinding.paths.ComplexPath;
+import pl.rembol.jme3.world.pathfinding.paths.FuturePath;
+import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
+import pl.rembol.jme3.world.pathfinding.paths.SectorPath;
+import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
+import pl.rembol.jme3.world.pathfinding.paths.VectorPath;
 import pl.rembol.jme3.world.terrain.Terrain;
 import pl.rembol.jme3.world.threads.Executor;
 import pl.rembol.jme3.world.threads.ThreadManager;
-
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
-
-import static java.lang.Math.ceil;
-import static java.lang.Math.floor;
 
 @Component
 public class PathfindingService implements ApplicationContextAware {
@@ -33,12 +41,6 @@ public class PathfindingService implements ApplicationContextAware {
 
 	@Autowired
 	private Terrain terrain;
-
-	@Autowired
-	private Node rootNode;
-
-	@Autowired
-	private ConsoleLog consoleLog;
 
 	@Autowired
 	private ThreadManager threadManager;

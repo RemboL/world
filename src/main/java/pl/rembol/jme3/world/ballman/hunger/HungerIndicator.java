@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.hunger;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
@@ -8,7 +7,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ModelHelper;
 import pl.rembol.jme3.world.ballman.BallMan;
 
@@ -21,11 +20,10 @@ public class HungerIndicator extends Node {
     private static final ColorRGBA YELLOW = new ColorRGBA(1f, 1f, 0f, .2f);
     private static final ColorRGBA RED = new ColorRGBA(1f, 0f, 0f, .2f);
 
-    public HungerIndicator init(ApplicationContext applicationContext,
+    public HungerIndicator init(GameState gameState,
             BallMan ballMan, float hungerFactor) {
 
-        node = ModelHelper.rewriteDiffuseToAmbient((Node) applicationContext
-                .getBean(AssetManager.class).loadModel(
+        node = ModelHelper.rewriteDiffuseToAmbient((Node) gameState.assetManager.loadModel(
                         "hunger_indicator/hunger_indicator.mesh.xml"));
         node.setShadowMode(ShadowMode.Off);
 
@@ -34,7 +32,7 @@ public class HungerIndicator extends Node {
         ballMan.getNode().attachChild(this);
         this.setLocalTranslation(Vector3f.UNIT_Y.mult(5f));
 
-        material = new Material(applicationContext.getBean(AssetManager.class),
+        material = new Material(gameState.assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");
         material.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         hunger(hungerFactor);

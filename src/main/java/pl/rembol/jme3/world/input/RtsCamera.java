@@ -1,6 +1,10 @@
 package pl.rembol.jme3.world.input;
 
-import com.jme3.input.InputManager;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
@@ -9,11 +13,7 @@ import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
+import pl.rembol.jme3.world.GameState;
 
 @Component
 public class RtsCamera implements AnalogListener {
@@ -53,14 +53,11 @@ public class RtsCamera implements AnalogListener {
 	private Vector3f cameraCenter;
 
 	@Autowired
-	private Camera camera;
-
-	@Autowired
-	private InputManager inputManager;
+	private GameState gameState;
 
 	@PostConstruct
 	public void init() {
-		cameraCenter = camera.getLocation().clone();
+		cameraCenter = gameState.camera.getLocation().clone();
 
 		updateCamera();
 
@@ -71,8 +68,8 @@ public class RtsCamera implements AnalogListener {
 		Quaternion rotationQuaternion = new Quaternion().fromAngleAxis(
 				rotation, Vector3f.UNIT_Y).mult(
 				new Quaternion().fromAngleAxis(tilt, Vector3f.UNIT_X));
-		camera.setRotation(rotationQuaternion);
-		camera.setLocation(cameraCenter.subtract(rotationQuaternion
+		gameState.camera.setRotation(rotationQuaternion);
+		gameState.camera.setLocation(cameraCenter.subtract(rotationQuaternion
 				.mult(Vector3f.UNIT_Z.mult(zoomOut))));
 	}
 
@@ -216,15 +213,15 @@ public class RtsCamera implements AnalogListener {
 		registerKey(ZOOM_IN, KeyInput.KEY_INSERT);
 		registerKey(ZOOM_OUT, KeyInput.KEY_PGUP);
 
-		inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(
+		gameState.inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(
 				MouseInput.AXIS_WHEEL, false));
-		inputManager.addMapping(ZOOM_OUT, new MouseAxisTrigger(
+		gameState.inputManager.addMapping(ZOOM_OUT, new MouseAxisTrigger(
 				MouseInput.AXIS_WHEEL, true));
 	}
 
 	private void registerKey(String name, int key) {
-		inputManager.addMapping(name, new KeyTrigger(key));
-		inputManager.addListener(this, name);
+		gameState.inputManager.addMapping(name, new KeyTrigger(key));
+		gameState.inputManager.addListener(this, name);
 	}
 
 }

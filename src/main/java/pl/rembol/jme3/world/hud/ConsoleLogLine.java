@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.hud;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
@@ -9,6 +8,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import pl.rembol.jme3.world.GameState;
 
 public class ConsoleLogLine extends AbstractControl {
 
@@ -16,7 +16,7 @@ public class ConsoleLogLine extends AbstractControl {
 
 	private float timeToLive;
 
-	public ConsoleLogLine(AssetManager assetManager, Node node, String text) {
+	public ConsoleLogLine(GameState gameState, Node node, String text) {
 
 		for (Spatial spatial : node.getChildren()) {
 			if (spatial.getControl(ConsoleLogLine.class) != null) {
@@ -24,7 +24,7 @@ public class ConsoleLogLine extends AbstractControl {
 			}
 		}
 
-		BitmapFont guiFont = assetManager
+		BitmapFont guiFont = gameState.assetManager
 				.loadFont("Interface/Fonts/Default.fnt");
 		textLine = new BitmapText(guiFont);
 		textLine.setSize(guiFont.getCharSet().getRenderedSize());

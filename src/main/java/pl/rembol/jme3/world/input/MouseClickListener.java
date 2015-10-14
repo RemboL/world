@@ -1,19 +1,24 @@
 package pl.rembol.jme3.world.input;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.input.InputManager;
 import com.jme3.input.MouseInput;
-import com.jme3.input.controls.*;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.MouseAxisTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.ActionButton;
@@ -25,17 +30,8 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.terrain.Terrain;
 
-import javax.annotation.PostConstruct;
-
 @Component
 public class MouseClickListener implements ActionListener, AnalogListener {
-
-	public static final String LEFT_CLICK = "input_leftClick";
-
-	public static final String RIGHT_CLICK = "input_rightClick";
-
-	@Autowired
-	private InputManager inputManager;
 
 	@Autowired
 	private InputStateManager inputStateManager;
@@ -50,7 +46,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	private SelectionManager selectionManager;
 
 	@Autowired
-	private Camera camera;
+	private GameState gameState;
 
 	@Autowired
 	private Terrain terrain;
@@ -62,7 +58,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	private BuildingSilhouetteManager buildingSilhouetteManager;
 
 	@Autowired
-	private UnitRegistry gameState;
+	private UnitRegistry unitRegistry;
 
 	private boolean isButtonDown = false;
 
@@ -72,27 +68,27 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 
 	@PostConstruct
 	public void registerInput() {
-		inputManager.addMapping(InputStateManager.LEFT_CLICK,
+		gameState.inputManager.addMapping(InputStateManager.LEFT_CLICK,
 				new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-		inputManager.addListener(this, InputStateManager.LEFT_CLICK);
+		gameState.inputManager.addListener(this, InputStateManager.LEFT_CLICK);
 
-		inputManager.addMapping(InputStateManager.RIGHT_CLICK,
+		gameState.inputManager.addMapping(InputStateManager.RIGHT_CLICK,
 				new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-		inputManager.addListener(this, InputStateManager.RIGHT_CLICK);
+		gameState.inputManager.addListener(this, InputStateManager.RIGHT_CLICK);
 
-		inputManager.addMapping(InputStateManager.MOUSE_MOVE, new Trigger[] {
+		gameState.inputManager.addMapping(InputStateManager.MOUSE_MOVE, 
 				new MouseAxisTrigger(MouseInput.AXIS_X, false),
 				new MouseAxisTrigger(MouseInput.AXIS_X, true),
 				new MouseAxisTrigger(MouseInput.AXIS_Y, false),
-				new MouseAxisTrigger(MouseInput.AXIS_Y, true) });
-		inputManager.addListener(this, InputStateManager.MOUSE_MOVE);
+				new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+		gameState.inputManager.addListener(this, InputStateManager.MOUSE_MOVE);
 	}
 
 	@Override
 	public void onAnalog(String name, float value, float tpf) {
 		if (isButtonDown
 				&& dragStartPosition != null
-				&& dragStartPosition.distance(inputManager.getCursorPosition()) > 5f) {
+				&& dragStartPosition.distance(gameState.inputManager.getCursorPosition()) > 5f) {
 			if (!isDragged) {
 				dragSelectionManager.startDragging();
 				buildingSilhouetteManager.removeSilhouette();
@@ -106,7 +102,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 
 		if (name.equals(InputStateManager.LEFT_CLICK) && keyPressed) {
 			isButtonDown = true;
-			dragStartPosition = inputManager.getCursorPosition().clone();
+			dragStartPosition = gameState.inputManager.getCursorPosition().clone();
 			isDragged = false;
 			dragSelectionManager.start();
 		}
@@ -120,7 +116,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 						Collidable collided = getClosestCollidingObject();
 
 						if (collidedWithNode(collided)) {
-							WithNode withNode = gameState
+							WithNode withNode = unitRegistry
 									.getSelectable(Node.class.cast(collided));
 							inputStateManager.click(name, withNode);
 						} else {
@@ -167,7 +163,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	private SelectionIcon getSelectionIconClick() {
 		for (SelectionIcon button : statusBar.getSelectionIcons()) {
 
-			Vector2f click2d = inputManager.getCursorPosition();
+			Vector2f click2d = gameState.inputManager.getCursorPosition();
 
 			Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
 					button.getWorldTranslation().y);
@@ -186,7 +182,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	private ActionButton getActionButtonClick() {
 		for (Spatial button : actionBox.getActionButtonNode().getChildren()) {
 
-			Vector2f click2d = inputManager.getCursorPosition();
+			Vector2f click2d = gameState.inputManager.getCursorPosition();
 
 			Vector2f buttonStart = new Vector2f(button.getWorldTranslation().x,
 					button.getWorldTranslation().y);
@@ -212,7 +208,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 		Float collisionDistance = null;
 		Collidable collided = null;
 
-		for (Collidable collidable : gameState.getSelectablesNodes()) {
+		for (Collidable collidable : unitRegistry.getSelectablesNodes()) {
 			CollisionResults results = new CollisionResults();
 			collidable.collideWith(ray, results);
 
@@ -230,18 +226,17 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	}
 
 	private Ray getClickRay() {
-		Vector2f click2d = inputManager.getCursorPosition();
+		Vector2f click2d = gameState.inputManager.getCursorPosition();
 
-		Vector3f click3d = camera.getWorldCoordinates(
+		Vector3f click3d = gameState.camera.getWorldCoordinates(
 				new Vector2f(click2d.getX(), click2d.getY()), 0f);
 
-		Vector3f dir = camera
+		Vector3f dir = gameState.camera
 				.getWorldCoordinates(
 						new Vector2f(click2d.getX(), click2d.getY()), 1f)
 				.subtractLocal(click3d).normalize();
 
-		Ray ray = new Ray(click3d, dir);
-		return ray;
+		return new Ray(click3d, dir);
 	}
 
 	private Vector3f getCollisionWithTerrain() {

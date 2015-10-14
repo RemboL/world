@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.ballman.hunger;
 
+import org.springframework.context.ApplicationContext;
+
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -7,7 +9,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.EatFoodAction;
 import pl.rembol.jme3.world.resources.ResourceType;
@@ -68,7 +70,7 @@ public class HungerControl extends AbstractControl {
         } else {
             if (hungerIndicator == null && isHungry()) {
                 hungerIndicator = new HungerIndicator().init(
-                        applicationContext, ballMan, hungerFactor());
+                        applicationContext.getBean(GameState.class), ballMan, hungerFactor());
             }
         }
 

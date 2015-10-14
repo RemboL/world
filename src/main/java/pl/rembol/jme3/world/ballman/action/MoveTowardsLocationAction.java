@@ -1,10 +1,10 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
@@ -17,9 +17,6 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
 
     private IExternalPath path;
     private WithMovingControl unit;
-
-    @Autowired
-    private Node rootNode;
 
     @Autowired
     private PathfindingService pathfindingService;

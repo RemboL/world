@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.selection;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.ui.Picture;
+import pl.rembol.jme3.world.GameState;
 
 public class SelectionIcon extends Picture {
 
@@ -9,10 +9,10 @@ public class SelectionIcon extends Picture {
     private Selectable selectable;
 
     public SelectionIcon(Selectable selectable, String iconName,
-            AssetManager assetManager) {
+            GameState gameState) {
         super(iconName);
         this.selectable = selectable;
-        setImage(assetManager, "interface/icons/" + iconName + ".png", true);
+        setImage(gameState.assetManager, "interface/icons/" + iconName + ".png", true);
         setWidth(SIZE);
         setHeight(SIZE);
     }

@@ -1,197 +1,186 @@
 package pl.rembol.jme3.world.input;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
-import com.jme3.input.InputManager;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
-import com.jme3.scene.control.AbstractControl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import pl.rembol.jme3.world.input.state.InputStateManager;
-import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.terrain.Terrain;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.control.AbstractControl;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.input.state.InputStateManager;
+import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.terrain.Terrain;
 
 @Component
 public class DragSelectionManager extends AbstractControl {
 
-	@Autowired
-	private InputManager inputManager;
+    @Autowired
+    private Terrain terrain;
 
-	@Autowired
-	private Camera camera;
+    @Autowired
+    private GameState gameState;
 
-	@Autowired
-	private Terrain terrain;
+    @Autowired
+    private SelectionManager selectionManager;
 
-	@Autowired
-	private Node rootNode;
+    @Autowired
+    private InputStateManager inputStateManager;
 
-	@Autowired
-	private AssetManager assetManager;
+    private Vector3f dragStart;
 
-	@Autowired
-	private SelectionManager selectionManager;
+    private Vector3f dragStop;
 
-	@Autowired
-	private InputStateManager inputStateManager;
+    private Geometry geometry;
 
-	private Vector3f dragStart;
+    @Override
+    protected void controlUpdate(float paramFloat) {
+        if (geometry != null && dragStart != null) {
+            Vector3f dragCurrent = getCollisionWithTerrain();
+            if (dragCurrent != null) {
+                this.dragStop = dragCurrent;
+                geometry.setMesh(getBox(dragStart, dragCurrent));
+            }
+        }
+    }
 
-	private Vector3f dragStop;
+    @Override
+    protected void controlRender(RenderManager paramRenderManager,
+                                 ViewPort paramViewPort) {
+    }
 
-	private Geometry geometry;
+    public void start() {
+        dragStart = getCollisionWithTerrain();
+        if (dragStart != null) {
+            dragStop = dragStart.clone();
+        }
+    }
 
-	@Override
-	protected void controlUpdate(float paramFloat) {
-		if (geometry != null && dragStart != null) {
-			Vector3f dragCurrent = getCollisionWithTerrain();
-			if (dragCurrent != null) {
-				this.dragStop = dragCurrent;
-				geometry.setMesh(getBox(dragStart, dragCurrent));
-			}
-		}
-	}
+    private DragSurface getBox(Vector3f dragStart, Vector3f dragStop) {
+        return new DragSurface(computeVerticesArray(dragStart, dragStop));
+    }
 
-	@Override
-	protected void controlRender(RenderManager paramRenderManager,
-			ViewPort paramViewPort) {
-	}
+    private List<List<Vector3f>> computeVerticesArray(Vector3f dragStart,
+                                                      Vector3f dragStop) {
+        float minX = min(dragStart.x, dragStop.x);
+        float maxX = max(dragStart.x, dragStop.x);
+        float minZ = min(dragStart.z, dragStop.z);
+        float maxZ = max(dragStart.z, dragStop.z);
 
-	public void start() {
-		dragStart = getCollisionWithTerrain();
-		if (dragStart != null) {
-			dragStop = dragStart.clone();
-		}
-	}
+        List<Float> listOfX = createRange(minX, maxX);
+        List<Float> listOfZ = createRange(minZ, maxZ);
 
-	private DragSurface getBox(Vector3f dragStart, Vector3f dragStop) {
-		return new DragSurface(computeVerticesArray(dragStart, dragStop));
-	}
+        List<List<Vector3f>> result = new ArrayList<>();
 
-	private List<List<Vector3f>> computeVerticesArray(Vector3f dragStart,
-			Vector3f dragStop) {
-		float minX = min(dragStart.x, dragStop.x);
-		float maxX = max(dragStart.x, dragStop.x);
-		float minZ = min(dragStart.z, dragStop.z);
-		float maxZ = max(dragStart.z, dragStop.z);
+        for (Float z : listOfZ) {
+            List<Vector3f> vectorList = new ArrayList<>();
+            for (Float x : listOfX) {
+                vectorList.add(terrain.getGroundPosition(new Vector2f(x, z))
+                        .add(Vector3f.UNIT_Y));
+            }
 
-		List<Float> listOfX = createRange(minX, maxX);
-		List<Float> listOfZ = createRange(minZ, maxZ);
+            result.add(vectorList);
+        }
 
-		List<List<Vector3f>> result = new ArrayList<>();
+        return result;
+    }
 
-		for (Float z : listOfZ) {
-			List<Vector3f> vectorList = new ArrayList<>();
-			for (Float x : listOfX) {
-				vectorList.add(terrain.getGroundPosition(new Vector2f(x, z))
-						.add(Vector3f.UNIT_Y));
-			}
+    private List<Float> createRange(float min, float max) {
+        int STEP = 4;
 
-			result.add(vectorList);
-		}
+        List<Float> list = new ArrayList<>();
 
-		return result;
-	}
+        list.add(min);
+        list.addAll(IntStream.rangeClosed(Math.round(min), Math.round(max))
+                .filter(x -> x > min).filter(x -> x < max)
+                .filter(x -> x % STEP == 0).boxed().map(i -> new Float(i))
+                .collect(Collectors.toList()));
+        list.add(max);
 
-	private List<Float> createRange(float min, float max) {
-		int STEP = 4;
+        return list;
+    }
 
-		List<Float> list = new ArrayList<>();
+    public void cancel() {
+        dragStart = null;
+        dragStop = null;
+        if (geometry != null) {
+            gameState.rootNode.detachChild(geometry);
+            geometry.removeControl(this);
+        }
 
-		list.add(min);
-		list.addAll(IntStream.rangeClosed(Math.round(min), Math.round(max))
-				.filter(x -> x > min).filter(x -> x < max)
-				.filter(x -> x % STEP == 0).boxed().map(i -> new Float(i))
-				.collect(Collectors.toList()));
-		list.add(max);
+        geometry = null;
+    }
 
-		return list;
-	}
+    public void confirm() {
 
-	public void cancel() {
-		dragStart = null;
-		dragStop = null;
-		if (geometry != null) {
-			rootNode.detachChild(geometry);
-			geometry.removeControl(this);
-		}
+        if (dragStart != null && dragStop != null) {
+            selectionManager.dragSelect(dragStart, dragStop);
+            inputStateManager.cancelOrder();
+        }
 
-		geometry = null;
-	}
+        cancel();
+    }
 
-	public void confirm() {
+    private Ray getClickRay() {
+        Vector2f click2d = gameState.inputManager.getCursorPosition();
 
-		if (dragStart != null && dragStop != null) {
-			selectionManager.dragSelect(dragStart, dragStop);
-			inputStateManager.cancelOrder();
-		}
+        Vector3f click3d = gameState.camera.getWorldCoordinates(
+                new Vector2f(click2d.getX(), click2d.getY()), 0f);
 
-		cancel();
-	}
+        Vector3f dir = gameState.camera
+                .getWorldCoordinates(
+                        new Vector2f(click2d.getX(), click2d.getY()), 1f)
+                .subtractLocal(click3d).normalize();
 
-	private Ray getClickRay() {
-		Vector2f click2d = inputManager.getCursorPosition();
+        Ray ray = new Ray(click3d, dir);
+        return ray;
+    }
 
-		Vector3f click3d = camera.getWorldCoordinates(
-				new Vector2f(click2d.getX(), click2d.getY()), 0f);
+    private Vector3f getCollisionWithTerrain() {
+        Ray ray = getClickRay();
 
-		Vector3f dir = camera
-				.getWorldCoordinates(
-						new Vector2f(click2d.getX(), click2d.getY()), 1f)
-				.subtractLocal(click3d).normalize();
+        CollisionResults results = new CollisionResults();
+        terrain.getTerrain().collideWith(ray, results);
 
-		Ray ray = new Ray(click3d, dir);
-		return ray;
-	}
+        CollisionResult collision = results.getClosestCollision();
 
-	private Vector3f getCollisionWithTerrain() {
-		Ray ray = getClickRay();
+        if (collision != null) {
+            return collision.getContactPoint();
+        }
 
-		CollisionResults results = new CollisionResults();
-		terrain.getTerrain().collideWith(ray, results);
+        return null;
+    }
 
-		CollisionResult collision = results.getClosestCollision();
+    public void startDragging() {
+        if (geometry == null) {
+            geometry = new Geometry("dragSelect", getBox(dragStart, dragStop));
+            Material mat = new Material(gameState.assetManager,
+                    "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+            mat.setColor("Color", new ColorRGBA(.5f, 1f, .5f, .2f));
+            geometry.setMaterial(mat);
+            geometry.setQueueBucket(Bucket.Transparent);
+            geometry.addControl(this);
 
-		if (collision != null) {
-			return collision.getContactPoint();
-		}
-
-		return null;
-	}
-
-	public void startDragging() {
-		if (geometry == null) {
-			geometry = new Geometry("dragSelect", getBox(dragStart, dragStop));
-			Material mat = new Material(assetManager,
-					"Common/MatDefs/Misc/Unshaded.j3md");
-			mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-			mat.setColor("Color", new ColorRGBA(.5f, 1f, .5f, .2f));
-			geometry.setMaterial(mat);
-			geometry.setQueueBucket(Bucket.Transparent);
-			geometry.addControl(this);
-
-			rootNode.attachChild(geometry);
-		}
-	}
+            gameState.rootNode.attachChild(geometry);
+        }
+    }
 
 }

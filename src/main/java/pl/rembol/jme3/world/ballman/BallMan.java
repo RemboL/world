@@ -1,17 +1,26 @@
 package pl.rembol.jme3.world.ballman;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.SkeletonControl;
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.*;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Node;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.SkeletonControl;
+import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Node;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.controls.MovingControl;
@@ -31,22 +40,11 @@ import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 import pl.rembol.jme3.world.terrain.Terrain;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
 public class BallMan implements Selectable, WithOwner, Destructable,
         WithMovingControl, ApplicationContextAware {
 
     @Autowired
     private Terrain terrain;
-
-    @Autowired
-    private Node rootNode;
-
-    @Autowired
-    private BulletAppState bulletAppState;
 
     @Autowired
     private UnitRegistry unitRegistry;
@@ -55,7 +53,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     private SelectionManager selectionManager;
 
     @Autowired
-    private AssetManager assetManager;
+    private GameState gameState;
 
     @Autowired
     private PlayerService playerService;
@@ -67,7 +65,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     protected static final int MAX_HP = 50;
     private int hp = MAX_HP;
 
-    private BallManStatus status;
+//    private BallManStatus status;
 
     private Map<Hand, SmallObject> wielded = new HashMap<>();
 
@@ -86,8 +84,8 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     public void init(Vector3f position) {
-        initNode(rootNode);
-        icon = new SelectionIcon(this, "ballman", assetManager);
+        initNode(gameState.rootNode);
+        icon = new SelectionIcon(this, "ballman", gameState);
         node.setLocalTranslation(position);
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
@@ -98,7 +96,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         node.addControl(new MovingControl(this));
         node.addControl(new HungerControl(applicationContext, this));
 
-        bulletAppState.getPhysicsSpace().add(control);
+        gameState.bulletAppState.getPhysicsSpace().add(control);
 
         node.addControl(control);
         control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
@@ -122,15 +120,15 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     private void destroy() {
         new SparkParticleEmitter(applicationContext, ColorRGBA.Red, 1000,
-                rootNode).doSetLocalTranslation(node.getLocalTranslation())
+                gameState.rootNode).doSetLocalTranslation(node.getLocalTranslation())
                 .emit();
 
         unitRegistry.unregister(this);
-        rootNode.detachChild(node);
+        gameState.rootNode.detachChild(node);
         node.removeControl(BallManControl.class);
         node.removeControl(MovingControl.class);
         node.removeControl(HungerControl.class);
-        bulletAppState.getPhysicsSpace().remove(control);
+        gameState.bulletAppState.getPhysicsSpace().remove(control);
     }
 
     @Override
@@ -152,7 +150,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     @Override
     public Node initNodeWithScale() {
-        return (Node) assetManager.loadModel("ballman/ballman.mesh.xml");
+        return (Node) gameState.assetManager.loadModel("ballman/ballman.mesh.xml");
     }
 
     private void initNode(Node rootNode) {
@@ -218,7 +216,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public void select() {
         if (selectionNode == null) {
-            selectionNode = new SelectionNode(assetManager);
+            selectionNode = new SelectionNode(gameState);
             node.attachChild(selectionNode);
             selectionNode.setLocalTranslation(0, .3f, 0);
         }
@@ -234,12 +232,13 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     @Override
     public Node getStatusDetails() {
-        if (status == null) {
-            status = new BallManStatus(this, applicationContext);
-        }
-
-        status.update();
-        return status;
+//        if (status == null) {
+//            status = new BallManStatus(this, applicationContext);
+//        }
+//
+//        status.update();
+//        return status;
+        return null;
     }
 
     @Override

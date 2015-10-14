@@ -1,13 +1,13 @@
 package pl.rembol.jme3.world.particles;
 
-import com.jme3.asset.AssetManager;
+import org.springframework.context.ApplicationContext;
+
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.controls.TimeToLiveControl;
 
 public class DustParticleEmitter extends ParticleEmitter {
@@ -20,11 +20,11 @@ public class DustParticleEmitter extends ParticleEmitter {
 
 		this.applicationContext = applicationContext;
 		Material dustMaterial = new Material(
-				applicationContext.getBean(AssetManager.class),
+				applicationContext.getBean(GameState.class).assetManager,
 				"Common/MatDefs/Misc/Particle.j3md");
 		dustMaterial.setTexture(
 				"Texture",
-				applicationContext.getBean(AssetManager.class).loadTexture(
+				applicationContext.getBean(GameState.class).assetManager.loadTexture(
 						"Effects/Explosion/flame.png"));
 		setMaterial(dustMaterial);
 		setImagesX(2);
@@ -39,7 +39,7 @@ public class DustParticleEmitter extends ParticleEmitter {
 		setStartSize(1f);
 		setEndSize(4f);
 		getParticleInfluencer().setVelocityVariation(2f);
-		applicationContext.getBean("rootNode", Node.class).attachChild(this);
+		applicationContext.getBean(GameState.class).rootNode.attachChild(this);
 	}
 
 	public DustParticleEmitter doSetLocalTranslation(Vector3f position) {

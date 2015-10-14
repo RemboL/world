@@ -1,9 +1,13 @@
 package pl.rembol.jme3.world.rabbit;
 
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -14,20 +18,14 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.controls.MovingControl;
-import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
-import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.terrain.Terrain;
-
-import java.util.Random;
 
 public class Rabbit extends AbstractControl implements Selectable,
         ApplicationContextAware, WithMovingControl {
@@ -36,22 +34,10 @@ public class Rabbit extends AbstractControl implements Selectable,
     private Terrain terrain;
 
     @Autowired
-    private Node rootNode;
-
-    @Autowired
-    private BulletAppState bulletAppState;
-
-    @Autowired
     private UnitRegistry unitRegistry;
 
     @Autowired
-    private SelectionManager selectionManager;
-
-    @Autowired
-    private AssetManager assetManager;
-
-    @Autowired
-    private PlayerService playerService;
+    private GameState gameState;
 
     private ApplicationContext applicationContext;
 
@@ -71,8 +57,8 @@ public class Rabbit extends AbstractControl implements Selectable,
     }
 
     public void init(Vector3f position) {
-        initNode(rootNode);
-        icon = new SelectionIcon(this, "rabbit", assetManager);
+        initNode(gameState.rootNode);
+        icon = new SelectionIcon(this, "rabbit", gameState);
         node.setLocalTranslation(position);
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
@@ -82,7 +68,7 @@ public class Rabbit extends AbstractControl implements Selectable,
         node.addControl(new RabbitControl(applicationContext, this));
         node.addControl(new MovingControl(this));
 
-        bulletAppState.getPhysicsSpace().add(control);
+        gameState.bulletAppState.getPhysicsSpace().add(control);
 
         node.addControl(control);
         control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
@@ -93,7 +79,7 @@ public class Rabbit extends AbstractControl implements Selectable,
 
     @Override
     public Node initNodeWithScale() {
-        return (Node) assetManager.loadModel("rabbit/rabbit.mesh.xml");
+        return (Node) gameState.assetManager.loadModel("rabbit/rabbit.mesh.xml");
     }
 
     private void initNode(Node rootNode) {
@@ -129,7 +115,7 @@ public class Rabbit extends AbstractControl implements Selectable,
     @Override
     public void select() {
         if (selectionNode == null) {
-            selectionNode = new SelectionNode(assetManager);
+            selectionNode = new SelectionNode(gameState);
             node.attachChild(selectionNode);
             selectionNode.setLocalTranslation(0, .3f, 0);
         }
