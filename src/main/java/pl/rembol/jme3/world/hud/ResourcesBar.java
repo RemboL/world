@@ -7,10 +7,6 @@ import static pl.rembol.jme3.world.resources.ResourceType.WOOD;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -19,11 +15,12 @@ import com.jme3.ui.Picture;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.resources.ResourceType;
 
-@Component
 public class ResourcesBar {
+
     private Picture frame;
 
     private Map<ResourceType, Picture> icons = new HashMap<>();
+
     private Map<ResourceType, BitmapText> texts = new HashMap<>();
 
     private static final int ICON_SIZE = 32;
@@ -38,12 +35,7 @@ public class ResourcesBar {
 
     private Vector2f framePosition;
 
-    @Autowired
-    private GameState gameState;
-
-    @PostConstruct
-    public void init() {
-
+    public ResourcesBar(GameState gameState) {
         frame = new Picture("Resources Box");
         frame.setImage(gameState.assetManager, "interface/resources_bar.png", true);
         framePosition = new Vector2f(gameState.settings.getWidth() - WIDTH,
@@ -54,7 +46,6 @@ public class ResourcesBar {
         gameState.guiNode.attachChild(frame);
 
         initIconsAndTexts(gameState);
-
     }
 
     private void initIconsAndTexts(GameState gameState) {
@@ -81,7 +72,7 @@ public class ResourcesBar {
         BitmapText text = new BitmapText(guiFont);
         text.setSize(guiFont.getCharSet().getRenderedSize());
         text.move(framePosition.x + 40 + RESOURCE_OFFSET_SIZE * offset
-                + ICON_SIZE_PLUS, framePosition.y + 16 + text.getLineHeight(),
+                        + ICON_SIZE_PLUS, framePosition.y + 16 + text.getLineHeight(),
                 0);
         gameState.guiNode.attachChild(text);
 
@@ -102,7 +93,7 @@ public class ResourcesBar {
     }
 
     public void updateResources(Map<ResourceType, Integer> resourcesMap,
-            int housingLimit) {
+                                int housingLimit) {
         resourcesMap.entrySet().stream()
                 .filter(entry -> entry.getKey() != HOUSING)
                 .forEach(this::setResource);

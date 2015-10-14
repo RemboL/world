@@ -1,6 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import com.jme3.animation.LoopMode;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.interfaces.WithNode;
 
 public class WaitAction extends Action<WithNode> {
@@ -8,9 +9,9 @@ public class WaitAction extends Action<WithNode> {
     private int seconds;
     private long started;
 
-    public WaitAction init(int seconds) {
+    public WaitAction(GameState gameState, int seconds) {
+        super(gameState);
         this.seconds = seconds;
-        return this;
     }
 
     @Override

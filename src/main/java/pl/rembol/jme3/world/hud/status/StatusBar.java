@@ -3,10 +3,6 @@ package pl.rembol.jme3.world.hud.status;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
@@ -15,7 +11,6 @@ import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 
-@Component
 public class StatusBar {
 
     private static final int ICON_ROW_SIZE = 9;
@@ -24,13 +19,11 @@ public class StatusBar {
 
     private Vector2f framePosition;
 
-    @Autowired
     private GameState gameState;
+    
+    public StatusBar(GameState gameState) {
+        this.gameState = gameState;
 
-    private Node statusDetails = new Node("status details connector");
-
-    @PostConstruct
-    public void init() {
         framePosition = new Vector2f(gameState.settings.getWidth() / 2 - 200, 0);
 
         Picture frame = new Picture("Status Bar");
@@ -42,8 +35,9 @@ public class StatusBar {
 
         gameState.guiNode.attachChild(statusDetails);
         statusDetails.move(framePosition.x, framePosition.y, 0);
-
     }
+
+    private Node statusDetails = new Node("status details connector");
 
     public void clearIcons() {
         selectionIcons.forEach(gameState.guiNode::detachChild);

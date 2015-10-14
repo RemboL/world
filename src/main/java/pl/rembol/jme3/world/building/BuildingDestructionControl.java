@@ -16,7 +16,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public class BuildingDestructionControl extends AbstractControl implements
         ApplicationContextAware {
@@ -38,9 +37,6 @@ public class BuildingDestructionControl extends AbstractControl implements
     private float minY;
     private float maxY;
     private Random random = new Random();
-
-    @Autowired
-    private Terrain terrain;
 
     @Autowired
     private GameState gameState;
@@ -70,8 +66,8 @@ public class BuildingDestructionControl extends AbstractControl implements
     }
 
     private DustParticleEmitter createParticleEmiter() {
-        return new DustParticleEmitter(applicationContext)
-                .doSetLocalTranslation(new Vector3f(start.x, terrain
+        return new DustParticleEmitter(applicationContext.getBean(GameState.class))
+                .doSetLocalTranslation(new Vector3f(start.x, gameState.terrain
                         .getTerrain().getHeight(start), start.y));
     }
 
@@ -81,7 +77,7 @@ public class BuildingDestructionControl extends AbstractControl implements
         float y = minY + (maxY - minY) * random.nextFloat();
 
         emitter.setLocalTranslation(x,
-                terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
+                gameState.terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
     }
 
     @Override

@@ -1,12 +1,13 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
 import com.jme3.animation.LoopMode;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
-
-import java.util.Optional;
 
 public class MineResourcesAction extends Action<BallMan> {
 
@@ -29,10 +30,9 @@ public class MineResourcesAction extends Action<BallMan> {
      */
     private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-    public MineResourcesAction init(ResourceDeposit resourceDeposit) {
+    public MineResourcesAction(GameState gameState, ResourceDeposit resourceDeposit) {
+        super(gameState);
         this.resourceDeposit = resourceDeposit;
-
-        return this;
     }
 
     @Override

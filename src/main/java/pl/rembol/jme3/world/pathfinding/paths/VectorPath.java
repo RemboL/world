@@ -1,29 +1,28 @@
 package pl.rembol.jme3.world.pathfinding.paths;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import org.springframework.context.ApplicationContext;
-import pl.rembol.jme3.world.terrain.Terrain;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.GameState;
 
 public class VectorPath implements IExternalPath {
 
 	private List<Vector3f> vectorList = new ArrayList<>();
 
-	public VectorPath(ApplicationContext applicationContext, Vector2f... points) {
+	public VectorPath(GameState gameState, Vector2f... points) {
 		for (Vector2f point : points) {
-			vectorList.add(applicationContext.getBean(Terrain.class)
+			vectorList.add(gameState.terrain
 					.getGroundPosition(point));
 		}
 	}
 
-	public VectorPath(Vector2iPath path, ApplicationContext applicationContext) {
+	public VectorPath(Vector2iPath path, GameState gameState) {
 		vectorList = path.vectorList
 				.stream()
-				.map(vector2i -> applicationContext.getBean(Terrain.class)
+				.map(vector2i -> gameState.terrain
 						.getGroundPosition(vector2i.asVector2f()))
 				.collect(Collectors.toList());
 	}

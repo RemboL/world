@@ -1,17 +1,18 @@
 package pl.rembol.jme3.world.player;
 
-import com.jme3.math.ColorRGBA;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-import pl.rembol.jme3.world.resources.ResourceType;
-import pl.rembol.jme3.world.save.PlayerDTO;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
+import com.jme3.math.ColorRGBA;
+import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.world.save.PlayerDTO;
 
 @Component
 public class PlayerService implements ApplicationContextAware {
@@ -55,7 +56,7 @@ public class PlayerService implements ApplicationContextAware {
     }
 
     public List<PlayerDTO> savePlayers() {
-        return players.values().stream().map(player -> new PlayerDTO(player))
+        return players.values().stream().map(PlayerDTO::new)
                 .collect(Collectors.toList());
     }
 

@@ -22,13 +22,11 @@ import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.ActionButton;
-import pl.rembol.jme3.world.hud.status.StatusBar;
 import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.SelectionIcon;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 @Component
 public class MouseClickListener implements ActionListener, AnalogListener {
@@ -40,16 +38,10 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	private ActionBox actionBox;
 
 	@Autowired
-	private StatusBar statusBar;
-
-	@Autowired
 	private SelectionManager selectionManager;
 
 	@Autowired
 	private GameState gameState;
-
-	@Autowired
-	private Terrain terrain;
 
 	@Autowired
 	private DragSelectionManager dragSelectionManager;
@@ -161,7 +153,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 	}
 
 	private SelectionIcon getSelectionIconClick() {
-		for (SelectionIcon button : statusBar.getSelectionIcons()) {
+		for (SelectionIcon button : gameState.statusBar.getSelectionIcons()) {
 
 			Vector2f click2d = gameState.inputManager.getCursorPosition();
 
@@ -243,7 +235,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 		Ray ray = getClickRay();
 
 		CollisionResults results = new CollisionResults();
-		terrain.getTerrain().collideWith(ray, results);
+		gameState.terrain.getTerrain().collideWith(ray, results);
 
 		CollisionResult collision = results.getClosestCollision();
 

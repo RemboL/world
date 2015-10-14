@@ -1,10 +1,13 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+
+import com.jme3.math.Vector2f;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
@@ -13,19 +16,21 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-public abstract class Action<T extends WithNode> implements
-        ApplicationContextAware {
+public abstract class Action<T extends WithNode> {
 
     private boolean isStarted = false;
+
     private boolean isCancelled = false;
-    protected ApplicationContext applicationContext;
+
+    protected GameState gameState;
 
     protected Action<?> parent = null;
+
     protected List<Action<?>> children = new ArrayList<>();
+    
+    public Action(GameState gameState) {
+        this.gameState = gameState;
+    }
 
     protected boolean start(T unit) {
         return true;
@@ -58,9 +63,7 @@ public abstract class Action<T extends WithNode> implements
 
     protected void doCancel() {
         isCancelled = true;
-        for (Action<?> child : children) {
-            child.doCancel();
-        }
+        children.forEach(Action::doCancel);
     }
 
     public void cancel() {
@@ -78,19 +81,12 @@ public abstract class Action<T extends WithNode> implements
     public void stop() {
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
     protected boolean assertWielded(BallMan ballMan,
                                     Optional<Class<? extends Tool>> wieldedClass) {
         if (!wieldedClass.isPresent()) {
             if (ballMan.getWieldedObject(Hand.RIGHT) != null) {
                 ballMan.control().addActionOnStart(
-                        applicationContext.getAutowireCapableBeanFactory()
-                                .createBean(SwitchToolAction.class)
-                                .init(Optional.empty()).withParent(this));
+                        new SwitchToolAction(gameState, Optional.empty()).withParent(this));
                 return false;
             }
             return true;
@@ -103,19 +99,13 @@ public abstract class Action<T extends WithNode> implements
                         wieldedClass.get());
                 if (toolFromInventory.isPresent()) {
                     ballMan.control().addActionOnStart(
-                            applicationContext.getAutowireCapableBeanFactory()
-                                    .createBean(SwitchToolAction.class)
-                                    .init(toolFromInventory).withParent(this));
+                            new SwitchToolAction(gameState, toolFromInventory).withParent(
+                                    this));
                     return false;
                 } else {
-                    ballMan.control()
-                            .addActionOnStart(
-                                    applicationContext
-                                            .getAutowireCapableBeanFactory()
-                                            .createBean(
-                                                    GetToolFromToolshopAction.class)
-                                            .init(wieldedClass.get())
-                                            .withParent(this));
+                    ballMan.control().addActionOnStart(
+                            new GetToolFromToolshopAction(gameState, wieldedClass.get())
+                                    .withParent(this));
                     return false;
                 }
             } catch (BeansException | IllegalStateException e) {
@@ -136,9 +126,7 @@ public abstract class Action<T extends WithNode> implements
                     .cast(unit)
                     .control()
                     .addActionOnStart(
-                            applicationContext.getAutowireCapableBeanFactory()
-                                    .createBean(MoveTowardsTargetAction.class)
-                                    .init(unit, target, distance)
+                            new MoveTowardsTargetAction(gameState, unit, target, distance)
                                     .withParent(this));
             return false;
         }
@@ -154,9 +142,7 @@ public abstract class Action<T extends WithNode> implements
                     .cast(unit)
                     .control()
                     .addActionOnStart(
-                            applicationContext.getAutowireCapableBeanFactory()
-                                    .createBean(MoveTowardsLocationAction.class)
-                                    .init(unit, target, distance)
+                            new MoveTowardsLocationAction(gameState, unit, target, distance)
                                     .withParent(this));
             return false;
         }

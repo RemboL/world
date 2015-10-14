@@ -23,7 +23,6 @@ import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public abstract class ResourceDeposit implements Selectable, Solid,
         ApplicationContextAware {
@@ -38,10 +37,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     private ResourceDepositStatus status;
 
     @Autowired
-    private Terrain terrain;
-
-    @Autowired
-    private GameState gameState;
+    protected GameState gameState;
 
     @Autowired
     private SelectionManager selectionManager;
@@ -56,9 +52,9 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     }
 
     public void init(Vector2f position) {
-        init(new Vector3f(position.x, terrain.getTerrain().getHeight(
+        init(new Vector3f(position.x, gameState.terrain.getTerrain().getHeight(
                 new Vector2f(position.x, position.y))
-                + terrain.getTerrain().getLocalTranslation().y, position.y));
+                + gameState.terrain.getTerrain().getLocalTranslation().y, position.y));
     }
 
     public void init(Vector3f position) {
@@ -185,7 +181,7 @@ public abstract class ResourceDeposit implements Selectable, Solid,
     @Override
     public Node getStatusDetails() {
         if (status == null) {
-            status = new ResourceDepositStatus(this, applicationContext);
+            status = new ResourceDepositStatus(this, gameState);
         }
 
         status.update();

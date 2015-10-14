@@ -1,22 +1,24 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
+
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
-import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-
-import java.util.Optional;
 
 public class GetToolFromToolshopAction extends Action<BallMan> {
 
     private static final float REQUIRED_DISTANCE = 3;
+
     private Class<? extends Tool> toolClass;
+
     private boolean finished = false;
 
-    public GetToolFromToolshopAction init(Class<? extends Tool> toolClass) {
+    public GetToolFromToolshopAction(GameState gameState, Class<? extends Tool> toolClass) {
+        super(gameState);
         this.toolClass = toolClass;
-
-        return this;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class GetToolFromToolshopAction extends Action<BallMan> {
                 .getClosestToolshop(ballMan.getLocation());
 
         if (!closestToolshop.isPresent()) {
-            applicationContext.getBean(ConsoleLog.class).addLineExternal(
+            gameState.consoleLog.addLineExternal(
                     "Could not find a Toolshop");
             cancel();
             return false;
@@ -43,10 +45,10 @@ public class GetToolFromToolshopAction extends Action<BallMan> {
     protected void doAct(BallMan ballMan, float tpf) {
         try {
 
-            ballMan.addToInventory(toolClass.newInstance().init(
-                    applicationContext));
+            ballMan.addToInventory(toolClass.getDeclaredConstructor(GameState.class).newInstance(gameState));
             finished = true;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException 
+                e) {
             e.printStackTrace();
         }
     }

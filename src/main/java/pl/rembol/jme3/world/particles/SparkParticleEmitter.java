@@ -42,7 +42,7 @@ public class SparkParticleEmitter extends ParticleEmitter {
 
         parentNode.attachChild(this);
 
-        addControl(new TimeToLiveControl(applicationContext, TTL));
+        addControl(new TimeToLiveControl(applicationContext.getBean(GameState.class), TTL));
 
     }
 

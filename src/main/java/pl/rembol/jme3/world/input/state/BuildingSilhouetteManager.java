@@ -25,7 +25,6 @@ import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.order.BuildOrder;
 import pl.rembol.jme3.world.ballman.order.Order;
 import pl.rembol.jme3.world.building.BuildingFactory;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 @Component
 public class BuildingSilhouetteManager extends AbstractControl implements
@@ -39,9 +38,6 @@ public class BuildingSilhouetteManager extends AbstractControl implements
 
     @Autowired
     private GameState gameState;
-
-    @Autowired
-    private Terrain terrain;
 
     @Autowired
     private UnitRegistry unitRegistry;
@@ -129,7 +125,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
         if (clickPosition != null) {
             Vector2f roundedPosition2d = new Vector2f(
                     Math.round(clickPosition.x), Math.round(clickPosition.z));
-            return terrain.getGroundPosition(roundedPosition2d);
+            return gameState.terrain.getGroundPosition(roundedPosition2d);
         }
 
         return null;
@@ -154,7 +150,7 @@ public class BuildingSilhouetteManager extends AbstractControl implements
         Ray ray = getClickRay();
 
         CollisionResults results = new CollisionResults();
-        terrain.getTerrain().collideWith(ray, results);
+        gameState.terrain.getTerrain().collideWith(ray, results);
 
         CollisionResult collision = results.getClosestCollision();
 

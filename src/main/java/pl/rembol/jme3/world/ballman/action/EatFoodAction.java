@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.resources.Cost;
 import pl.rembol.jme3.world.resources.ResourceType;
-
-import java.util.Optional;
 
 public class EatFoodAction extends Action<BallMan> {
 
@@ -16,9 +16,9 @@ public class EatFoodAction extends Action<BallMan> {
 
     int howHungry;
 
-    public EatFoodAction init(float howHungry) {
+    public EatFoodAction(GameState gameState, float howHungry) {
+        super(gameState);
         this.howHungry = (int) howHungry;
-        return this;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class EatFoodAction extends Action<BallMan> {
 
         if (!closestWarehouse.isPresent()) {
             if (ballMan.getOwner().isActive()) {
-                applicationContext.getBean(ConsoleLog.class).addLineExternal(
+                gameState.consoleLog.addLineExternal(
                         "Could not find a Warehouse");
             }
             cancel();

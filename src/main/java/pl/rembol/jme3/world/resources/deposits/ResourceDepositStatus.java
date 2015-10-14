@@ -1,14 +1,14 @@
 package pl.rembol.jme3.world.resources.deposits;
 
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.hud.status.DefaultStatus;
 
 public class ResourceDepositStatus extends DefaultStatus {
 
     private final ResourceDeposit resourceDeposit;
 
-    public ResourceDepositStatus(ResourceDeposit resourceDeposit, ApplicationContext applicationContext) {
-        super(applicationContext);
+    public ResourceDepositStatus(ResourceDeposit resourceDeposit, GameState gameState) {
+        super(gameState);
 
         this.resourceDeposit = resourceDeposit;
 

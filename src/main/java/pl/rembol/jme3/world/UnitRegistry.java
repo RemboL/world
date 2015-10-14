@@ -1,12 +1,18 @@
 package pl.rembol.jme3.world;
 
-import com.jme3.collision.Collidable;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+
+import com.jme3.collision.Collidable;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.house.House;
@@ -15,18 +21,11 @@ import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.input.state.SelectionManager;
 import pl.rembol.jme3.world.interfaces.WithNode;
-import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.player.Player;
 import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.save.UnitsDTO;
 import pl.rembol.jme3.world.selection.Selectable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class UnitRegistry implements ApplicationContextAware {
@@ -37,7 +36,7 @@ public class UnitRegistry implements ApplicationContextAware {
     private SelectionManager selectionManager;
 
     @Autowired
-    private PathfindingService pathfindingService;
+    private GameState gameState;
 
     @Autowired
     private PlayerService playerService;
@@ -56,12 +55,7 @@ public class UnitRegistry implements ApplicationContextAware {
     }
 
     public List<? extends Collidable> getSelectablesNodes() {
-        List<Collidable> collidables = new ArrayList<>();
-
-        for (WithNode selectable : units.values()) {
-            collidables.add(selectable.getNode());
-        }
-        return collidables;
+        return units.values().stream().map(WithNode::getNode).collect(Collectors.toList());
     }
 
     public void register(WithNode selectable) {
@@ -75,7 +69,7 @@ public class UnitRegistry implements ApplicationContextAware {
         selectable.getNode().setUserData(UNIT_DATA_KEY, key);
 
         if (selectable instanceof Solid) {
-            pathfindingService.addSolid(selectable.getNode()
+            gameState.pathfindingService.addSolid(selectable.getNode()
                     .getWorldTranslation(), selectable.getWidth());
         }
     }
@@ -86,7 +80,7 @@ public class UnitRegistry implements ApplicationContextAware {
         selectionManager.deselect(selectable);
 
         if (selectable instanceof Solid) {
-            pathfindingService.removeSolid(selectable.getNode()
+            gameState.pathfindingService.removeSolid(selectable.getNode()
                     .getWorldTranslation(), selectable.getWidth());
         }
     }
@@ -133,7 +127,7 @@ public class UnitRegistry implements ApplicationContextAware {
     }
 
     public List<Selectable> getSelectableByPosition(Vector3f start,
-            Vector3f stop) {
+                                                    Vector3f stop) {
         float minX = Math.min(start.x, stop.x);
         float maxX = Math.max(start.x, stop.x);
         float minZ = Math.min(start.z, stop.z);
@@ -156,7 +150,7 @@ public class UnitRegistry implements ApplicationContextAware {
     }
 
     public List<WithNode> getSelectableByPosition(Vector3f start,
-            Vector3f stop, float buffer) {
+                                                  Vector3f stop, float buffer) {
         float minX = Math.min(start.x, stop.x) - buffer;
         float maxX = Math.max(start.x, stop.x) + buffer;
         float minZ = Math.min(start.z, stop.z) - buffer;
@@ -189,7 +183,7 @@ public class UnitRegistry implements ApplicationContextAware {
     }
 
     private boolean isColliding(WithNode selectable, Vector3f position,
-            float width) {
+                                float width) {
         if (selectable.getNode().getWorldTranslation().x
                 + selectable.getWidth() <= position.x - width) {
             return false;

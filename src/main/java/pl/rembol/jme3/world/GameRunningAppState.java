@@ -27,7 +27,6 @@ import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.rabbit.Rabbit;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
 import pl.rembol.jme3.world.save.SaveState;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public class GameRunningAppState extends AbstractAppState {
 
@@ -42,6 +41,8 @@ public class GameRunningAppState extends AbstractAppState {
     private AppSettings settings;
 
     private ApplicationContext applicationContext;
+    
+    private GameState gameState;
 
     public GameRunningAppState(AppSettings settings) {
         this.settings = settings;
@@ -63,6 +64,9 @@ public class GameRunningAppState extends AbstractAppState {
     @Override
     public void cleanup() {
         ConfigurableApplicationContext.class.cast(applicationContext).close();
+        if (gameState != null) {
+            gameState.threadManager.tearDown();
+        }
     }
 
     @Override
@@ -79,12 +83,11 @@ public class GameRunningAppState extends AbstractAppState {
                 new String[]{ "/app-ctx.xml" }, parentApplicationContext);
 
         initLightAndShadows(applicationContext.getBean(GameState.class), app.getViewPort());
-        Terrain terrain = applicationContext.getBean(Terrain.class);
         PlayerService playerService = applicationContext
                 .getBean(PlayerService.class);
 
         SaveState load = SaveState.load("save.xml");
-        terrain.init(load.getTerrain());
+        gameState.terrain.init(load.getTerrain());
         playerService.loadPlayers(load.getPlayers());
         applicationContext.getBean(UnitRegistry.class).load(load.getUnits());
 
@@ -114,8 +117,9 @@ public class GameRunningAppState extends AbstractAppState {
             SimpleApplication simpleApp) {
         ConfigurableApplicationContext parentApplicationContext = new GenericApplicationContext();
 
+        gameState = new GameState(simpleApp, settings, bulletAppState); 
         parentApplicationContext.getBeanFactory().registerSingleton(GameState.class.getSimpleName(),
-                new GameState(simpleApp, settings, bulletAppState));
+                gameState);
 
         parentApplicationContext.refresh();
 

@@ -1,11 +1,12 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
 import com.jme3.animation.LoopMode;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.smallobject.SmallObject;
-
-import java.util.Optional;
 
 public class SwitchToolAction extends Action<BallMan> {
 
@@ -19,12 +20,11 @@ public class SwitchToolAction extends Action<BallMan> {
 
     private boolean switched = false;
 
-    public SwitchToolAction init(Optional<? extends SmallObject> smallObject) {
+    public SwitchToolAction(GameState gameState, Optional<? extends SmallObject> smallObject) {
+        super(gameState);
         this.smallObject = smallObject;
-
-        return this;
     }
-
+    
     @Override
     protected boolean start(BallMan ballMan) {
         ballMan.setAnimation("switchWeapons", LoopMode.DontLoop);

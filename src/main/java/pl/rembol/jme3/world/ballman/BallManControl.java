@@ -1,8 +1,10 @@
 package pl.rembol.jme3.world.ballman;
 
+import org.springframework.context.ApplicationContext;
+
 import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector2f;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
@@ -27,26 +29,20 @@ public class BallManControl extends ActionQueueControl<BallMan> implements
     @Override
     public void performDefaultAction(WithNode target) {
         if (target instanceof ResourceDeposit) {
-            setAction(applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(GatherResourcesAction.class)
-                    .init(unit, ResourceDeposit.class.cast(target)));
+            setAction(new GatherResourcesAction(applicationContext.getBean(GameState.class), unit, ResourceDeposit.class.cast(target)));
         } else if (WithOwner.class.isInstance(target)
                 && !WithOwner.class.cast(target).getOwner()
                         .equals(unit.getOwner())
                 && Destructable.class.isInstance(target)) {
-            setAction(applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(AttackAction.class)
-                    .init(Destructable.class.cast(target)));
+            setAction(new AttackAction(applicationContext.getBean(GameState.class), Destructable.class.cast(target)));
         } else {
-            setAction(applicationContext.getAutowireCapableBeanFactory()
-                    .createBean(MoveTowardsTargetAction.class).init(unit, target, 5f));
+            setAction(new MoveTowardsTargetAction(applicationContext.getBean(GameState.class), unit, target, 5f));
         }
     }
 
     @Override
     public void performDefaultAction(Vector2f target) {
-        setAction(applicationContext.getAutowireCapableBeanFactory()
-                .createBean(MoveTowardsLocationAction.class).init(unit, target, 1f));
+        setAction(new MoveTowardsLocationAction(applicationContext.getBean(GameState.class), unit, target, 1f));
     }
 
     @Override

@@ -2,10 +2,6 @@ package pl.rembol.jme3.world.terrain;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -23,10 +19,8 @@ import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.save.TerrainDTO;
 
-@Component
 public class Terrain {
 
 	private TerrainQuad terrain;
@@ -35,11 +29,13 @@ public class Terrain {
 	private AlphaMapManipulator manipulator = new AlphaMapManipulator();
 	private RigidBodyControl terrainBodyControl;
 
-	@Autowired
 	private GameState gameState;
-
-	@Autowired
-	private PathfindingService pathfindingService;
+	
+	public Terrain(GameState gameState) {
+		this.gameState = gameState;
+		
+		createMaterials();
+	}
 
 	public void init(int size) {
 
@@ -70,7 +66,7 @@ public class Terrain {
 		gameState.bulletAppState.getPhysicsSpace().add(terrainBodyControl);
 		terrain.addControl(terrainBodyControl);
 
-		pathfindingService.initFromTerrain();
+		gameState.pathfindingService.initFromTerrain();
 	}
 
 	private TerrainQuad createTerrainQuad(int size) {
@@ -87,8 +83,7 @@ public class Terrain {
 				heightmap.getHeightMap());
 	}
 
-	@PostConstruct
-	private void createMaterials() {
+	public void createMaterials() {
 		terrainMaterial = new Material(gameState.assetManager,
 				"Common/MatDefs/Terrain/TerrainLighting.j3md");
 		terrainMaterial.setBoolean("useTriPlanarMapping", false);
@@ -124,12 +119,6 @@ public class Terrain {
 	public int getTerrainSize() {
 		return terrain.getTerrainSize();
 
-	}
-
-	public void addHill(Vector2f position, float radius) {
-		manipulator.addBlop(alphaMap, position, radius, ColorRGBA.Green);
-
-		addSmoothHillHeightMap(position, radius);
 	}
 
 	public boolean isTerrainSmooth(Vector2f start, Vector2f end) {

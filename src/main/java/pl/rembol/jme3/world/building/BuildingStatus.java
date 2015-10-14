@@ -1,14 +1,14 @@
 package pl.rembol.jme3.world.building;
 
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.hud.status.DefaultStatus;
 
 public class BuildingStatus extends DefaultStatus {
 
     private final Building building;
 
-    public BuildingStatus(Building building, ApplicationContext applicationContext) {
-        super(applicationContext);
+    public BuildingStatus(Building building, GameState gameState) {
+        super(gameState);
 
         this.building = building;
 

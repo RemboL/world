@@ -27,13 +27,9 @@ import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 @Component
 public class DragSelectionManager extends AbstractControl {
-
-    @Autowired
-    private Terrain terrain;
 
     @Autowired
     private GameState gameState;
@@ -92,7 +88,7 @@ public class DragSelectionManager extends AbstractControl {
         for (Float z : listOfZ) {
             List<Vector3f> vectorList = new ArrayList<>();
             for (Float x : listOfX) {
-                vectorList.add(terrain.getGroundPosition(new Vector2f(x, z))
+                vectorList.add(gameState.terrain.getGroundPosition(new Vector2f(x, z))
                         .add(Vector3f.UNIT_Y));
             }
 
@@ -157,7 +153,7 @@ public class DragSelectionManager extends AbstractControl {
         Ray ray = getClickRay();
 
         CollisionResults results = new CollisionResults();
-        terrain.getTerrain().collideWith(ray, results);
+        gameState.terrain.getTerrain().collideWith(ray, results);
 
         CollisionResult collision = results.getClosestCollision();
 

@@ -1,12 +1,13 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
-
-import java.util.Optional;
 
 public class GatherResourcesAction extends Action<BallMan> {
 
@@ -14,14 +15,12 @@ public class GatherResourcesAction extends Action<BallMan> {
 
     private BallMan ballMan;
 
-    public GatherResourcesAction init(BallMan ballMan,
-            ResourceDeposit resourceDeposit) {
+    public GatherResourcesAction(GameState gameState, BallMan ballMan, ResourceDeposit resourceDeposit) {
+        super(gameState);
         this.ballMan = ballMan;
         this.resourceDeposit = resourceDeposit;
 
         getClosestWarehouse();
-
-        return this;
     }
 
     @Override
@@ -32,14 +31,10 @@ public class GatherResourcesAction extends Action<BallMan> {
         if (ballMan.getWieldedObject(Hand.LEFT) instanceof ResourceUnit
                 && warehouse.isPresent()) {
             ballMan.control().addActionOnStart(
-                    applicationContext.getAutowireCapableBeanFactory()
-                            .createBean(ReturnResourcesAction.class)
-                            .init(warehouse.get()).withParent(this));
+                    new ReturnResourcesAction(gameState, warehouse.get()).withParent(this));
         } else {
             ballMan.control().addActionOnStart(
-                    applicationContext.getAutowireCapableBeanFactory()
-                            .createBean(MineResourcesAction.class)
-                            .init(resourceDeposit).withParent(this));
+                    new MineResourcesAction(gameState, resourceDeposit).withParent(this));
         }
     }
 

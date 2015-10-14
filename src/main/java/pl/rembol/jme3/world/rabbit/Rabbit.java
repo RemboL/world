@@ -25,13 +25,9 @@ import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public class Rabbit extends AbstractControl implements Selectable,
         ApplicationContextAware, WithMovingControl {
-
-    @Autowired
-    private Terrain terrain;
 
     @Autowired
     private UnitRegistry unitRegistry;
@@ -48,7 +44,7 @@ public class Rabbit extends AbstractControl implements Selectable,
     private RabbitStatus status;
 
     public void init(Vector2f position) {
-        init(terrain.getGroundPosition(position));
+        init(gameState.terrain.getGroundPosition(position));
     }
 
     @Override
@@ -132,7 +128,7 @@ public class Rabbit extends AbstractControl implements Selectable,
     @Override
     public Node getStatusDetails() {
         if (status == null) {
-            status = new RabbitStatus(applicationContext);
+            status = new RabbitStatus(gameState);
         }
 
         status.update();

@@ -1,29 +1,29 @@
 package pl.rembol.jme3.world.input.state;
 
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.hud.ActionBox;
-import pl.rembol.jme3.world.hud.status.StatusBar;
-import pl.rembol.jme3.world.input.ModifierKeysManager;
 import pl.rembol.jme3.world.player.PlayerService;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.selection.Selectable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 public class SelectionManager {
 
-    public static enum SelectionType {
-        UNIT, HOUSE;
+    public enum SelectionType {
+        UNIT, HOUSE
     }
 
     private List<Selectable> selected = new ArrayList<>();
@@ -35,16 +35,13 @@ public class SelectionManager {
     private ActionBox actionBox;
 
     @Autowired
-    private StatusBar statusBar;
+    private GameState gameState;
 
     @Autowired
-    private ModifierKeysManager modifierKeysManager;
-
-    @Autowired
-    private UnitRegistry gameState;
+    private UnitRegistry unitRegistry;
 
     public void select(Selectable selectable) {
-        if (modifierKeysManager.isShiftPressed()) {
+        if (gameState.modifierKeysManager.isShiftPressed()) {
             switchSelection(selectable);
         } else {
             clearSelection();
@@ -58,14 +55,14 @@ public class SelectionManager {
     public void updateSelection() {
 
         if (selected.size() == 0) {
-            statusBar.clear();
+            gameState.statusBar.clear();
         } else if (selected.size() == 1) {
             Node node = selected.get(0).getStatusDetails();
             if (node != null) {
-                statusBar.setStatusDetails(node);
+                gameState.statusBar.setStatusDetails(node);
             }
         } else {
-            statusBar.setIcons(selected);
+            gameState.statusBar.setIcons(selected);
         }
 
     }
@@ -86,9 +83,7 @@ public class SelectionManager {
     }
 
     private void clearSelection() {
-        for (Selectable previouslySelected : selected) {
-            previouslySelected.deselect();
-        }
+        selected.forEach(Selectable::deselect);
 
         selected.clear();
     }
@@ -137,23 +132,18 @@ public class SelectionManager {
 
     public void dragSelect(Vector3f dragStart, Vector3f dragStop) {
 
-        List<Selectable> dragSelected = gameState.getSelectableByPosition(
+        List<Selectable> dragSelected = unitRegistry.getSelectableByPosition(
                 dragStart, dragStop);
 
-        if (modifierKeysManager.isShiftPressed()) {
-            for (Selectable selectable : dragSelected) {
-                if (!selected.contains(selectable)) {
-                    doSelect(selectable);
-                }
-            }
+        if (gameState.modifierKeysManager.isShiftPressed()) {
+            dragSelected.stream().filter(selectable -> !selected.contains(selectable)).forEach(this::doSelect);
         } else {
             clearSelection();
 
             List<WithOwner> activePlayerOwned = dragSelected
                     .stream()
-                    .filter(selectable -> WithOwner.class
-                            .isInstance(selectable))
-                    .map(selectable -> WithOwner.class.cast(selectable))
+                    .filter(WithOwner.class::isInstance)
+                    .map(WithOwner.class::cast)
                     .filter(withOwner -> withOwner.getOwner().equals(
                             playerService.getActivePlayer()))
                     .collect(Collectors.toList());
@@ -161,17 +151,16 @@ public class SelectionManager {
             if (!activePlayerOwned.isEmpty()) {
 
                 if (activePlayerOwned.stream().anyMatch(
-                        withOwner -> BallMan.class.isInstance(withOwner))) {
+                        BallMan.class::isInstance)) {
                     activePlayerOwned
                             .stream()
-                            .filter(withOwner -> BallMan.class
-                                    .isInstance(withOwner))
-                            .map(withOwner -> BallMan.class.cast(withOwner))
-                            .forEach(ballMan -> doSelect(ballMan));
+                            .filter(BallMan.class::isInstance)
+                            .map(BallMan.class::cast)
+                            .forEach(this::doSelect);
                 } else {
                     activePlayerOwned.stream()
-                            .map(withOwner -> Selectable.class.cast(withOwner))
-                            .forEach(selectable -> doSelect(selectable));
+                            .map(Selectable.class::cast)
+                            .forEach(this::doSelect);
                 }
             }
 

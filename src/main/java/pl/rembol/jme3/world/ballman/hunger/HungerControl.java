@@ -15,9 +15,11 @@ import pl.rembol.jme3.world.ballman.action.EatFoodAction;
 import pl.rembol.jme3.world.resources.ResourceType;
 
 public class HungerControl extends AbstractControl {
+
     private ApplicationContext applicationContext;
 
     private static final int MAX_HUNGER = 50;
+
     private float hunger = MAX_HUNGER * FastMath.nextRandomFloat();
 
     private BallMan ballMan;
@@ -89,18 +91,14 @@ public class HungerControl extends AbstractControl {
     private void eatFood() {
         if (!ballMan.control().contains(EatFoodAction.class)) {
             ballMan.control().addAction(
-                    applicationContext.getAutowireCapableBeanFactory()
-                            .createBean(EatFoodAction.class)
-                            .init(MAX_HUNGER - hunger));
+                    new EatFoodAction(applicationContext.getBean(GameState.class), MAX_HUNGER - hunger));
         }
     }
 
     private void eatFoodFast() {
         if (!ballMan.control().startsWith(EatFoodAction.class)) {
             ballMan.control().addActionOnStart(
-                    applicationContext.getAutowireCapableBeanFactory()
-                            .createBean(EatFoodAction.class)
-                            .init(MAX_HUNGER - hunger));
+                    new EatFoodAction(applicationContext.getBean(GameState.class), MAX_HUNGER - hunger));
         }
     }
 

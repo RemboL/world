@@ -1,12 +1,10 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
-import pl.rembol.jme3.world.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
 
@@ -18,16 +16,12 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
     private IExternalPath path;
     private WithMovingControl unit;
 
-    @Autowired
-    private PathfindingService pathfindingService;
-
-    public MoveTowardsLocationAction init(WithMovingControl unit, Vector2f point, float targetDistance) {
+    public MoveTowardsLocationAction(GameState gameState, WithMovingControl unit, Vector2f point, float targetDistance) {
+        super(gameState);
         this.unit = unit;
         this.rectangleStart = point.subtract(targetDistance, targetDistance);
         this.rectangleEnd = point.add(new Vector2f(targetDistance,
                 targetDistance));
-
-        return this;
     }
 
     @Override
@@ -65,7 +59,7 @@ public class MoveTowardsLocationAction extends Action<WithMovingControl> {
     protected boolean start(WithMovingControl unit) {
         unit.setAnimation("walk", LoopMode.Loop);
 
-        path = pathfindingService.buildPath(unit.getLocation(),
+        path = gameState.pathfindingService.buildPath(unit.getLocation(),
                 new Rectangle2f(rectangleStart, rectangleEnd));
 
         return true;

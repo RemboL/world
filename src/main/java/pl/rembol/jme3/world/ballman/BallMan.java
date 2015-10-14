@@ -38,13 +38,9 @@ import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public class BallMan implements Selectable, WithOwner, Destructable,
         WithMovingControl, ApplicationContextAware {
-
-    @Autowired
-    private Terrain terrain;
 
     @Autowired
     private UnitRegistry unitRegistry;
@@ -80,7 +76,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     public void init(Vector2f position) {
-        init(terrain.getGroundPosition(position));
+        init(gameState.terrain.getGroundPosition(position));
     }
 
     public void init(Vector3f position) {

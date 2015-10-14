@@ -25,7 +25,6 @@ import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public abstract class Building implements Selectable, WithOwner, Destructable,
         Solid, ApplicationContextAware {
@@ -39,9 +38,6 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     private int hp;
     protected ApplicationContext applicationContext;
     private BuildingStatus status;
-    @Autowired
-    private Terrain terrain;
-
     @Autowired
     protected GameState gameState;
 
@@ -64,7 +60,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     }
 
     public Building init(Vector2f position, boolean startUnderGround) {
-        return init(terrain.getGroundPosition(position), startUnderGround);
+        return init(gameState.terrain.getGroundPosition(position), startUnderGround);
     }
 
     public Building init(Vector3f position, boolean startUnderGround) {
@@ -128,7 +124,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable,
     @Override
     public Node getStatusDetails() {
         if (status == null) {
-            status = new BuildingStatus(this, applicationContext);
+            status = new BuildingStatus(this, gameState);
         }
 
         status.update();

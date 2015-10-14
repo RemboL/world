@@ -5,21 +5,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import com.jme3.animation.LoopMode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.UnitRegistry;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.building.ConstructionSite;
-import pl.rembol.jme3.world.hud.ConsoleLog;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.smallobject.tools.Hammer;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public class BuildAction extends Action<BallMan> {
 
@@ -34,9 +33,13 @@ public class BuildAction extends Action<BallMan> {
     private boolean hit = false;
 
     private float minX;
+
     private float maxX;
+
     private float minY;
+
     private float maxY;
+
     private Random random = new Random();
 
     private boolean isFinished = false;
@@ -45,16 +48,21 @@ public class BuildAction extends Action<BallMan> {
 
     private Vector2f position;
 
-    @Autowired
-    private Terrain terrain;
-
-    @Autowired
-    private ConsoleLog consoleLog;
-
-    @Autowired
-    private UnitRegistry gameState;
+    private UnitRegistry unitRegistry;
 
     private BuildingFactory factory;
+
+    private ApplicationContext applicationContext;
+
+    public BuildAction(GameState gameState, ApplicationContext applicationContext, Vector2f position,
+                       BuildingFactory factory) {
+        super(gameState);
+        this.unitRegistry = applicationContext.getBean(UnitRegistry.class);
+        this.applicationContext = applicationContext;
+        this.position = position;
+        this.factory = factory;
+
+    }
 
     @Override
     public boolean isFinished(BallMan ballMan) {
@@ -63,24 +71,15 @@ public class BuildAction extends Action<BallMan> {
 
     @Override
     public void finish() {
-        for (DustParticleEmitter emitter : particleEmitters) {
-            emitter.stopEmitting();
-        }
+        particleEmitters.forEach(DustParticleEmitter::stopEmitting);
 
-    }
-
-    public BuildAction init(Vector2f position, BuildingFactory factory) {
-        this.position = position;
-        this.factory = factory;
-
-        return this;
     }
 
     @Override
     protected boolean start(BallMan ballMan) {
-        if (!gameState.isSpaceFree(terrain.getGroundPosition(position),
+        if (!unitRegistry.isSpaceFree(gameState.terrain.getGroundPosition(position),
                 factory.width())) {
-            consoleLog.addLine("Can't build here, something's in the way");
+            gameState.consoleLog.addLine("Can't build here, something's in the way");
             isFinished = true;
             return true;
         }
@@ -123,8 +122,8 @@ public class BuildAction extends Action<BallMan> {
     }
 
     private DustParticleEmitter createParticleEmitter() {
-        return new DustParticleEmitter(applicationContext)
-                .doSetLocalTranslation(new Vector3f(position.x, terrain
+        return new DustParticleEmitter(gameState)
+                .doSetLocalTranslation(new Vector3f(position.x, gameState.terrain
                         .getTerrain().getHeight(position), position.y));
     }
 
@@ -171,7 +170,7 @@ public class BuildAction extends Action<BallMan> {
         float y = minY + (maxY - minY) * random.nextFloat();
 
         emitter.setLocalTranslation(x,
-                terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
+                gameState.terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
     }
 
 }

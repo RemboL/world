@@ -1,20 +1,18 @@
 package pl.rembol.jme3.world.smallobject;
 
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 
 public abstract class SmallObject {
 
     protected RigidBodyControl control;
     protected Node node;
-    protected ApplicationContext applicationContext;
+    protected GameState gameState;
 
-    public SmallObject init(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-        return this;
+    public SmallObject(GameState gameState) {
+        this.gameState = gameState;
     }
 
     protected Vector3f getHandlePosition() {
@@ -32,7 +30,7 @@ public abstract class SmallObject {
     public void attach(Node parent) {
         node.removeControl(control);
         node.setLocalTranslation(getHandlePosition());
-        applicationContext.getBean(BulletAppState.class).getPhysicsSpace()
+        gameState.bulletAppState.getPhysicsSpace()
                 .remove(control);
 
         parent.attachChild(node);

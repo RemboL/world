@@ -1,12 +1,16 @@
 package pl.rembol.jme3.world.pathfinding.algorithms;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.function.Function;
+
 import com.jme3.math.Vector2f;
-import org.springframework.context.ApplicationContext;
 import pl.rembol.jme3.world.pathfinding.Vector2i;
 import pl.rembol.jme3.world.pathfinding.paths.Vector2iPath;
-
-import java.util.*;
-import java.util.function.Function;
 
 public class DijkstraAlgorithm {
 
@@ -34,7 +38,7 @@ public class DijkstraAlgorithm {
 			return point.distance(rest.point) + rest.length();
 		}
 
-		Vector2iPath toVector2iPath(ApplicationContext applicationContext) {
+		Vector2iPath toVector2iPath() {
 			return new Vector2iPath(toVector2iList());
 		}
 
@@ -47,8 +51,8 @@ public class DijkstraAlgorithm {
 	}
 
 	public static Map<Vector2i, Vector2iPath> buildUnitPath(Vector2f start,
-			List<Vector2i> targets, ApplicationContext applicationContext,
-			Function<Vector2i, Boolean> isBlockFreeFunction) {
+															List<Vector2i> targets,
+															Function<Vector2i, Boolean> isBlockFreeFunction) {
 
 		Comparator<PointerPath> comparator = (path1, path2) -> Float.compare(
 				path1.length(), path2.length());
@@ -81,7 +85,7 @@ public class DijkstraAlgorithm {
 		for (Vector2i target : targets) {
 			if (pathMap.containsKey(target)) {
 				resultMap.put(target,
-						pathMap.get(target).toVector2iPath(applicationContext));
+						pathMap.get(target).toVector2iPath());
 			}
 		}
 

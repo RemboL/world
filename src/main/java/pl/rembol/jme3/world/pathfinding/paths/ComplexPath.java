@@ -1,11 +1,10 @@
 package pl.rembol.jme3.world.pathfinding.paths;
 
-import org.springframework.context.ApplicationContext;
-import pl.rembol.jme3.world.pathfinding.ClusterBorder;
-import pl.rembol.jme3.world.pathfinding.Vector2i;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import pl.rembol.jme3.world.pathfinding.ClusterBorder;
+import pl.rembol.jme3.world.pathfinding.Vector2i;
 
 public class ComplexPath implements IPath2i {
 
@@ -14,14 +13,6 @@ public class ComplexPath implements IPath2i {
 	private float length;
 
 	private ComplexPath rest = null;
-
-	public ComplexPath(Vector2i point) {
-		init(point);
-	}
-
-	public ComplexPath(ClusterBorder border) {
-		init(border);
-	}
 
 	public ComplexPath(Vector2i point, ComplexPath rest) {
 		if (rest == null) {
@@ -104,16 +95,8 @@ public class ComplexPath implements IPath2i {
 		return border;
 	}
 
-	public VectorPath toVectorPath(ApplicationContext applicationContext) {
-		return new VectorPath(toVector2iPath(), applicationContext);
-	}
-
-	public Vector2iPath toVector2iPath() {
-		return new Vector2iPath(toVector2iList());
-	}
-
 	public List<Vector2i> toVector2iList() {
-		List<Vector2i> vectorList = rest == null ? new ArrayList<Vector2i>()
+		List<Vector2i> vectorList = rest == null ? new ArrayList<>()
 				: rest.toVector2iList();
 		vectorList.add(point);
 

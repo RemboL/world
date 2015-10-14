@@ -1,9 +1,11 @@
 package pl.rembol.jme3.world.rabbit;
 
+import org.springframework.context.ApplicationContext;
+
 import com.jme3.animation.LoopMode;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.WaitAction;
 import pl.rembol.jme3.world.controls.ActionQueueControl;
@@ -21,22 +23,17 @@ public class RabbitControl extends ActionQueueControl<Rabbit> {
     protected void onEmptyQueue() {
         unit.setAnimation("stand", LoopMode.DontLoop);
 
-        addAction(applicationContext
-                .getAutowireCapableBeanFactory()
-                .createBean(MoveTowardsLocationAction.class)
-                .init(unit, new Vector2f(unit.getLocation().x
+        addAction(new MoveTowardsLocationAction(applicationContext.getBean(GameState.class), unit,
+                new Vector2f(unit.getLocation().x
                         + FastMath.nextRandomInt(-10, 10), unit.getLocation().z
                         + FastMath.nextRandomInt(-10, 10)), 2));
-        addAction(applicationContext.getAutowireCapableBeanFactory()
-                .createBean(WaitAction.class)
-                .init(FastMath.nextRandomInt(5, 10)));
+        addAction(new WaitAction(applicationContext.getBean(GameState.class), FastMath.nextRandomInt(5, 10)));
     }
 
     @Override
     protected void controlUpdate(float tpf) {
         super.controlUpdate(tpf);
 
-        
     }
 
     @Override

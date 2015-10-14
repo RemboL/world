@@ -1,22 +1,22 @@
 package pl.rembol.jme3.world.player;
 
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import org.springframework.beans.factory.annotation.Autowired;
-import pl.rembol.jme3.world.UnitRegistry;
-import pl.rembol.jme3.world.building.toolshop.Toolshop;
-import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.world.hud.ConsoleLog;
-import pl.rembol.jme3.world.hud.ResourcesBar;
-import pl.rembol.jme3.world.resources.Cost;
-import pl.rembol.jme3.world.resources.ResourceType;
+import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.PostConstruct;
 
-import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.UnitRegistry;
+import pl.rembol.jme3.world.building.toolshop.Toolshop;
+import pl.rembol.jme3.world.building.warehouse.Warehouse;
+import pl.rembol.jme3.world.resources.Cost;
+import pl.rembol.jme3.world.resources.ResourceType;
 
 public class Player {
 
@@ -35,13 +35,10 @@ public class Player {
     private boolean active = false;
 
     @Autowired
-    private ResourcesBar resourcesBar;
+    private GameState gameState;
 
     @Autowired
-    private ConsoleLog consoleLog;
-
-    @Autowired
-    private UnitRegistry gameState;
+    private UnitRegistry unitRegistry;
 
     public Player() {
         for (ResourceType type : ResourceType.values()) {
@@ -90,14 +87,14 @@ public class Player {
     }
 
     public void updateHousingLimit() {
-        resourcesHousingLimit = gameState.getHousesByOwner(this).size()
+        resourcesHousingLimit = unitRegistry.getHousesByOwner(this).size()
                 * HOUSING_PER_HOUSE;
 
         updateResources();
     }
 
     public void updateHousing() {
-        resources.put(HOUSING, gameState.countHousing(this));
+        resources.put(HOUSING, unitRegistry.countHousing(this));
 
         updateResources();
     }
@@ -107,10 +104,10 @@ public class Player {
             if (entry.getValue() > 0
                     && resources.get(entry.getKey()) < entry.getValue()) {
                 if (active) {
-                    consoleLog.addLine("Not enough "
+                    gameState.consoleLog.addLine("Not enough "
                             + entry.getKey().resourceName() + " ("
                             + entry.getValue() + " required)");
-                    resourcesBar.blinkResource(entry.getKey());
+                    gameState.resourcesBar.blinkResource(entry.getKey());
                 }
                 return false;
             }
@@ -144,13 +141,13 @@ public class Player {
 
     private void updateResources() {
         if (active) {
-            resourcesBar.updateResources(resources, resourcesHousingLimit);
+            gameState.resourcesBar.updateResources(resources, resourcesHousingLimit);
         }
     }
 
     public Optional<Warehouse> getClosestWarehouse(final Vector3f location) {
 
-        return gameState
+        return unitRegistry
                 .getWarehousesByOwner(this)
                 .stream()
                 .sorted((first, second) -> Float.valueOf(
@@ -162,7 +159,7 @@ public class Player {
 
     public Optional<Toolshop> getClosestToolshop(final Vector3f location) {
 
-        return gameState
+        return unitRegistry
                 .getToolshopsByOwner(this)
                 .stream()
                 .sorted((first, second) -> Float.valueOf(

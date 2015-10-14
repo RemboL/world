@@ -1,14 +1,15 @@
 package pl.rembol.jme3.world.resources.deposits;
 
+import java.util.Optional;
+
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.resources.units.StoneBrick;
 import pl.rembol.jme3.world.save.StoneDepositDTO;
 import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.smallobject.tools.PickAxe;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-
-import java.util.Optional;
 
 public class StoneDeposit extends ResourceDeposit {
 
@@ -49,7 +50,7 @@ public class StoneDeposit extends ResourceDeposit {
 
     @Override
     public ResourceUnit produceResource() {
-        return (ResourceUnit) new StoneBrick().init(applicationContext,
+        return new StoneBrick(applicationContext.getBean(GameState.class),
                 getLocation(), 0);
     }
 

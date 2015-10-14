@@ -1,44 +1,44 @@
 package pl.rembol.jme3.world.controls;
 
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import org.springframework.context.ApplicationContext;
+import pl.rembol.jme3.world.GameState;
 
 /**
  * Control that counts down time to live of given control. When time to live
  * reaches zero, the object is detached from parent.
- * 
+ *
  * @author RemboL
  */
 public class TimeToLiveControl extends AbstractControl {
 
-	private float timeToLive;
-	private ApplicationContext applicationContext;
+    private GameState gameState;
 
-	public TimeToLiveControl(ApplicationContext applicationContext,
-			float timeToLiveInSeconds) {
-		this.applicationContext = applicationContext;
-		this.timeToLive = timeToLiveInSeconds;
-	}
+    private float timeToLive;
 
-	@Override
-	protected void controlRender(RenderManager rm, ViewPort vp) {
-	}
+    public TimeToLiveControl(GameState gameState,
+                             float timeToLiveInSeconds) {
+        this.gameState = gameState;
+        this.timeToLive = timeToLiveInSeconds;
+    }
 
-	@Override
-	protected void controlUpdate(float tpf) {
-		timeToLive -= tpf;
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
+    }
 
-		if (timeToLive < 0) {
-			spatial.getParent().detachChild(spatial);
-			if (spatial.getControl(PhysicsControl.class) != null) {
-				applicationContext.getBean(BulletAppState.class)
-						.getPhysicsSpace().remove(spatial);
-			}
-		}
-	}
+    @Override
+    protected void controlUpdate(float tpf) {
+        timeToLive -= tpf;
+
+        if (timeToLive < 0) {
+            spatial.getParent().detachChild(spatial);
+            if (spatial.getControl(PhysicsControl.class) != null) {
+                gameState.bulletAppState
+                        .getPhysicsSpace().remove(spatial);
+            }
+        }
+    }
 
 }

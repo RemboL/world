@@ -5,16 +5,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jme3.animation.LoopMode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.smallobject.tools.Shovel;
-import pl.rembol.jme3.world.terrain.Terrain;
 
 public class SmoothenTerrainAction extends Action<BallMan> {
 
@@ -38,15 +36,11 @@ public class SmoothenTerrainAction extends Action<BallMan> {
     private float maxY;
     private Random random = new Random();
 
-    @Autowired
-    private Terrain terrain;
-
-    public SmoothenTerrainAction init(Vector2f start, Vector2f end, int border) {
+    public SmoothenTerrainAction(GameState gameState, Vector2f start, Vector2f end, int border) {
+        super(gameState);
         this.start = start;
         this.end = end;
         this.border = border;
-
-        return this;
     }
 
     @Override
@@ -72,8 +66,8 @@ public class SmoothenTerrainAction extends Action<BallMan> {
     }
 
     private DustParticleEmitter createParticleEmiter() {
-        return new DustParticleEmitter(applicationContext)
-                .doSetLocalTranslation(new Vector3f(start.x, terrain
+        return new DustParticleEmitter(gameState)
+                .doSetLocalTranslation(new Vector3f(start.x, gameState.terrain
                         .getTerrain().getHeight(start), start.y));
     }
 
@@ -83,7 +77,7 @@ public class SmoothenTerrainAction extends Action<BallMan> {
         float y = minY + (maxY - minY) * random.nextFloat();
 
         emitter.setLocalTranslation(x,
-                terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
+                gameState.terrain.getTerrain().getHeight(new Vector2f(x, y)), y);
     }
 
     @Override
@@ -97,14 +91,14 @@ public class SmoothenTerrainAction extends Action<BallMan> {
         }
         if (animationHit()) {
             hit = true;
-            terrain.smoothenTerrain(start, end, border, .3f);
+            gameState.terrain.smoothenTerrain(start, end, border, .3f);
         }
 
     }
 
     @Override
     public boolean isFinished(BallMan ballMan) {
-        return terrain.isTerrainSmooth(start, end);
+        return gameState.terrain.isTerrainSmooth(start, end);
     }
 
     @Override
