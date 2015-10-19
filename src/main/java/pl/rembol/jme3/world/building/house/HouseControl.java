@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.building.house;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HouseControl extends AbstractControl {
 
@@ -53,7 +53,7 @@ public class HouseControl extends AbstractControl {
     }
 
     public void addToQueue() {
-        queue.add(new RecruitQueuedAction(gameState));
+        queue.add(new RecruitQueuedAction(gameState, this));
 
         house.getOwner().updateHousing();
     }
@@ -66,4 +66,12 @@ public class HouseControl extends AbstractControl {
         return queue;
     }
 
+    public void removeFromQueue(RecruitQueuedAction recruitQueuedAction) {
+        queue.remove(recruitQueuedAction);
+        gameState.selectionManager.updateStatusIfSingleSelected(house);
+    }
+    
+    House getHouse() {
+        return house;
+    }
 }

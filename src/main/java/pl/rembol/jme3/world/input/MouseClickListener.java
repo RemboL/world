@@ -1,5 +1,10 @@
 package pl.rembol.jme3.world.input;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -15,6 +20,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.hud.ActionButton;
+import pl.rembol.jme3.world.hud.Clickable;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.selection.SelectionIcon;
@@ -76,21 +82,23 @@ public class MouseClickListener implements ActionListener, AnalogListener {
             if (!isDragged) {
                 if (!checkActionButtons(name)) {
                     if (!checkSelectionIcons(name)) {
+                        if (name.equals(InputStateManager.LEFT_CLICK) && !checkClickableButtons(name)) {
 
-                        Collidable collided = getClosestCollidingObject();
+                            Collidable collided = getClosestCollidingObject();
 
-                        if (collidedWithNode(collided)) {
-                            WithNode withNode = gameState.unitRegistry
-                                    .getSelectable(Node.class.cast(collided));
-                            gameState.inputStateManager.click(name, withNode);
-                        } else {
-                            Vector3f collisionWithTerrain = getCollisionWithTerrain();
-                            if (collisionWithTerrain != null) {
-                                gameState.inputStateManager.click(name, new Vector2f(
-                                        collisionWithTerrain.x,
-                                        collisionWithTerrain.z));
+                            if (collidedWithNode(collided)) {
+                                WithNode withNode = gameState.unitRegistry
+                                        .getSelectable(Node.class.cast(collided));
+                                gameState.inputStateManager.click(name, withNode);
+                            } else {
+                                Vector3f collisionWithTerrain = getCollisionWithTerrain();
+                                if (collisionWithTerrain != null) {
+                                    gameState.inputStateManager.click(name, new Vector2f(
+                                            collisionWithTerrain.x,
+                                            collisionWithTerrain.z));
+                                }
+
                             }
-
                         }
                     }
                 }
@@ -103,6 +111,34 @@ public class MouseClickListener implements ActionListener, AnalogListener {
             dragStartPosition = null;
             isDragged = false;
         }
+
+    }
+    
+    private static Stream<Spatial> getDescendants(Spatial spatial) {
+        if (spatial == null) {
+            return new ArrayList<Spatial>().stream();
+        }
+        
+        if (!(spatial instanceof Node)) {
+            return Collections.singletonList(spatial).stream();
+        }
+        
+        Node node = (Node) spatial;
+        return node.getChildren().stream().flatMap(MouseClickListener::getDescendants);
+    }
+
+    private boolean checkClickableButtons(String name) {
+        Optional<Clickable> clickedButton = getDescendants(gameState.guiNode)
+                .filter(Clickable.class::isInstance)
+                .map(Clickable.class::cast)
+                .filter(clickable -> clickable.isClicked(gameState.inputManager.getCursorPosition()))
+                .findFirst();
+
+        if (clickedButton.isPresent()) {
+            clickedButton.get().onClick();
+            return true;
+        }
+        return false;
 
     }
 

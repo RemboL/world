@@ -8,11 +8,13 @@ import pl.rembol.jme3.world.ballman.BallMan;
 
 public class RecruitQueuedAction {
 
-    private final Picture actionIcon;
+    private final RecruitQueueIcon actionIcon;
 
     private static final float TIME = 10;
 
     private final GameState gameState;
+
+    private HouseControl houseControl;
 
     private float progress = 0;
 
@@ -24,12 +26,10 @@ public class RecruitQueuedAction {
         return progress >= TIME;
     }
 
-    public RecruitQueuedAction(GameState gameState) {
+    public RecruitQueuedAction(GameState gameState, HouseControl houseControl) {
         this.gameState = gameState;
-        actionIcon = new Picture("recruit action icon");
-        actionIcon.setImage(gameState.assetManager, "interface/icons/ballman.png", true);
-        actionIcon.setWidth(32);
-        actionIcon.setHeight(32);
+        this.houseControl = houseControl;
+        actionIcon = new RecruitQueueIcon(gameState, this);
     }
 
     public void execute(House house) {
@@ -49,5 +49,13 @@ public class RecruitQueuedAction {
 
     public Picture getActionIcon() {
         return actionIcon;
+    }
+
+    public void cancel() {
+        houseControl.removeFromQueue(this);
+    }
+    
+    HouseControl getControl() {
+        return houseControl;
     }
 }
