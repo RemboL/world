@@ -82,7 +82,7 @@ public class MouseClickListener implements ActionListener, AnalogListener {
             if (!isDragged) {
                 if (!checkActionButtons(name)) {
                     if (!checkSelectionIcons(name)) {
-                        if (name.equals(InputStateManager.LEFT_CLICK) && !checkClickableButtons(name)) {
+                        if (!(name.equals(InputStateManager.LEFT_CLICK) && checkClickableButtons(name))) {
 
                             Collidable collided = getClosestCollidingObject();
 

@@ -36,11 +36,9 @@ public class RecruitQueuedAction {
         Vector2f location = new Vector2f(house.getLocation().x,
                 house.getLocation().z);
 
-        BallMan ballMan = new BallMan(gameState);
-        ballMan.init(location.add(new Vector2f(
+        new BallMan(gameState, location.add(new Vector2f(
                 FastMath.nextRandomFloat() * 2 - 11,
-                FastMath.nextRandomFloat() * 2 - 1)));
-        ballMan.setOwner(house.getOwner());
+                FastMath.nextRandomFloat() * 2 - 1)), house.getOwner().getName());
     }
 
     public float progress() {
@@ -54,7 +52,7 @@ public class RecruitQueuedAction {
     public void cancel() {
         houseControl.removeFromQueue(this);
     }
-    
+
     HouseControl getControl() {
         return houseControl;
     }

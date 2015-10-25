@@ -53,15 +53,12 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     private Inventory inventory = new Inventory();
 
-    public BallMan(GameState gameState) {
+    public BallMan(GameState gameState, Vector2f position, String player) {
+        this(gameState, gameState.terrain.getGroundPosition(position), player);
+    }
+
+    public BallMan(GameState gameState, Vector3f position, String player) {
         this.gameState = gameState;
-    }
-
-    public void init(Vector2f position) {
-        init(gameState.terrain.getGroundPosition(position));
-    }
-
-    public void init(Vector3f position) {
         initNode(gameState.rootNode);
         icon = new SelectionIcon(gameState, this, "ballman");
         node.setLocalTranslation(position);
@@ -81,6 +78,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
                 0f, new Random().nextFloat() - .5f).normalize());
 
         gameState.unitRegistry.register(this);
+        owner = gameState.playerService.getPlayer(player);
     }
 
     @Override
@@ -156,8 +154,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         }
 
     }
-
-    ;
 
     public void wield(Optional<? extends SmallObject> item, Hand hand) {
         if (wielded.get(hand) != null) {
@@ -243,15 +239,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public UnitDTO save(String key) {
         return new BallManDTO(key, this);
-    }
-
-    @Override
-    public void load(UnitDTO unit) {
-        if (BallManDTO.class.isInstance(unit)) {
-            init(new Vector2f(unit.getPosition().x, unit.getPosition().z));
-            this.setOwner(gameState.playerService.getPlayer(BallManDTO.class.cast(unit)
-                    .getPlayer()));
-        }
     }
 
     public Inventory inventory() {

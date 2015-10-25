@@ -21,7 +21,7 @@ public class BallManDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        return new BallMan(gameState);
+        return new BallMan(gameState, getPosition(), player);
     }
 
 }
