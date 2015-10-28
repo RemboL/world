@@ -1,5 +1,9 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.Solid;
@@ -10,13 +14,9 @@ import pl.rembol.jme3.world.interfaces.WithNode;
 import pl.rembol.jme3.world.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 public abstract class Action<T extends WithNode> {
 
-    private boolean isStarted = false;
+    protected boolean isStarted = false;
 
     private boolean isCancelled = false;
 

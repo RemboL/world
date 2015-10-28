@@ -7,6 +7,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.ballman.BallMan;
 
 public class HouseControl extends AbstractControl {
 
@@ -14,6 +15,7 @@ public class HouseControl extends AbstractControl {
     private List<RecruitQueuedAction> queue = new ArrayList<>();
     private GameState gameState;
     private House house;
+    private List<BallMan> ballMenInside = new ArrayList<>();
 
     public HouseControl(GameState gameState, House house) {
         this.gameState = gameState;
@@ -73,5 +75,13 @@ public class HouseControl extends AbstractControl {
     
     House getHouse() {
         return house;
+    }
+    
+    public void enter(BallMan ballMan) {
+        ballMenInside.add(ballMan);
+    }
+    
+    public void exit(BallMan ballMan) {
+        ballMenInside.remove(ballMan);
     }
 }

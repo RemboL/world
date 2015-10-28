@@ -1,13 +1,13 @@
 package pl.rembol.jme3.world.controls;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.ballman.action.Action;
 import pl.rembol.jme3.world.interfaces.WithNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ActionQueueControl<T extends WithNode> extends
         AbstractControl {
@@ -35,7 +35,6 @@ public abstract class ActionQueueControl<T extends WithNode> extends
                 action.finish();
                 actionQueue.remove(action);
                 onFinishedAction();
-            } else {
             }
         } else {
             onEmptyQueue();

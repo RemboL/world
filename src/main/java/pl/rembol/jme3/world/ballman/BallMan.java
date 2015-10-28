@@ -1,10 +1,19 @@
 package pl.rembol.jme3.world.ballman;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.*;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
@@ -23,11 +32,6 @@ import pl.rembol.jme3.world.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
 public class BallMan implements Selectable, WithOwner, Destructable,
         WithMovingControl {
 
@@ -38,6 +42,8 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     private SelectionIcon icon;
 
     private Node selectionNode;
+
+    private Node controlNode;
 
     private BetterCharacterControl control;
 
@@ -67,9 +73,12 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
         control = new BetterCharacterControl(.6f, 10f, 1);
 
-        node.addControl(new BallManControl(gameState, this));
-        node.addControl(new MovingControl(this));
-        node.addControl(new HungerControl(gameState, this));
+        controlNode = new Node("control node");
+        node.attachChild(controlNode);
+
+        controlNode.addControl(new BallManControl(gameState, this));
+        controlNode.addControl(new MovingControl(this));
+        controlNode.addControl(new HungerControl(gameState, this));
 
         gameState.bulletAppState.getPhysicsSpace().add(control);
 
@@ -100,9 +109,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
         gameState.unitRegistry.unregister(this);
         gameState.rootNode.detachChild(node);
-        node.removeControl(BallManControl.class);
-        node.removeControl(MovingControl.class);
-        node.removeControl(HungerControl.class);
+        node.detachChild(controlNode);
         gameState.bulletAppState.getPhysicsSpace().remove(control);
     }
 
@@ -176,13 +183,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
         return wielded.get(hand);
     }
 
-    public void drop(Hand hand) {
-        if (wielded.get(hand) != null) {
-            wielded.get(hand).detach();
-            wielded.remove(hand);
-        }
-    }
-
     public void dropAndDestroy(Hand hand) {
         if (wielded.get(hand) != null) {
             wielded.get(hand).detach();
@@ -233,7 +233,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[]{"skin"};
+        return new String[]{ "skin" };
     }
 
     @Override
@@ -251,7 +251,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     public BallManControl control() {
-        return node.getControl(BallManControl.class);
+        return controlNode.getControl(BallManControl.class);
     }
 
     @Override
@@ -260,7 +260,11 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     public HungerControl hunger() {
-        return node.getControl(HungerControl.class);
+        return controlNode.getControl(HungerControl.class);
     }
 
+    @Override
+    public MovingControl movingControl() {
+        return controlNode.getControl(MovingControl.class);
+    }
 }

@@ -4,9 +4,11 @@ import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
+import pl.rembol.jme3.world.ballman.action.EnterHouseAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
+import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.controls.ActionQueueControl;
 import pl.rembol.jme3.world.interfaces.WithDefaultAction;
 import pl.rembol.jme3.world.interfaces.WithNode;
@@ -33,7 +35,9 @@ public class BallManControl extends ActionQueueControl<BallMan> implements
                 .equals(unit.getOwner())
                 && Destructable.class.isInstance(target)) {
             setAction(new AttackAction(gameState, Destructable.class.cast(target)));
-        } else {
+        } else if (target instanceof House && House.class.cast(target).getOwner().equals(unit.getOwner())) {
+            setAction(new EnterHouseAction(gameState, (House) target));
+        }else {
             setAction(new MoveTowardsTargetAction(gameState, unit, target, 5f));
         }
     }

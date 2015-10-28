@@ -1,5 +1,8 @@
 package pl.rembol.jme3.world.building;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector2f;
@@ -15,9 +18,6 @@ import pl.rembol.jme3.world.selection.Destructable;
 import pl.rembol.jme3.world.selection.Selectable;
 import pl.rembol.jme3.world.selection.SelectionIcon;
 import pl.rembol.jme3.world.selection.SelectionNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Building implements Selectable, WithOwner, Destructable, Solid {
 
@@ -170,7 +170,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
         return node;
     }
 
-    private void destroy() {
+    protected void destroy() {
         gameState.unitRegistry.unregister(this);
         gameState.bulletAppState.getPhysicsSpace().remove(control);
 
