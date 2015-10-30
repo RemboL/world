@@ -19,6 +19,10 @@ public class HouseStatus extends BuildingStatus {
     private static final int FIRST_ACTION_SIZE = 40;
 
     private static final int ACTION_SIZE = 32;
+    
+    private static final int INSIDE_GRID_WIDTH = 2;
+
+    private static final int INSIDE_GRID_HEIGHT = 2;
 
     private House house;
 
@@ -38,25 +42,14 @@ public class HouseStatus extends BuildingStatus {
 
         unitsInsideNode = new ArrayList<>();
 
-        Node unitInsideNode1 = new Node("unit inside node 1");
-        attachChild(unitInsideNode1);
-        unitsInsideNode.add(unitInsideNode1);
-        unitInsideNode1.setLocalTranslation(260, 60, 2);
-
-        Node unitInsideNode2 = new Node("unit inside node 2");
-        attachChild(unitInsideNode2);
-        unitInsideNode2.setLocalTranslation(292, 60, 2);
-        unitsInsideNode.add(unitInsideNode2);
-
-        Node unitInsideNode3 = new Node("unit inside node 3");
-        attachChild(unitInsideNode3);
-        unitInsideNode3.setLocalTranslation(260, 28, 2);
-        unitsInsideNode.add(unitInsideNode3);
-
-        Node unitInsideNode4 = new Node("unit inside node 4");
-        attachChild(unitInsideNode4);
-        unitInsideNode4.setLocalTranslation(292, 28, 2);
-        unitsInsideNode.add(unitInsideNode4);
+        for (int i = 0; i < INSIDE_GRID_HEIGHT; ++i) {
+            for (int j = 0; j < INSIDE_GRID_WIDTH; ++j) {
+                Node unitInsideNode = new Node("unit inside node");
+                attachChild(unitInsideNode);
+                unitsInsideNode.add(unitInsideNode);
+                unitInsideNode.setLocalTranslation(260 + j * ACTION_SIZE, 60 - i * ACTION_SIZE, 2);
+            }
+        }
 
         progressRectangle = new Geometry("progress rectangle", new Quad(1f, 1f));
         Material greenMaterial = new Material(gameState.assetManager,
@@ -76,34 +69,40 @@ public class HouseStatus extends BuildingStatus {
         recruitmentQueueNode.detachAllChildren();
 
         if (house.control() != null && house.control().isRecruiting()) {
-            List<RecruitQueuedAction> queue = house.control().getQueue();
-
-            int offset = 0;
-            for (RecruitQueuedAction queueAction : queue) {
-                Picture icon = queueAction.getActionIcon();
-                recruitmentQueueNode.attachChild(icon);
-                icon.setLocalTranslation(offset, 0, 0);
-                if (queueAction == queue.get(0)) {
-                    recruitmentQueueNode.attachChild(progressRectangle);
-                    progressRectangle.setLocalScale(
-                            new Vector3f(FIRST_ACTION_SIZE * queueAction.progress(), FIRST_ACTION_SIZE, 1));
-                    icon.setLocalScale(new Vector3f(FIRST_ACTION_SIZE, FIRST_ACTION_SIZE, 1));
-                    offset += 48;
-                } else {
-                    offset += ACTION_SIZE;
-                }
-            }
+            updateRecruitmentStatus();
         }
 
-        for (Node unitInsideNode : unitsInsideNode) {
-            unitInsideNode.detachAllChildren();
-        }
+        updateInsideStatus();
+
+    }
+
+    private void updateInsideStatus() {
+        unitsInsideNode.forEach(Node::detachAllChildren);
 
         for (int i = 0; i < house.unitsInside().size(); ++i) {
             unitsInsideNode.get(i).attachChild(house.unitsInside().get(i).getIcon());
             house.unitsInside().get(i).getIcon().setLocalTranslation(0, 0, 0);
         }
+    }
 
+    private void updateRecruitmentStatus() {
+        List<RecruitQueuedAction> queue = house.control().getQueue();
+
+        int offset = 0;
+        for (RecruitQueuedAction queueAction : queue) {
+            Picture icon = queueAction.getActionIcon();
+            recruitmentQueueNode.attachChild(icon);
+            icon.setLocalTranslation(offset, 0, 0);
+            if (queueAction == queue.get(0)) {
+                recruitmentQueueNode.attachChild(progressRectangle);
+                progressRectangle.setLocalScale(
+                        new Vector3f(FIRST_ACTION_SIZE * queueAction.progress(), FIRST_ACTION_SIZE, 1));
+                icon.setLocalScale(new Vector3f(FIRST_ACTION_SIZE, FIRST_ACTION_SIZE, 1));
+                offset += 48;
+            } else {
+                offset += ACTION_SIZE;
+            }
+        }
     }
 
 }

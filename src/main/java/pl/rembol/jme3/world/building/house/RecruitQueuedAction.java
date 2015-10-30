@@ -51,6 +51,7 @@ public class RecruitQueuedAction {
 
     public void cancel() {
         houseControl.removeFromQueue(this);
+        houseControl.getHouse().getOwner().updateHousing();
     }
 
     HouseControl getControl() {

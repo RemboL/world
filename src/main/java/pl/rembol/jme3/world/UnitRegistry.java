@@ -1,5 +1,11 @@
 package pl.rembol.jme3.world;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.jme3.collision.Collidable;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -15,14 +21,9 @@ import pl.rembol.jme3.world.save.UnitDTO;
 import pl.rembol.jme3.world.save.UnitsDTO;
 import pl.rembol.jme3.world.selection.Selectable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class UnitRegistry {
 
-    private static final String UNIT_DATA_KEY = "unit_data_key";
+    public static final String UNIT_DATA_KEY = "unit_data_key";
 
     private GameState gameState;
 
@@ -207,5 +208,21 @@ public class UnitRegistry {
 
         gameState.playerService.players().forEach(Player::updateHousingLimit);
         gameState.playerService.players().forEach(Player::updateHousing);
+    }
+
+    public void registerUserData(WithNode target, String dataKey, WithNode object) {
+        units.entrySet().stream()
+                .filter(entry -> entry.getValue() == object)
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .ifPresent(objectKey -> target.getNode().setUserData(dataKey, objectKey));
+    }
+
+    public Optional<WithNode> getUserData(WithNode target, String dataKey) {
+        return Optional.ofNullable(units.get(target.getNode().<String>getUserData(dataKey)));
+    }
+
+    public void clearUserData(WithNode withNode, String dataKey) {
+        withNode.getNode().setUserData(dataKey, null);
     }
 }

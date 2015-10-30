@@ -18,6 +18,7 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
+import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.controls.MovingControl;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.particles.SparkParticleEmitter;
@@ -266,5 +267,16 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public MovingControl movingControl() {
         return controlNode.getControl(MovingControl.class);
+    }
+
+    public Optional<House> isInside() {
+        if (node.getParent() == gameState.rootNode) {
+            return Optional.empty();
+        }
+
+        return gameState.unitRegistry
+                .getUserData(this, House.INSIDE_DATA_KEY)
+                .filter(House.class::isInstance)
+                .map(House.class::cast);
     }
 }

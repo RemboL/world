@@ -14,6 +14,8 @@ import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.save.UnitDTO;
 
 public class House extends Building {
+    
+    public static final String INSIDE_DATA_KEY = "inside_data_key";
 
     private HouseStatus status;
     
@@ -107,6 +109,7 @@ public class House extends Building {
         if (unitsInside.size() < 4) {
             unitsInside.add(ballMan);
             gameState.rootNode.detachChild(ballMan.getNode());
+            gameState.unitRegistry.registerUserData(ballMan, INSIDE_DATA_KEY, this);
             gameState.selectionManager.deselect(ballMan);
             gameState.selectionManager.updateStatusIfSingleSelected(this);
             
@@ -119,6 +122,7 @@ public class House extends Building {
     
     public void exit(BallMan ballMan) {
         unitsInside.remove(ballMan);
+        gameState.unitRegistry.clearUserData(ballMan, INSIDE_DATA_KEY);
         gameState.rootNode.attachChild(ballMan.getNode());
         gameState.selectionManager.updateStatusIfSingleSelected(this);
     }
@@ -135,9 +139,7 @@ public class House extends Building {
     @Override
     protected void destroy() {
         super.destroy();
-        
-        for(BallMan ballMan : unitsInside) {
-            exit(ballMan);
-        }
+
+        unitsInside.forEach(this::exit);
     }
 }

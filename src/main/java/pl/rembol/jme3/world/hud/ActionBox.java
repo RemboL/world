@@ -1,11 +1,11 @@
 package pl.rembol.jme3.world.hud;
 
+import java.util.List;
+
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.input.state.Command;
-
-import java.util.List;
 
 public class ActionBox {
 
@@ -37,16 +37,12 @@ public class ActionBox {
     }
 
     private void createActionButton(Command command) {
-        Picture button = new ActionButton(command, gameState);
+        Picture button = new ActionButton(gameState, command);
         buttonsNode.attachChild(button);
     }
 
     private void clearButtons() {
         buttonsNode.detachAllChildren();
-    }
-
-    public Node getActionButtonNode() {
-        return buttonsNode;
     }
 
 }
