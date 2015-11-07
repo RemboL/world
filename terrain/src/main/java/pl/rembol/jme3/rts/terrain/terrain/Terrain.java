@@ -1,5 +1,7 @@
-package pl.rembol.jme3.world.terrain;
+package pl.rembol.jme3.rts.terrain.terrain;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -7,6 +9,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
@@ -15,8 +18,7 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.save.TerrainDTO;
+import pl.rembol.jme3.rts.terrain.terrain.save.TerrainDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,25 +31,25 @@ public class Terrain {
     private AlphaMapManipulator manipulator = new AlphaMapManipulator();
     private RigidBodyControl terrainBodyControl;
 
-    private GameState gameState;
+    private BulletAppState bulletAppState;
 
-    public Terrain(GameState gameState) {
-        this.gameState = gameState;
+    public Terrain(AssetManager assetManager, BulletAppState bulletAppState) {
+        this.bulletAppState = bulletAppState;
 
-        createMaterials();
+        createMaterials(assetManager);
     }
 
-    public void init(int size) {
+    public void init(int size, Node rootNode, Camera camera) {
 
-        init(createTerrainQuad(size));
+        init(createTerrainQuad(size), rootNode, camera);
     }
 
-    public void init(TerrainDTO terrainDTO) {
+    public void init(TerrainDTO terrainDTO, Node rootNode, Camera camera) {
         alphaMap.setImage(terrainDTO.toAlphaMap());
-        init(terrainDTO.toTerrainQuad());
+        init(terrainDTO.toTerrainQuad(), rootNode, camera);
     }
 
-    private void init(TerrainQuad terrain) {
+    private void init(TerrainQuad terrain, Node rootNode, Camera camera) {
         this.terrain = terrain;
         terrain.setShadowMode(ShadowMode.Receive);
 
@@ -55,18 +57,16 @@ public class Terrain {
         terrain.setLocalTranslation(0, 0, 0);
         terrain.setLocalScale(2f, 1f, 2f);
 
-        gameState.rootNode.attachChild(terrain);
+        rootNode.attachChild(terrain);
 
-        TerrainLodControl control = new TerrainLodControl(terrain, gameState.camera);
+        TerrainLodControl control = new TerrainLodControl(terrain, camera);
         terrain.addControl(control);
 
         CollisionShape sceneShape = CollisionShapeFactory
-                .createMeshShape((Node) terrain);
+                .createMeshShape(terrain);
         terrainBodyControl = new RigidBodyControl(sceneShape, 0);
-        gameState.bulletAppState.getPhysicsSpace().add(terrainBodyControl);
+        bulletAppState.getPhysicsSpace().add(terrainBodyControl);
         terrain.addControl(terrainBodyControl);
-
-        gameState.pathfindingService.initFromTerrain();
     }
 
     private TerrainQuad createTerrainQuad(int size) {
@@ -83,29 +83,29 @@ public class Terrain {
                 heightmap.getHeightMap());
     }
 
-    public void createMaterials() {
-        terrainMaterial = new Material(gameState.assetManager,
+    public void createMaterials(AssetManager assetManager) {
+        terrainMaterial = new Material(assetManager,
                 "Common/MatDefs/Terrain/TerrainLighting.j3md");
         terrainMaterial.setBoolean("useTriPlanarMapping", false);
         terrainMaterial.setBoolean("WardIso", true);
         terrainMaterial.setFloat("Shininess", 0);
 
-        alphaMap = gameState.assetManager.loadTexture("red.jpg");
+        alphaMap = assetManager.loadTexture("red.jpg");
         terrainMaterial.setTexture("AlphaMap", alphaMap);
 
-        Texture grass = gameState.assetManager
+        Texture grass = assetManager
                 .loadTexture("textures/grass.jpg");
         grass.setWrap(WrapMode.Repeat);
         terrainMaterial.setTexture("DiffuseMap", grass);
         terrainMaterial.setFloat("DiffuseMap_0_scale", 64f);
 
-        Texture dirt = gameState.assetManager
+        Texture dirt = assetManager
                 .loadTexture("textures/dirt.jpg");
         dirt.setWrap(WrapMode.Repeat);
         terrainMaterial.setTexture("DiffuseMap_1", dirt);
         terrainMaterial.setFloat("DiffuseMap_1_scale", 64f);
 
-        Texture rock = gameState.assetManager
+        Texture rock = assetManager
                 .loadTexture("textures/road.jpg");
         rock.setWrap(WrapMode.Repeat);
         terrainMaterial.setTexture("DiffuseMap_2", rock);
@@ -198,45 +198,6 @@ public class Terrain {
                 .add(new Vector2f(.5f, .5f));
     }
 
-    public void smoothenTerrain(Vector2f start, Vector2f end) {
-
-        manipulator.addBlop(alphaMap, start, 5f, ColorRGBA.Green);
-
-        terrain.setLocked(false);
-
-        int minX = Math.min(Math.round(start.x), Math.round(end.x));
-        int maxX = Math.max(Math.round(start.x), Math.round(end.x));
-        int minY = Math.min(Math.round(start.y), Math.round(end.y));
-        int maxY = Math.max(Math.round(start.y), Math.round(end.y));
-
-        List<Vector2f> positions = new ArrayList<>();
-        List<Float> heights = new ArrayList<>();
-
-        float averageHeight = calculateAverageHeightOfBorder(minX, maxX, minY,
-                maxY);
-
-        for (int x = minX; x <= maxX; ++x) {
-            for (int y = minY; y <= maxY; ++y) {
-
-                if (x > -terrain.getTerrainSize()
-                        && x < terrain.getTerrainSize()
-                        && y > -terrain.getTerrainSize()
-                        && y < terrain.getTerrainSize()) {
-                    positions.add(new Vector2f(x, y));
-
-                    float diff = averageHeight
-                            - terrain.getHeight(new Vector2f(x, y));
-
-                    heights.add(diff);
-                }
-            }
-        }
-
-        terrain.adjustHeight(positions, heights);
-        terrain.setLocked(true);
-
-    }
-
     private float getSmoothedRectangleDegree(int minX, int maxX, int minY,
                                              int maxY, int border, int x, int y) {
         return getSmoothedLineDegree(minX, maxX, x, border)
@@ -282,10 +243,10 @@ public class Terrain {
 
     private void resetTerrain() {
         CollisionShape sceneShape = CollisionShapeFactory
-                .createMeshShape((Node) terrain);
-        gameState.bulletAppState.getPhysicsSpace().remove(terrainBodyControl);
+                .createMeshShape(terrain);
+        bulletAppState.getPhysicsSpace().remove(terrainBodyControl);
         terrainBodyControl = new RigidBodyControl(sceneShape, 0);
-        gameState.bulletAppState.getPhysicsSpace().add(terrainBodyControl);
+        bulletAppState.getPhysicsSpace().add(terrainBodyControl);
     }
 
     private void addSmoothHillHeightMap(Vector2f position, float radius) {

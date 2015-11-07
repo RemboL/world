@@ -70,8 +70,10 @@ public class GameRunningAppState extends AbstractAppState {
 
         initLightAndShadows(gameState, app.getViewPort());
 
-        SaveState load = SaveState.load("save.xml");
-        gameState.terrain.init(load.getTerrain());
+        SaveState load = SaveState.load("ballworld\\save.xml");
+        gameState.terrain.init(load.getTerrain(), simpleApp.getRootNode(), app.getCamera());
+        gameState.pathfindingService.initFromTerrain();
+
         gameState.playerService.loadPlayers(load.getPlayers());
         gameState.unitRegistry.load(load.getUnits());
 

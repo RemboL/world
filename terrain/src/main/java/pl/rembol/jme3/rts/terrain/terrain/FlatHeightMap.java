@@ -1,4 +1,4 @@
-package pl.rembol.jme3.world.terrain;
+package pl.rembol.jme3.rts.terrain.terrain;
 
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 

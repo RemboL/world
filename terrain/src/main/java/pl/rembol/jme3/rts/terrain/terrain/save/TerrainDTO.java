@@ -1,10 +1,10 @@
-package pl.rembol.jme3.world.save;
+package pl.rembol.jme3.rts.terrain.terrain.save;
 
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.texture.Image;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("terrain")
+@XStreamAlias("pl/rembol/jme3/rts/terrain/terrain")
 public class TerrainDTO {
 
     private TerrainQuadDTO terrainQuad;

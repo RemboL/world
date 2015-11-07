@@ -41,6 +41,13 @@
 	</build>
 
 	<dependencies>
+		<!-- internal -->
+		<dependency>
+			<groupId>${parent.groupId}</groupId>
+			<artifactId>terrain</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+
 		<dependency>
 			<!-- Contains just the jme3test demo classes, with main methods -->
 			<groupId>com.jme3</groupId>
@@ -109,11 +116,6 @@
 		<dependency>
 			<groupId>com.jme3</groupId>
 			<artifactId>jME3-plugins</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>jME3-terrain</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 

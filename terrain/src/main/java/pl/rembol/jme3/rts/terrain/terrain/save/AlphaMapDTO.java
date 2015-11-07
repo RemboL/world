@@ -1,4 +1,4 @@
-package pl.rembol.jme3.world.save;
+package pl.rembol.jme3.rts.terrain.terrain.save;
 
 import com.jme3.texture.Image;
 import com.jme3.texture.Image.Format;
