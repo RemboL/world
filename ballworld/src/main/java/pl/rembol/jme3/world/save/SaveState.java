@@ -5,9 +5,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import pl.rembol.jme3.world.building.house.HouseDTO;
 import pl.rembol.jme3.world.building.warehouse.WarehouseDTO;
-import pl.rembol.jme3.rts.terrain.terrain.save.AlphaMapDTO;
-import pl.rembol.jme3.rts.terrain.terrain.save.TerrainDTO;
-import pl.rembol.jme3.rts.terrain.terrain.save.TerrainQuadDTO;
+import pl.rembol.jme3.rts.terrain.save.AlphaMapDTO;
+import pl.rembol.jme3.rts.terrain.save.TerrainDTO;
+import pl.rembol.jme3.rts.terrain.save.TerrainQuadDTO;
 
 import java.io.File;
 import java.io.FileWriter;

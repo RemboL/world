@@ -11,7 +11,7 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.interfaces.WithNode;
-import pl.rembol.jme3.world.pathfinding.Rectangle2f;
+import pl.rembol.jme3.rts.pathfinding.Rectangle2f;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 public abstract class Action<T extends WithNode> {
@@ -151,7 +151,7 @@ public abstract class Action<T extends WithNode> {
     protected boolean isCloseEnough(WithNode unit, WithNode target,
                                     float distance) {
         if (target instanceof Solid) {
-            return new Rectangle2f(Solid.class.cast(target), distance)
+            return Solid.class.cast(target).getBoundingRectangle(distance)
                     .isInside(unit.getLocation());
         } else {
             return unit.getNode().getWorldTranslation()
@@ -162,7 +162,8 @@ public abstract class Action<T extends WithNode> {
 
     protected boolean isCloseEnough(WithNode unit, Vector2f target,
                                     float distance) {
-        return new Rectangle2f(target, distance + 1)
+        return new Rectangle2f(target)
+                .withBuffer(distance + 1)
                 .isInside(unit.getLocation());
     }
 

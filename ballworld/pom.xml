@@ -42,11 +42,21 @@
 
 	<dependencies>
 		<!-- internal -->
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>common</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>${parent.groupId}</groupId>
 			<artifactId>terrain</artifactId>
 			<version>${parent.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>pathfinding</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
 
 		<dependency>
 			<!-- Contains just the jme3test demo classes, with main methods -->

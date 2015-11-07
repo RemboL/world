@@ -7,7 +7,8 @@ import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
-import pl.rembol.jme3.rts.terrain.terrain.Terrain;
+import pl.rembol.jme3.rts.terrain.Terrain;
+import pl.rembol.jme3.rts.threads.ThreadManager;
 import pl.rembol.jme3.world.ballman.order.OrderFactory;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.hud.ConsoleLog;
@@ -18,9 +19,8 @@ import pl.rembol.jme3.world.input.*;
 import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.pathfinding.PathfindingService;
+import pl.rembol.jme3.rts.pathfinding.PathfindingService;
 import pl.rembol.jme3.world.player.PlayerService;
-import pl.rembol.jme3.world.threads.ThreadManager;
 
 public class GameState {
 
@@ -83,8 +83,8 @@ public class GameState {
         camera = simpleApplication.getCamera();
         inputManager = simpleApplication.getInputManager();
 
-        pathfindingService = new PathfindingService(this);
         terrain = new Terrain(assetManager, bulletAppState);
+        pathfindingService = new PathfindingService(terrain, threadManager);
         resourcesBar = new ResourcesBar(this);
         consoleLog = new ConsoleLog(this);
         modifierKeysManager = new ModifierKeysManager(this);

@@ -8,8 +8,8 @@ import pl.rembol.jme3.world.Solid;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.interfaces.WithMovingControl;
 import pl.rembol.jme3.world.interfaces.WithNode;
-import pl.rembol.jme3.world.pathfinding.Rectangle2f;
-import pl.rembol.jme3.world.pathfinding.paths.IExternalPath;
+import pl.rembol.jme3.rts.pathfinding.Rectangle2f;
+import pl.rembol.jme3.rts.pathfinding.paths.IExternalPath;
 
 public class MoveTowardsTargetAction extends Action<WithMovingControl> {
 
@@ -44,11 +44,11 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
 
     @Override
     protected void doAct(WithMovingControl unit, float tpf) {
-        path.updatePath(unit.getLocation());
+        path.updatePath(new Vector2f(unit.getLocation().x, unit.getLocation().z));
 
-        Vector3f checkpoint = path.getCheckPoint();
+        Vector2f checkpoint = path.getCheckPoint();
         if (checkpoint != null) {
-            unit.movingControl().lookTowards(checkpoint);
+            unit.movingControl().lookTowards(new Vector3f(checkpoint.x, 0, checkpoint.y));
             unit.movingControl().setTargetVelocity(5f);
         } else {
             unit.movingControl().setTargetVelocity(0f);
@@ -65,7 +65,7 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
     @Override
     public boolean isFinished(WithMovingControl unit) {
         if (unit.getLocation().distance(target.getNode().getWorldTranslation()) < targetDistance
-                || (path != null && path.isFinished(unit.getLocation()))) {
+                || (path != null && path.isFinished(new Vector2f(unit.getLocation().x, unit.getLocation().z)))) {
             unit.movingControl().setTargetVelocity(0f);
             unit.movingControl().lookTowards(target);
             return true;
