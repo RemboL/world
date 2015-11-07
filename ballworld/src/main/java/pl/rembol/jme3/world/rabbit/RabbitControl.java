@@ -4,9 +4,9 @@ import com.jme3.animation.LoopMode;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
-import pl.rembol.jme3.world.ballman.action.WaitAction;
-import pl.rembol.jme3.world.controls.ActionQueueControl;
+import pl.rembol.jme3.rts.unit.action.MoveTowardsLocationAction;
+import pl.rembol.jme3.rts.unit.action.WaitAction;
+import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
 
 public class RabbitControl extends ActionQueueControl<Rabbit> {
 

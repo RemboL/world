@@ -1,7 +1,8 @@
 package pl.rembol.jme3.world.ballman.order;
 
+import pl.rembol.jme3.rts.unit.order.Order;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

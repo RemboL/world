@@ -15,7 +15,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.order.BuildOrder;
-import pl.rembol.jme3.world.ballman.order.Order;
+import pl.rembol.jme3.rts.unit.order.Order;
 import pl.rembol.jme3.world.building.BuildingFactory;
 
 public class BuildingSilhouetteManager extends AbstractControl {
@@ -122,8 +122,7 @@ public class BuildingSilhouetteManager extends AbstractControl {
                         new Vector2f(click2d.getX(), click2d.getY()), 1f)
                 .subtractLocal(click3d).normalize();
 
-        Ray ray = new Ray(click3d, dir);
-        return ray;
+        return new Ray(click3d, dir);
     }
 
     private Vector3f getCollisionWithTerrain() {

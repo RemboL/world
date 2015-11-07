@@ -1,8 +1,9 @@
 package pl.rembol.jme3.world.save;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.world.resources.deposits.Tree;
 
 @XStreamAlias("tree")
@@ -21,7 +22,8 @@ public class TreeDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        return new Tree(gameState);
+        // TODO FIXME
+        return new Tree(pl.rembol.jme3.world.GameState.class.cast(gameState));
     }
 
 }

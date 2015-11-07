@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world.hud;
 
-import java.util.List;
-
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
 import pl.rembol.jme3.world.GameState;
@@ -31,9 +29,9 @@ public class ActionBox {
 
     public void updateActionButtons() {
         clearButtons();
-        List<Command> availableCommands = gameState.inputStateManager
-                .getAvailableCommands();
-        availableCommands.forEach(this::createActionButton);
+        gameState.inputStateManager
+                .getAvailableCommands()
+                .forEach(this::createActionButton);
     }
 
     private void createActionButton(Command command) {

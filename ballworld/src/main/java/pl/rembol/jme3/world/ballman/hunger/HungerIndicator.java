@@ -8,7 +8,7 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.ModelHelper;
+import pl.rembol.jme3.rts.ModelHelper;
 import pl.rembol.jme3.world.ballman.BallMan;
 
 public class HungerIndicator extends Node {

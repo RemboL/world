@@ -1,9 +1,10 @@
 package pl.rembol.jme3.world.save;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.interfaces.WithNode;
 
 @XStreamAlias("ballman")
 public class BallManDTO extends UnitDTO {
@@ -21,7 +22,8 @@ public class BallManDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        return new BallMan(gameState, getPosition(), player);
+        // TODO FIXME
+        return new BallMan(pl.rembol.jme3.world.GameState.class.cast(gameState), getPosition(), player);
     }
 
 }

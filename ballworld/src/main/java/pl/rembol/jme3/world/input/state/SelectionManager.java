@@ -7,7 +7,7 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.ConstructionSite;
 import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.player.WithOwner;
-import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
 
 import java.util.ArrayList;
 import java.util.List;

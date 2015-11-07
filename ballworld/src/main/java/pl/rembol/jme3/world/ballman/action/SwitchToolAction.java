@@ -1,10 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.unit.action.Action;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
-import pl.rembol.jme3.world.smallobject.SmallObject;
+import pl.rembol.jme3.rts.smallobjects.SmallObject;
 
 import java.util.Optional;
 

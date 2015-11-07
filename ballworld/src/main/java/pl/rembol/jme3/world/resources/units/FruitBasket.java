@@ -1,8 +1,10 @@
 package pl.rembol.jme3.world.resources.units;
 
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.rts.resources.ResourceType;
+import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class FruitBasket extends ResourceUnit {
 
@@ -17,7 +19,7 @@ public class FruitBasket extends ResourceUnit {
 
     @Override
     public ResourceType getResourceType() {
-        return ResourceType.FOOD;
+        return ResourceTypes.FOOD;
     }
 
 }

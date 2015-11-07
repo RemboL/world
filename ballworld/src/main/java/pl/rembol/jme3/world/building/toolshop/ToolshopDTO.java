@@ -1,9 +1,9 @@
 package pl.rembol.jme3.world.building.toolshop;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.interfaces.WithNode;
-import pl.rembol.jme3.world.save.UnitDTO;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 
 @XStreamAlias("toolshop")
 public class ToolshopDTO extends UnitDTO {
@@ -21,7 +21,8 @@ public class ToolshopDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        return new Toolshop(gameState);
+        // TODO FIXME
+        return new Toolshop(pl.rembol.jme3.world.GameState.class.cast(gameState));
     }
 
 }

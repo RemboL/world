@@ -2,7 +2,7 @@ package pl.rembol.jme3.world.ballman;
 
 import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.hud.status.DefaultStatus;
+import pl.rembol.jme3.rts.gui.status.DefaultStatus;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 import java.util.ArrayList;
@@ -27,7 +27,8 @@ public class BallManStatus extends DefaultStatus {
                 "hp: " + ballMan.getHp() + " / " + BallMan.MAX_HP,
                 "owner: " + ballMan.getOwner().getName());
 
-        if (gameState.playerService.getActivePlayer().equals(ballMan.getOwner())) {
+        // TODO FIXME
+        if (GameState.class.cast(gameState).playerService.getActivePlayer().equals(ballMan.getOwner())) {
             clearInventory();
             updateInventory();
         }

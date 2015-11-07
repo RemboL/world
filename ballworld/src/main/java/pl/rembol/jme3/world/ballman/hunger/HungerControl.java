@@ -9,7 +9,7 @@ import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.EatFoodAction;
-import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class HungerControl extends AbstractControl {
 
@@ -58,7 +58,7 @@ public class HungerControl extends AbstractControl {
     }
 
     private boolean hasFood() {
-        return ballMan.getOwner().getResource(ResourceType.FOOD) > 0;
+        return ballMan.getOwner().getResource(ResourceTypes.FOOD) > 0;
     }
 
     private void updateHungerIndicator(float tpf) {

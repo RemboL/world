@@ -11,7 +11,7 @@ import com.jme3.scene.control.Control;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
-import pl.rembol.jme3.world.save.UnitDTO;
+import pl.rembol.jme3.rts.save.UnitDTO;
 
 public class House extends Building {
     

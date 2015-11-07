@@ -16,25 +16,27 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
+import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithActionQueueControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.world.controls.MovingControl;
-import pl.rembol.jme3.world.interfaces.WithMovingControl;
-import pl.rembol.jme3.world.particles.SparkParticleEmitter;
+import pl.rembol.jme3.rts.unit.control.MovingControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithMovingControl;
+import pl.rembol.jme3.rts.particles.SparkParticleEmitter;
 import pl.rembol.jme3.world.player.Player;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.save.BallManDTO;
-import pl.rembol.jme3.world.save.UnitDTO;
-import pl.rembol.jme3.world.selection.Destructable;
-import pl.rembol.jme3.world.selection.Selectable;
-import pl.rembol.jme3.world.selection.SelectionIcon;
-import pl.rembol.jme3.world.selection.SelectionNode;
-import pl.rembol.jme3.world.smallobject.SmallObject;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.unit.selection.Destructable;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
+import pl.rembol.jme3.rts.unit.selection.SelectionNode;
+import pl.rembol.jme3.rts.smallobjects.SmallObject;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 public class BallMan implements Selectable, WithOwner, Destructable,
-        WithMovingControl {
+        WithMovingControl, WithActionQueueControl {
 
     private GameState gameState;
 
@@ -67,7 +69,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     public BallMan(GameState gameState, Vector3f position, String player) {
         this.gameState = gameState;
         initNode(gameState.rootNode);
-        icon = new SelectionIcon(gameState, this, "ballman");
+        icon = new BallManIcon(gameState, this);
         node.setLocalTranslation(position);
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
@@ -267,6 +269,11 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public MovingControl movingControl() {
         return controlNode.getControl(MovingControl.class);
+    }
+
+    @Override
+    public ActionQueueControl actionQueueControl() {
+        return controlNode.getControl(ActionQueueControl.class);
     }
 
     public Optional<House> isInside() {

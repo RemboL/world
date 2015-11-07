@@ -1,10 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import pl.rembol.jme3.rts.unit.action.Action;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.Cost;
-import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 import java.util.Optional;
 
@@ -46,13 +47,13 @@ public class EatFoodAction extends Action<BallMan> {
     @Override
     protected void doAct(BallMan ballMan, float tpf) {
 
-        if (ballMan.getOwner().getResource(ResourceType.FOOD) > 0) {
+        if (ballMan.getOwner().getResource(ResourceTypes.FOOD) > 0) {
             int foodToEat = Math.min(
-                    ballMan.getOwner().getResource(ResourceType.FOOD),
+                    ballMan.getOwner().getResource(ResourceTypes.FOOD),
                     howHungry);
 
             if (ballMan.getOwner().retrieveResources(
-                    new Cost().of(ResourceType.FOOD, foodToEat))) {
+                    new Cost().of(ResourceTypes.FOOD, foodToEat))) {
                 ballMan.hunger().eat(foodToEat);
             }
         }

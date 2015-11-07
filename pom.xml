@@ -23,6 +23,7 @@
 		<module>common</module>
 		<module>terrain</module>
         <module>pathfinding</module>
+        <module>generic-controls</module>
 
 		<module>ballworld</module>
     </modules>

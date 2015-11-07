@@ -1,5 +1,6 @@
 package pl.rembol.jme3.world.hud;
 
+import pl.rembol.jme3.rts.gui.ClickablePicture;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.input.state.Command;
 
@@ -17,6 +18,7 @@ public class ActionButton extends ClickablePicture {
 
     @Override
     public void onClick() {
-        gameState.inputStateManager.type(command.getCommandKey());
+        // TODO FIXME
+        pl.rembol.jme3.world.GameState.class.cast(gameState).inputStateManager.type(command.getCommandKey());
     }
 }

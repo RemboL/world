@@ -5,7 +5,7 @@ import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.resources.Cost;
 
-import static pl.rembol.jme3.world.resources.ResourceType.WOOD;
+import static pl.rembol.jme3.world.resources.ResourceTypes.WOOD;
 
 public class HouseFactory extends BuildingFactory {
 

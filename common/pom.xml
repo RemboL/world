@@ -25,5 +25,14 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <!-- The core library -->
+        <dependency>
+            <groupId>com.jme3</groupId>
+            <artifactId>jME3-core</artifactId>
+            <version>${jmonkey.version}</version>
+        </dependency>
+
+    </dependencies>
 
 </project>

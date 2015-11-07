@@ -1,8 +1,8 @@
 package pl.rembol.jme3.world.building.house;
 
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.hud.ClickablePicture;
-import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.rts.gui.ClickablePicture;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class RecruitQueueIcon extends ClickablePicture {
 
@@ -16,7 +16,7 @@ public class RecruitQueueIcon extends ClickablePicture {
     @Override
     public void onClick() {
         action.cancel();
-        action.getControl().getHouse().getOwner().addResource(ResourceType.WOOD, 50);
+        action.getControl().getHouse().getOwner().addResource(ResourceTypes.WOOD, 50);
     }
 
 }

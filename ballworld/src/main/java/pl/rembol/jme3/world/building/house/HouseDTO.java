@@ -1,9 +1,9 @@
 package pl.rembol.jme3.world.building.house;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.interfaces.WithNode;
-import pl.rembol.jme3.world.save.UnitDTO;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 
 @XStreamAlias("house")
 public class HouseDTO extends UnitDTO {
@@ -21,7 +21,8 @@ public class HouseDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        return new House(gameState);
+        // TODO FIXME
+        return new House(pl.rembol.jme3.world.GameState.class.cast(gameState));
     }
 
 }

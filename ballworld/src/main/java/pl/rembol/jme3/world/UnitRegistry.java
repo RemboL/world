@@ -15,11 +15,12 @@ import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.building.house.HouseControl;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.rts.unit.interfaces.Solid;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.world.player.Player;
-import pl.rembol.jme3.world.save.UnitDTO;
-import pl.rembol.jme3.world.save.UnitsDTO;
-import pl.rembol.jme3.world.selection.Selectable;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.save.UnitsDTO;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
 
 public class UnitRegistry {
 

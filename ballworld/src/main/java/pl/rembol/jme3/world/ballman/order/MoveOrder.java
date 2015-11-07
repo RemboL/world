@@ -1,11 +1,12 @@
 package pl.rembol.jme3.world.ballman.order;
 
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.unit.order.Order;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
-import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.rts.unit.action.MoveTowardsLocationAction;
+import pl.rembol.jme3.rts.unit.action.MoveTowardsTargetAction;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 
 public class MoveOrder extends Order<BallMan> {
 

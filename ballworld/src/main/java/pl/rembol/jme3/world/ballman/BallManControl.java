@@ -6,15 +6,15 @@ import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.EnterHouseAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsLocationAction;
-import pl.rembol.jme3.world.ballman.action.MoveTowardsTargetAction;
+import pl.rembol.jme3.rts.unit.action.MoveTowardsLocationAction;
+import pl.rembol.jme3.rts.unit.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.world.controls.ActionQueueControl;
-import pl.rembol.jme3.world.interfaces.WithDefaultAction;
-import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithDefaultAction;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
-import pl.rembol.jme3.world.selection.Destructable;
+import pl.rembol.jme3.rts.unit.selection.Destructable;
 
 public class BallManControl extends ActionQueueControl<BallMan> implements
         WithDefaultAction {

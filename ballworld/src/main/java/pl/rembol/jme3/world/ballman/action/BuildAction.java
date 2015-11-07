@@ -9,7 +9,7 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.building.ConstructionSite;
-import pl.rembol.jme3.world.particles.DustParticleEmitter;
+import pl.rembol.jme3.rts.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.smallobject.tools.Hammer;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class BuildAction extends Action<BallMan> {
+public class BuildAction extends BallManAction {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
 
@@ -68,7 +68,8 @@ public class BuildAction extends Action<BallMan> {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        if (!gameState.unitRegistry.isSpaceFree(gameState.terrain.getGroundPosition(position),
+        // TODO FIXME
+        if (!GameState.class.cast(gameState).unitRegistry.isSpaceFree(gameState.terrain.getGroundPosition(position),
                 factory.width())) {
             gameState.consoleLog.addLine("Can't build here, something's in the way");
             isFinished = true;
@@ -86,10 +87,13 @@ public class BuildAction extends Action<BallMan> {
         if (ballMan.getOwner().retrieveResources(factory.cost())) {
             resetAnimation(ballMan);
 
-            Building building = factory.create(gameState, position,
+            // TODO FIXME
+            Building building = factory.create(GameState.class.cast(gameState), position,
                     true);
             building.setOwner(ballMan.getOwner());
-            constructionSite = new ConstructionSite(gameState, building, 5f);
+
+            // TODO FIXME
+            constructionSite = new ConstructionSite(GameState.class.cast(gameState), building, 5f);
 
             minX = position.getX() - constructionSite.getBuilding().getWidth()
                     - 5;
@@ -112,7 +116,8 @@ public class BuildAction extends Action<BallMan> {
     }
 
     private DustParticleEmitter createParticleEmitter() {
-        return new DustParticleEmitter(gameState)
+        // TODO FIXME
+        return new DustParticleEmitter(GameState.class.cast(gameState))
                 .doSetLocalTranslation(new Vector3f(position.x, gameState.terrain
                         .getTerrain().getHeight(position), position.y));
     }

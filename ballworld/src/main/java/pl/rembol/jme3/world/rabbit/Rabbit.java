@@ -13,11 +13,11 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.controls.MovingControl;
-import pl.rembol.jme3.world.interfaces.WithMovingControl;
-import pl.rembol.jme3.world.selection.Selectable;
-import pl.rembol.jme3.world.selection.SelectionIcon;
-import pl.rembol.jme3.world.selection.SelectionNode;
+import pl.rembol.jme3.rts.unit.control.MovingControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithMovingControl;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
+import pl.rembol.jme3.rts.unit.selection.SelectionNode;
 
 import java.util.Random;
 

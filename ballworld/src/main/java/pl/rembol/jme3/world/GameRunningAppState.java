@@ -71,7 +71,7 @@ public class GameRunningAppState extends AbstractAppState {
         initLightAndShadows(gameState, app.getViewPort());
 
         SaveState load = SaveState.load("ballworld\\save.xml");
-        gameState.terrain.init(load.getTerrain(), simpleApp.getRootNode(), app.getCamera());
+        gameState.terrain.init(load.getTerrain());
         gameState.pathfindingService.initFromTerrain();
 
         gameState.playerService.loadPlayers(load.getPlayers());
@@ -80,10 +80,10 @@ public class GameRunningAppState extends AbstractAppState {
         Building toolshop = new Toolshop(gameState).init(new Vector2f(15, -20));
         toolshop.setOwner(gameState.playerService.getActivePlayer());
 
-        new Rabbit(gameState, new Vector2f(30, 0));
-        new Rabbit(gameState, new Vector2f(30, 10));
-        new Rabbit(gameState, new Vector2f(40, 10));
-        new Rabbit(gameState, new Vector2f(40, 0));
+//        new Rabbit(gameState, new Vector2f(30, 0));
+//        new Rabbit(gameState, new Vector2f(30, 10));
+//        new Rabbit(gameState, new Vector2f(40, 10));
+//        new Rabbit(gameState, new Vector2f(40, 0));
 
         new FruitBush(gameState).init(new Vector2f(35, -20));
 

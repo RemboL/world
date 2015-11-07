@@ -57,6 +57,11 @@
             <artifactId>pathfinding</artifactId>
             <version>${parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>generic-controls</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
 
 		<dependency>
 			<!-- Contains just the jme3test demo classes, with main methods -->

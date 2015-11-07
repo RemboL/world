@@ -1,5 +1,6 @@
 package pl.rembol.jme3.rts.terrain;
 
+import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -9,9 +10,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
@@ -31,25 +30,27 @@ public class Terrain {
     private AlphaMapManipulator manipulator = new AlphaMapManipulator();
     private RigidBodyControl terrainBodyControl;
 
+    private final SimpleApplication simpleApplication;
     private BulletAppState bulletAppState;
 
-    public Terrain(AssetManager assetManager, BulletAppState bulletAppState) {
+    public Terrain(SimpleApplication simpleApplication, BulletAppState bulletAppState) {
+        this.simpleApplication = simpleApplication;
         this.bulletAppState = bulletAppState;
 
-        createMaterials(assetManager);
+        createMaterials(simpleApplication.getAssetManager());
     }
 
-    public void init(int size, Node rootNode, Camera camera) {
+    public void init(int size) {
 
-        init(createTerrainQuad(size), rootNode, camera);
+        init(createTerrainQuad(size));
     }
 
-    public void init(TerrainDTO terrainDTO, Node rootNode, Camera camera) {
+    public void init(TerrainDTO terrainDTO) {
         alphaMap.setImage(terrainDTO.toAlphaMap());
-        init(terrainDTO.toTerrainQuad(), rootNode, camera);
+        init(terrainDTO.toTerrainQuad());
     }
 
-    private void init(TerrainQuad terrain, Node rootNode, Camera camera) {
+    private void init(TerrainQuad terrain) {
         this.terrain = terrain;
         terrain.setShadowMode(ShadowMode.Receive);
 
@@ -57,9 +58,9 @@ public class Terrain {
         terrain.setLocalTranslation(0, 0, 0);
         terrain.setLocalScale(2f, 1f, 2f);
 
-        rootNode.attachChild(terrain);
+        simpleApplication.getRootNode().attachChild(terrain);
 
-        TerrainLodControl control = new TerrainLodControl(terrain, camera);
+        TerrainLodControl control = new TerrainLodControl(terrain, simpleApplication.getCamera());
         terrain.addControl(control);
 
         CollisionShape sceneShape = CollisionShapeFactory

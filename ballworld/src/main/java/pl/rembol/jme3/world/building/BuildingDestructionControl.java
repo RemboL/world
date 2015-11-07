@@ -7,7 +7,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.particles.DustParticleEmitter;
+import pl.rembol.jme3.rts.particles.DustParticleEmitter;
 
 import java.util.ArrayList;
 import java.util.List;

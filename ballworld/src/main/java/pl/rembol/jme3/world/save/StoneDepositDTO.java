@@ -1,8 +1,9 @@
 package pl.rembol.jme3.world.save;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.world.resources.deposits.StoneDeposit;
 
 @XStreamAlias("stone_deposit")
@@ -21,7 +22,8 @@ public class StoneDepositDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        return new StoneDeposit(gameState);
+        // TODO FIXME
+        return new StoneDeposit(pl.rembol.jme3.world.GameState.class.cast(gameState));
     }
 
 }

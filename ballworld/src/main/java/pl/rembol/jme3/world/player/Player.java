@@ -2,17 +2,18 @@ package pl.rembol.jme3.world.player;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.Cost;
-import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static pl.rembol.jme3.world.resources.ResourceType.HOUSING;
+import static pl.rembol.jme3.world.resources.ResourceTypes.HOUSING;
 
 public class Player {
 
@@ -24,7 +25,7 @@ public class Player {
     private Integer id;
 
     private Map<ResourceType, Integer> resources = new HashMap<>();
-    private int resourcesHousingLimit = 0;
+    private Map<ResourceType, Integer> resourcesLimits = new HashMap<>();
 
     private ColorRGBA color = null;
 
@@ -34,8 +35,11 @@ public class Player {
 
     public Player(GameState gameState) {
         this.gameState = gameState;
-        for (ResourceType type : ResourceType.values()) {
+        for (ResourceType type : ResourceTypes.values()) {
             resources.put(type, 0);
+            if (type.isLimited()) {
+                resourcesLimits.put(type, 0);
+            }
         }
 
         id = playerCounter++;
@@ -77,8 +81,8 @@ public class Player {
     }
 
     public void updateHousingLimit() {
-        resourcesHousingLimit = gameState.unitRegistry.getHousesByOwner(this).size()
-                * HOUSING_PER_HOUSE;
+        resourcesLimits.put(HOUSING, gameState.unitRegistry.getHousesByOwner(this).size()
+                * HOUSING_PER_HOUSE);
 
         updateResources();
     }
@@ -131,7 +135,7 @@ public class Player {
 
     private void updateResources() {
         if (active) {
-            gameState.resourcesBar.updateResources(resources, resourcesHousingLimit);
+            gameState.resourcesBar.updateResources(resources, resourcesLimits);
         }
     }
 
@@ -164,7 +168,7 @@ public class Player {
     }
 
     public boolean availableHousing(int i) {
-        return resourcesHousingLimit - resources.get(HOUSING) >= i;
+        return resourcesLimits.get(HOUSING) - resources.get(HOUSING) >= i;
     }
 
 }

@@ -1,10 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.unit.action.Action;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.world.resources.units.ResourceUnit;
+import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 
 public class ReturnResourcesAction extends Action<BallMan> {
 

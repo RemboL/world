@@ -4,9 +4,9 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.ModelHelper;
-import pl.rembol.jme3.world.hud.InventoryIcon;
-import pl.rembol.jme3.world.smallobject.SmallObject;
+import pl.rembol.jme3.rts.ModelHelper;
+import pl.rembol.jme3.rts.gui.InventoryIcon;
+import pl.rembol.jme3.rts.smallobjects.SmallObject;
 
 public abstract class Tool extends SmallObject {
 

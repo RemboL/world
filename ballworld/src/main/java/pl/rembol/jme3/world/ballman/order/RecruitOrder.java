@@ -1,12 +1,13 @@
 package pl.rembol.jme3.world.ballman.order;
 
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.unit.order.Order;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.world.interfaces.WithNode;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.world.resources.Cost;
 
-import static pl.rembol.jme3.world.resources.ResourceType.WOOD;
+import static pl.rembol.jme3.world.resources.ResourceTypes.WOOD;
 
 public class RecruitOrder extends Order<House> {
 

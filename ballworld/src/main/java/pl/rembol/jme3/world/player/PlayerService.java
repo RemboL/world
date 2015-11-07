@@ -2,7 +2,7 @@ package pl.rembol.jme3.world.player;
 
 import com.jme3.math.ColorRGBA;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.resources.ResourceType;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.PlayerDTO;
 
 import java.util.Collection;
@@ -58,9 +58,9 @@ public class PlayerService {
         for (PlayerDTO playerDTO : playerDTOs) {
             registerPlayer(playerDTO.getName(), playerDTO.getColor(),
                     playerDTO.getActive());
-            getPlayer(playerDTO.getName()).addResource(ResourceType.WOOD,
+            getPlayer(playerDTO.getName()).addResource(ResourceTypes.WOOD,
                     playerDTO.getWood());
-            getPlayer(playerDTO.getName()).addResource(ResourceType.STONE,
+            getPlayer(playerDTO.getName()).addResource(ResourceTypes.STONE,
                     playerDTO.getStone());
         }
 

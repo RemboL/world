@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.building;
 
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.hud.status.DefaultStatus;
+import pl.rembol.jme3.rts.gui.status.DefaultStatus;
 
 public class BuildingStatus extends DefaultStatus {
 
