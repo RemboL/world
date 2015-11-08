@@ -3,7 +3,7 @@ package pl.rembol.jme3.world.smallobject.tools;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.ModelHelper;
 import pl.rembol.jme3.rts.gui.InventoryIcon;
 import pl.rembol.jme3.rts.smallobjects.SmallObject;

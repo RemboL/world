@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.building.warehouse.WarehouseFactory;
 

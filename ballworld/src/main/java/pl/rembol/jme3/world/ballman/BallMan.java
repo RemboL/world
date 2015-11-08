@@ -1,42 +1,41 @@
 package pl.rembol.jme3.world.ballman;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.SkeletonControl;
+import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.math.*;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Node;
+import pl.rembol.jme3.rts.particles.SparkParticleEmitter;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.smallobjects.SmallObject;
+import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
+import pl.rembol.jme3.rts.unit.control.DefaultActionControl;
+import pl.rembol.jme3.rts.unit.control.MovingControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithActionQueueControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithDefaultActionControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithMovingControl;
+import pl.rembol.jme3.rts.unit.selection.Destructable;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
+import pl.rembol.jme3.rts.unit.selection.SelectionNode;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.ballman.hunger.HungerControl;
+import pl.rembol.jme3.world.building.house.House;
+import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.player.WithOwner;
+import pl.rembol.jme3.world.resources.ResourceTypes;
+import pl.rembol.jme3.world.save.BallManDTO;
+import pl.rembol.jme3.world.smallobject.tools.Tool;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.SkeletonControl;
-import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
-import pl.rembol.jme3.rts.unit.interfaces.WithActionQueueControl;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.ballman.hunger.HungerControl;
-import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.rts.unit.control.MovingControl;
-import pl.rembol.jme3.rts.unit.interfaces.WithMovingControl;
-import pl.rembol.jme3.rts.particles.SparkParticleEmitter;
-import pl.rembol.jme3.world.player.Player;
-import pl.rembol.jme3.world.player.WithOwner;
-import pl.rembol.jme3.world.save.BallManDTO;
-import pl.rembol.jme3.rts.save.UnitDTO;
-import pl.rembol.jme3.rts.unit.selection.Destructable;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
-import pl.rembol.jme3.rts.unit.selection.SelectionNode;
-import pl.rembol.jme3.rts.smallobjects.SmallObject;
-import pl.rembol.jme3.world.smallobject.tools.Tool;
-
 public class BallMan implements Selectable, WithOwner, Destructable,
-        WithMovingControl, WithActionQueueControl {
+        WithMovingControl, WithActionQueueControl, WithDefaultActionControl {
 
     private GameState gameState;
 
@@ -229,14 +228,14 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     public void setOwner(Player player) {
         this.owner = player;
 
-        owner.updateHousing();
+        owner.setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(owner));
 
         updateColor();
     }
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[]{ "skin" };
+        return new String[]{"skin"};
     }
 
     @Override
@@ -274,6 +273,11 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     @Override
     public ActionQueueControl actionQueueControl() {
         return controlNode.getControl(ActionQueueControl.class);
+    }
+
+    @Override
+    public DefaultActionControl defaultActionControl() {
+        return controlNode.getControl(DefaultActionControl.class);
     }
 
     public Optional<House> isInside() {

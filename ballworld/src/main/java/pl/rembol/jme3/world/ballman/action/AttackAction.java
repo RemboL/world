@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.rts.unit.selection.Destructable;
 import pl.rembol.jme3.world.smallobject.tools.Sword;

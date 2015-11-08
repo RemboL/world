@@ -1,8 +1,8 @@
 package pl.rembol.jme3.world.player;
 
 import com.jme3.math.ColorRGBA;
+import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.PlayerDTO;
 
 import java.util.Collection;
@@ -18,6 +18,8 @@ public class PlayerService {
 
     private Player activePlayer;
 
+    private List<ResourceType> resourceTypeList;
+
     public PlayerService(GameState gameState) {
         this.gameState = gameState;
     }
@@ -30,7 +32,7 @@ public class PlayerService {
             return;
         }
 
-        Player player = new Player(gameState);
+        Player player = new Player(gameState, resourceTypeList);
         player.setName(name);
         player.setColor(color);
         player.setActive(active);
@@ -58,15 +60,15 @@ public class PlayerService {
         for (PlayerDTO playerDTO : playerDTOs) {
             registerPlayer(playerDTO.getName(), playerDTO.getColor(),
                     playerDTO.getActive());
-            getPlayer(playerDTO.getName()).addResource(ResourceTypes.WOOD,
-                    playerDTO.getWood());
-            getPlayer(playerDTO.getName()).addResource(ResourceTypes.STONE,
-                    playerDTO.getStone());
         }
 
     }
 
     public Collection<Player> players() {
         return players.values();
+    }
+
+    public void setResourceTypeList(List<ResourceType> resourceTypeList) {
+        this.resourceTypeList = resourceTypeList;
     }
 }

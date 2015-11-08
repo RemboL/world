@@ -8,6 +8,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class HouseControl extends AbstractControl {
 
@@ -40,7 +41,7 @@ public class HouseControl extends AbstractControl {
             currentAction.execute(house);
             queue.remove(currentAction);
 
-            house.getOwner().updateHousing();
+            house.getOwner().setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(house.getOwner()));
         }
 
         gameState.selectionManager.updateStatusIfSingleSelected(house);
@@ -57,7 +58,7 @@ public class HouseControl extends AbstractControl {
     public void addToQueue() {
         queue.add(new RecruitQueuedAction(gameState, this));
 
-        house.getOwner().updateHousing();
+        house.getOwner().setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(house.getOwner()));
     }
 
     public boolean isRecruiting() {

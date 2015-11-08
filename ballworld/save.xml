@@ -25,7 +25,6 @@
         <a>1.0</a>
       </color>
       <active>false</active>
-      <wood>0</wood>
     </player>
     <player>
       <name>RemboL</name>
@@ -36,8 +35,6 @@
         <a>1.0</a>
       </color>
       <active>true</active>
-      <wood>500</wood>
-      <stone>100</stone>
     </player>
   </players>
   <units>

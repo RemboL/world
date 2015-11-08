@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.jme3.collision.Collidable;
 import com.jme3.math.Vector3f;
@@ -26,13 +27,13 @@ public class UnitRegistry {
 
     public static final String UNIT_DATA_KEY = "unit_data_key";
 
-    private GameState gameState;
+    protected GameState gameState;
 
     private int idSequence = 0;
 
     private boolean suspendRegistry = false;
 
-    private Map<String, WithNode> units = new HashMap<>();
+    protected Map<String, WithNode> units = new HashMap<>();
 
     public UnitRegistry(GameState gameState) {
         this.gameState = gameState;
@@ -40,6 +41,10 @@ public class UnitRegistry {
 
     public List<? extends Collidable> getSelectablesNodes() {
         return units.values().stream().map(WithNode::getNode).collect(Collectors.toList());
+    }
+
+    public Stream<WithNode> unitsStream() {
+        return units.values().stream();
     }
 
     public void register(WithNode selectable) {
@@ -94,20 +99,6 @@ public class UnitRegistry {
                 .filter(HouseControl::isRecruiting).count();
 
         return (int) count;
-    }
-
-    public List<Warehouse> getWarehousesByOwner(Player player) {
-        return units.values().stream().filter(Warehouse.class::isInstance)
-                .map(Warehouse.class::cast)
-                .filter(warehouse -> warehouse.getOwner().equals(player))
-                .filter(Warehouse::isConstructed).collect(Collectors.toList());
-    }
-
-    public List<Toolshop> getToolshopsByOwner(Player player) {
-        return units.values().stream().filter(Toolshop.class::isInstance)
-                .map(Toolshop.class::cast)
-                .filter(toolshop -> toolshop.getOwner().equals(player))
-                .filter(Toolshop::isConstructed).collect(Collectors.toList());
     }
 
     public List<Selectable> getSelectableByPosition(Vector3f start,
@@ -207,8 +198,7 @@ public class UnitRegistry {
 
         suspendRegistry = false;
 
-        gameState.playerService.players().forEach(Player::updateHousingLimit);
-        gameState.playerService.players().forEach(Player::updateHousing);
+        gameState.playerService.players().forEach(Player::updateResources);
     }
 
     public void registerUserData(WithNode target, String dataKey, WithNode object) {

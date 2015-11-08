@@ -5,6 +5,8 @@ import com.jme3.math.Vector2f;
 import com.jme3.ui.Picture;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class RecruitQueuedAction {
 
@@ -51,7 +53,8 @@ public class RecruitQueuedAction {
 
     public void cancel() {
         houseControl.removeFromQueue(this);
-        houseControl.getHouse().getOwner().updateHousing();
+        Player owner = houseControl.getHouse().getOwner();
+        owner.setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(owner));
     }
 
     HouseControl getControl() {

@@ -1,29 +1,24 @@
 package pl.rembol.jme3.world.ballman;
 
 import com.jme3.animation.LoopMode;
-import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
+import pl.rembol.jme3.rts.unit.control.DefaultActionControl;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
+import pl.rembol.jme3.rts.unit.selection.Destructable;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.EnterHouseAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
-import pl.rembol.jme3.rts.unit.action.MoveTowardsLocationAction;
-import pl.rembol.jme3.rts.unit.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
-import pl.rembol.jme3.rts.unit.interfaces.WithDefaultAction;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.world.player.WithOwner;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
-import pl.rembol.jme3.rts.unit.selection.Destructable;
 
 public class BallManControl extends ActionQueueControl<BallMan> implements
-        WithDefaultAction {
-
-    private GameState gameState;
+        DefaultActionControl {
 
     public BallManControl(GameState gameState, BallMan ballMan) {
-        super(ballMan);
-        this.gameState = gameState;
+
+        super(gameState, ballMan);
     }
 
     @Override
@@ -38,13 +33,8 @@ public class BallManControl extends ActionQueueControl<BallMan> implements
         } else if (target instanceof House && House.class.cast(target).getOwner().equals(unit.getOwner())) {
             setAction(new EnterHouseAction(gameState, (House) target));
         }else {
-            setAction(new MoveTowardsTargetAction(gameState, unit, target, 5f));
+            super.performDefaultAction(target);
         }
-    }
-
-    @Override
-    public void performDefaultAction(Vector2f target) {
-        setAction(new MoveTowardsLocationAction(gameState, unit, target, 1f));
     }
 
     @Override

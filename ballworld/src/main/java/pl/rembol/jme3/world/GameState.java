@@ -33,10 +33,11 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
 
     public final MouseClickListener mouseClickListener;
 
+    public final BallManUnitRegistry ballManUnitRegistry;
+
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         super(simpleApplication, settings, bulletAppState);
 
-        resourcesBar.init(ResourceTypes.values());
 
         actionBox = new ActionBox(this);
 
@@ -49,6 +50,12 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
         new CommandKeysListener(this);
         dragSelectionManager = new DragSelectionManager(this);
         mouseClickListener = new MouseClickListener(this);
+
+        ballManUnitRegistry = new BallManUnitRegistry(this);
+
+
+        initResources(ResourceTypes.values());
+        playerService.setResourceTypeList(ResourceTypes.values());
     }
 
 }

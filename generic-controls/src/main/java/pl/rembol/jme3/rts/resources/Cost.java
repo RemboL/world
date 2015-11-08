@@ -1,6 +1,4 @@
-package pl.rembol.jme3.world.resources;
-
-import pl.rembol.jme3.rts.resources.ResourceType;
+package pl.rembol.jme3.rts.resources;
 
 import java.util.HashMap;
 import java.util.Map;

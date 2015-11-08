@@ -1,11 +1,12 @@
 package pl.rembol.jme3.world.ballman.order;
 
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.rts.unit.order.Order;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 
 public class SmoothenTerrainOrder extends Order<BallMan> {
 
@@ -24,6 +25,11 @@ public class SmoothenTerrainOrder extends Order<BallMan> {
     @Override
     protected void doPerform(BallMan ballMan, WithNode target) {
         gameState.consoleLog.addLine("I cannot smoothen the " + target);
+    }
+
+    @Override
+    public boolean isApplicableFor(Selectable unit) {
+        return unit instanceof BallMan;
     }
 
 }

@@ -1,22 +1,29 @@
 package pl.rembol.jme3.rts.unit.control;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.jme3.math.Vector2f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.unit.action.Action;
+import pl.rembol.jme3.rts.unit.action.MoveTowardsLocationAction;
+import pl.rembol.jme3.rts.unit.action.MoveTowardsTargetAction;
+import pl.rembol.jme3.rts.unit.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 
-public class ActionQueueControl<T extends WithNode> extends
-        AbstractControl {
+import java.util.ArrayList;
+import java.util.List;
 
+public class ActionQueueControl<T extends WithNode> extends
+        AbstractControl implements DefaultActionControl {
+
+    protected GameState gameState;
     protected T unit;
 
     private List<Action<?>> actionQueue = new ArrayList<>();
 
-    protected ActionQueueControl(T unit) {
+    protected ActionQueueControl(GameState gameState, T unit) {
+        this.gameState = gameState;
         this.unit = unit;
     }
 
@@ -79,6 +86,20 @@ public class ActionQueueControl<T extends WithNode> extends
 
     public boolean startsWith(Class<? extends Action<?>> actionClass) {
         return !actionQueue.isEmpty() && actionQueue.get(0).isAssignableFrom(actionClass);
+    }
+
+    @Override
+    public void performDefaultAction(WithNode target) {
+        if (WithMovingControl.class.isInstance(unit)) {
+            setAction(new MoveTowardsTargetAction(gameState, WithMovingControl.class.cast(unit), target, 5f));
+        }
+    }
+
+    @Override
+    public void performDefaultAction(Vector2f target) {
+        if (WithMovingControl.class.isInstance(unit)) {
+            setAction(new MoveTowardsLocationAction(gameState, WithMovingControl.class.cast(unit), target, 1f));
+        }
     }
 
 }

@@ -38,4 +38,6 @@ public abstract class Order<OrderedType extends Selectable> {
         this.selected = selected;
     }
 
+    public abstract boolean isApplicableFor(Selectable unit);
+
 }

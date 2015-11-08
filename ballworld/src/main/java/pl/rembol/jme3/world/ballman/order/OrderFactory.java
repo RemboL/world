@@ -1,13 +1,15 @@
 package pl.rembol.jme3.world.ballman.order;
 
+import pl.rembol.jme3.rts.unit.order.DefaultActionOrder;
 import pl.rembol.jme3.rts.unit.order.Order;
-import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.GameState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OrderFactory {
 
@@ -41,7 +43,8 @@ public class OrderFactory {
     }
 
     public Order<?> produceOrder(String command) {
-        return produceOrder(command, gameState.selectionManager.getSelected());
+        // TODO FIXME
+        return produceOrder(command, pl.rembol.jme3.world.GameState.class.cast(gameState).selectionManager.getSelected());
     }
 
     public Order<?> produceOrder(String command, List<Selectable> selected) {
@@ -50,7 +53,7 @@ public class OrderFactory {
         if (orderClass != null) {
             try {
                 Order<Selectable> order = (Order<Selectable>) orderClass.getConstructor(GameState.class).newInstance(gameState);
-                order.setSelected(selected);
+                order.setSelected(selected.stream().filter(order::isApplicableFor).collect(Collectors.toList()));
                 return order;
             } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();

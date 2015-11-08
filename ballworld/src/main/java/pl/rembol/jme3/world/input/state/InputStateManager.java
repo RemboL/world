@@ -2,12 +2,12 @@ package pl.rembol.jme3.world.input.state;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.rts.unit.order.Order;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.order.OrderFactory;
 import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,10 +80,8 @@ public class InputStateManager {
                             target);
                     break;
                 case InputStateManager.RIGHT_CLICK:
-                    if (gameState.selectionManager.getSelectionType() == SelectionType.UNIT) {
-                        gameState.orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
-                                .perform(target);
-                    }
+                    gameState.orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
+                            .perform(target);
                     break;
             }
         }
@@ -123,10 +121,8 @@ public class InputStateManager {
                             target);
                     break;
                 case InputStateManager.RIGHT_CLICK:
-                    if (gameState.selectionManager.getSelectionType() == SelectionType.UNIT) {
-                        gameState.orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
-                                .perform(target);
-                    }
+                    gameState.orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
+                            .perform(target);
                     break;
             }
         }

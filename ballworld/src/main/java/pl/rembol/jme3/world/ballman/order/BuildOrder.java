@@ -2,7 +2,8 @@ package pl.rembol.jme3.world.ballman.order;
 
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.rts.unit.order.Order;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
@@ -24,7 +25,7 @@ public abstract class BuildOrder extends Order<BallMan> {
     @Override
     protected void doPerform(BallMan ballMan, Vector2f location) {
         // TODO FIXME
-        if (!GameState.class.cast(gameState).unitRegistry.isSpaceFreeWithBuffer(
+        if (!pl.rembol.jme3.world.GameState.class.cast(gameState).unitRegistry.isSpaceFreeWithBuffer(
                 gameState.terrain.getGroundPosition(location), factory.width())) {
             gameState.consoleLog.addLine("Can't build here, something's in the way");
             return;
@@ -36,7 +37,7 @@ public abstract class BuildOrder extends Order<BallMan> {
                     location.add(new Vector2f(factory.width(),
                             factory.width())), 3));
             // TODO FIXME
-            ballMan.control().addAction(new BuildAction(GameState.class.cast(gameState), location, factory));
+            ballMan.control().addAction(new BuildAction(pl.rembol.jme3.world.GameState.class.cast(gameState), location, factory));
         }
     }
 
@@ -47,6 +48,11 @@ public abstract class BuildOrder extends Order<BallMan> {
     @Override
     protected void doPerform(BallMan ballMan, WithNode target) {
         gameState.consoleLog.addLine("I cannot build on the " + target);
+    }
+
+    @Override
+    public boolean isApplicableFor(Selectable unit) {
+        return unit instanceof BallMan;
     }
 
     public BuildingFactory factory() {

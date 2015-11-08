@@ -1,6 +1,5 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.unit.action.Action;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
@@ -9,7 +8,7 @@ import pl.rembol.jme3.world.smallobject.tools.Tool;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-public class GetToolFromToolshopAction extends Action<BallMan> {
+public class GetToolFromToolshopAction extends BallManAction {
 
     private static final float REQUIRED_DISTANCE = 3;
 
@@ -24,8 +23,8 @@ public class GetToolFromToolshopAction extends Action<BallMan> {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        Optional<Toolshop> closestToolshop = ballMan.getOwner()
-                .getClosestToolshop(ballMan.getLocation());
+        // TODO FIXME
+        Optional<Toolshop> closestToolshop = pl.rembol.jme3.world.GameState.class.cast(gameState).ballManUnitRegistry.getClosestToolshop(ballMan.getLocation(), ballMan.getOwner());
 
         if (!closestToolshop.isPresent()) {
             gameState.consoleLog.addLineExternal(

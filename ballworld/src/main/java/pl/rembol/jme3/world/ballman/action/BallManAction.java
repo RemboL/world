@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.unit.action.Action;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
@@ -14,7 +14,7 @@ public abstract class BallManAction extends Action<BallMan> {
     }
 
     protected boolean assertWielded(BallMan ballMan,
-                                        Optional<Class<? extends Tool>> wieldedClass) {
+                                    Optional<Class<? extends Tool>> wieldedClass) {
         if (!wieldedClass.isPresent()) {
             if (ballMan.getWieldedObject(BallMan.Hand.RIGHT) != null) {
                 ballMan.control().addActionOnStart(

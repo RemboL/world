@@ -14,8 +14,11 @@ import pl.rembol.jme3.rts.gui.console.ConsoleLog;
 import pl.rembol.jme3.rts.input.ModifierKeysManager;
 import pl.rembol.jme3.rts.input.RtsCamera;
 import pl.rembol.jme3.rts.pathfinding.PathfindingService;
+import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.rts.terrain.Terrain;
 import pl.rembol.jme3.rts.threads.ThreadManager;
+
+import java.util.List;
 
 public class GameState {
 
@@ -58,6 +61,9 @@ public class GameState {
         statusBar = new StatusBar(simpleApplication, settings);
         new SelectionBox(simpleApplication);
         new RtsCamera(simpleApplication);
+    }
 
+    protected void initResources(List<ResourceType> resourceTypeList) {
+        resourcesBar.init(resourceTypeList);
     }
 }

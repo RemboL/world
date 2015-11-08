@@ -6,43 +6,43 @@ import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.world.resources.Cost;
-import pl.rembol.jme3.world.resources.ResourceTypes;
+import pl.rembol.jme3.rts.resources.Cost;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static pl.rembol.jme3.world.resources.ResourceTypes.HOUSING;
-
 public class Player {
-
-    private static final int HOUSING_PER_HOUSE = 10;
 
     private String name;
 
     private static Integer playerCounter = 0;
     private Integer id;
 
-    private Map<ResourceType, Integer> resources = new HashMap<>();
-    private Map<ResourceType, Integer> resourcesLimits = new HashMap<>();
+    protected Map<ResourceType, Integer> resources = new HashMap<>();
+    protected Map<ResourceType, Integer> resourcesLimits = new HashMap<>();
 
     private ColorRGBA color = null;
 
     private boolean active = false;
 
-    private GameState gameState;
+    protected GameState gameState;
 
-    public Player(GameState gameState) {
+    public Player(GameState gameState, List<ResourceType> resourceTypeList) {
         this.gameState = gameState;
-        for (ResourceType type : ResourceTypes.values()) {
+        id = playerCounter++;
+
+        initResources(resourceTypeList);
+    }
+
+    private void initResources(List<ResourceType> resourceTypeList) {
+        for (ResourceType type : resourceTypeList) {
             resources.put(type, 0);
             if (type.isLimited()) {
                 resourcesLimits.put(type, 0);
             }
         }
-
-        id = playerCounter++;
     }
 
     public String getName() {
@@ -80,15 +80,14 @@ public class Player {
         updateResources();
     }
 
-    public void updateHousingLimit() {
-        resourcesLimits.put(HOUSING, gameState.unitRegistry.getHousesByOwner(this).size()
-                * HOUSING_PER_HOUSE);
+    public void setResource(ResourceType type, int count) {
+        resources.put(type, count);
 
         updateResources();
     }
 
-    public void updateHousing() {
-        resources.put(HOUSING, gameState.unitRegistry.countHousing(this));
+    public void setResourceLimit(ResourceType type, int count) {
+        resourcesLimits.put(type, count);
 
         updateResources();
     }
@@ -133,42 +132,23 @@ public class Player {
         return active;
     }
 
-    private void updateResources() {
+    public void updateResources() {
         if (active) {
             gameState.resourcesBar.updateResources(resources, resourcesLimits);
         }
     }
 
-    public Optional<Warehouse> getClosestWarehouse(final Vector3f location) {
 
-        return gameState.unitRegistry
-                .getWarehousesByOwner(this)
-                .stream()
-                .sorted((first, second) -> Float.valueOf(
-                        first.getNode().getWorldTranslation()
-                                .distance(location)).compareTo(
-                        second.getNode().getWorldTranslation()
-                                .distance(location))).findFirst();
-    }
-
-    public Optional<Toolshop> getClosestToolshop(final Vector3f location) {
-
-        return gameState.unitRegistry
-                .getToolshopsByOwner(this)
-                .stream()
-                .sorted((first, second) -> Float.valueOf(
-                        first.getNode().getWorldTranslation()
-                                .distance(location)).compareTo(
-                        second.getNode().getWorldTranslation()
-                                .distance(location))).findFirst();
-    }
 
     public int getResource(ResourceType type) {
         return resources.get(type);
     }
 
-    public boolean availableHousing(int i) {
-        return resourcesLimits.get(HOUSING) - resources.get(HOUSING) >= i;
-    }
+    public boolean availableResource(ResourceType resourceType, int count) {
+        if (resourceType.isLimited()) {
+            return resourcesLimits.get(resourceType) - resources.get(resourceType) >= count;
+        }
 
+        return false;
+    }
 }

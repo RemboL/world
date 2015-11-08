@@ -18,8 +18,11 @@ import pl.rembol.jme3.rts.unit.selection.Destructable;
 import pl.rembol.jme3.rts.unit.selection.Selectable;
 import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
 import pl.rembol.jme3.rts.unit.selection.SelectionNode;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public abstract class Building implements Selectable, WithOwner, Destructable, Solid {
+
+    private static final int HOUSING_PER_HOUSE = 10;
 
     private RigidBodyControl control;
     private Node node;
@@ -134,7 +137,8 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
 
     public void finishBuilding() {
         if (owner != null) {
-            owner.updateHousingLimit();
+            owner.setResourceLimit(ResourceTypes.HOUSING, gameState.unitRegistry.getHousesByOwner(owner).size()
+                    * HOUSING_PER_HOUSE);
         }
 
         for (Control control : createControls()) {

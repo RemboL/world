@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.smallobject.tools;
 
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 
 public class Sword extends Tool {
 
