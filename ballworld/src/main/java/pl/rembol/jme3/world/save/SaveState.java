@@ -3,6 +3,7 @@ package pl.rembol.jme3.world.save;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import pl.rembol.jme3.rts.save.PlayerDTO;
 import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.rts.save.UnitsDTO;
 import pl.rembol.jme3.world.building.house.HouseDTO;

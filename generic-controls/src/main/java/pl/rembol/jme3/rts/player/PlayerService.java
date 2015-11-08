@@ -1,9 +1,10 @@
-package pl.rembol.jme3.world.player;
+package pl.rembol.jme3.rts.player;
 
 import com.jme3.math.ColorRGBA;
+import pl.rembol.jme3.rts.gui.ResourcesBar;
+import pl.rembol.jme3.rts.gui.console.ConsoleLog;
 import pl.rembol.jme3.rts.resources.ResourceType;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.save.PlayerDTO;
+import pl.rembol.jme3.rts.save.PlayerDTO;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +13,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PlayerService {
-    private final GameState gameState;
+
+    private final ResourcesBar resourcesBar;
+    private final ConsoleLog consoleLog;
 
     private Map<String, Player> players = new HashMap<>();
 
@@ -20,8 +23,9 @@ public class PlayerService {
 
     private List<ResourceType> resourceTypeList;
 
-    public PlayerService(GameState gameState) {
-        this.gameState = gameState;
+    public PlayerService(ResourcesBar resourcesBar, ConsoleLog consoleLog) {
+        this.resourcesBar = resourcesBar;
+        this.consoleLog = consoleLog;
     }
 
     public void registerPlayer(String name, ColorRGBA color, boolean active) {
@@ -32,7 +36,7 @@ public class PlayerService {
             return;
         }
 
-        Player player = new Player(gameState, resourceTypeList);
+        Player player = new Player(resourcesBar, consoleLog, resourceTypeList);
         player.setName(name);
         player.setColor(color);
         player.setActive(active);

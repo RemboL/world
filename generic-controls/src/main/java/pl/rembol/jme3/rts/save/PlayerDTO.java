@@ -1,8 +1,8 @@
-package pl.rembol.jme3.world.save;
+package pl.rembol.jme3.rts.save;
 
 import com.jme3.math.ColorRGBA;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.rts.player.Player;
 
 @XStreamAlias("player")
 public class PlayerDTO {

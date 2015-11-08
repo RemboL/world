@@ -11,15 +11,13 @@ import pl.rembol.jme3.world.input.MouseClickListener;
 import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.player.PlayerService;
+import pl.rembol.jme3.rts.player.PlayerService;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class GameState extends pl.rembol.jme3.rts.GameState {
     public final UnitRegistry unitRegistry;
 
     public final SelectionManager selectionManager;
-
-    public final PlayerService playerService;
 
     public final BuildingSilhouetteManager buildingSilhouetteManager;
 
@@ -43,7 +41,6 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
 
         unitRegistry = new UnitRegistry(this);
         selectionManager = new SelectionManager(this);
-        playerService = new PlayerService(this);
         buildingSilhouetteManager = new BuildingSilhouetteManager(this);
         orderFactory = new OrderFactory(this);
         inputStateManager = new InputStateManager(this);

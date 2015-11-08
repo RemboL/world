@@ -3,7 +3,7 @@ package pl.rembol.jme3.world;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.world.player.Player;
+import pl.rembol.jme3.rts.player.Player;
 
 import java.util.List;
 import java.util.Optional;

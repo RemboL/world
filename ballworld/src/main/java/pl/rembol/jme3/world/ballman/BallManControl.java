@@ -10,7 +10,7 @@ import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.EnterHouseAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.world.player.WithOwner;
+import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 
 public class BallManControl extends ActionQueueControl<BallMan> implements

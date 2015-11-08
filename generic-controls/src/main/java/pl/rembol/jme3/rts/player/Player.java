@@ -1,12 +1,10 @@
-package pl.rembol.jme3.world.player;
+package pl.rembol.jme3.rts.player;
 
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.resources.ResourceType;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.building.toolshop.Toolshop;
-import pl.rembol.jme3.world.building.warehouse.Warehouse;
+import pl.rembol.jme3.rts.gui.ResourcesBar;
+import pl.rembol.jme3.rts.gui.console.ConsoleLog;
 import pl.rembol.jme3.rts.resources.Cost;
+import pl.rembol.jme3.rts.resources.ResourceType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,10 +25,13 @@ public class Player {
 
     private boolean active = false;
 
-    protected GameState gameState;
+    private final ResourcesBar resourcesBar;
+    private final ConsoleLog consoleLog;
 
-    public Player(GameState gameState, List<ResourceType> resourceTypeList) {
-        this.gameState = gameState;
+    public Player(ResourcesBar resourcesBar, ConsoleLog consoleLog, List<ResourceType> resourceTypeList) {
+        this.resourcesBar = resourcesBar;
+        this.consoleLog = consoleLog;
+
         id = playerCounter++;
 
         initResources(resourceTypeList);
@@ -67,11 +68,12 @@ public class Player {
 
     @Override
     public boolean equals(Object that) {
-        if (!Player.class.isInstance(that)) {
-            return false;
-        }
-
-        return Player.class.cast(that).getId().equals(this.getId());
+        return Optional.ofNullable(that)
+                .filter(Player.class::isInstance)
+                .map(Player.class::cast)
+                .map(Player::getId)
+                .filter(this.getId()::equals)
+                .isPresent();
     }
 
     public void addResource(ResourceType type, int count) {
@@ -97,10 +99,10 @@ public class Player {
             if (entry.getValue() > 0
                     && resources.get(entry.getKey()) < entry.getValue()) {
                 if (active) {
-                    gameState.consoleLog.addLine("Not enough "
+                    consoleLog.addLine("Not enough "
                             + entry.getKey().resourceName() + " ("
                             + entry.getValue() + " required)");
-                    gameState.resourcesBar.blinkResource(entry.getKey());
+                    resourcesBar.blinkResource(entry.getKey());
                 }
                 return false;
             }
@@ -134,10 +136,9 @@ public class Player {
 
     public void updateResources() {
         if (active) {
-            gameState.resourcesBar.updateResources(resources, resourcesLimits);
+            resourcesBar.updateResources(resources, resourcesLimits);
         }
     }
-
 
 
     public int getResource(ResourceType type) {

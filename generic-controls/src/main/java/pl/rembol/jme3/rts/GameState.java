@@ -14,6 +14,7 @@ import pl.rembol.jme3.rts.gui.console.ConsoleLog;
 import pl.rembol.jme3.rts.input.ModifierKeysManager;
 import pl.rembol.jme3.rts.input.RtsCamera;
 import pl.rembol.jme3.rts.pathfinding.PathfindingService;
+import pl.rembol.jme3.rts.player.PlayerService;
 import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.rts.terrain.Terrain;
 import pl.rembol.jme3.rts.threads.ThreadManager;
@@ -40,6 +41,7 @@ public class GameState {
     public final ConsoleLog consoleLog;
     public final ModifierKeysManager modifierKeysManager;
     public final StatusBar statusBar;
+    public final PlayerService playerService;
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         this.simpleApplication = simpleApplication;
@@ -61,6 +63,8 @@ public class GameState {
         statusBar = new StatusBar(simpleApplication, settings);
         new SelectionBox(simpleApplication);
         new RtsCamera(simpleApplication);
+
+        playerService = new PlayerService(resourcesBar, consoleLog);
     }
 
     protected void initResources(List<ResourceType> resourceTypeList) {
