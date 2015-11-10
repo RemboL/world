@@ -1,21 +1,23 @@
 package pl.rembol.jme3.world.ballman.order;
 
+import java.util.List;
+
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.rts.unit.order.Order;
 import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
 import pl.rembol.jme3.world.building.BuildingFactory;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 
 public abstract class BuildOrder extends Order<BallMan> {
 
     protected BuildingFactory factory;
 
-    public BuildOrder(GameState gameState) {
-        super(gameState);
+    public BuildOrder(GameState gameState, List<Selectable> selected) {
+        super(gameState, selected);
 
         factory = createBuildingFactory();
     }

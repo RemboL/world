@@ -1,5 +1,7 @@
 package pl.rembol.jme3.rts.unit.order;
 
+import java.util.List;
+
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.unit.interfaces.WithDefaultActionControl;
@@ -8,8 +10,8 @@ import pl.rembol.jme3.rts.unit.selection.Selectable;
 
 public class DefaultActionOrder extends Order<WithDefaultActionControl> {
 
-    public DefaultActionOrder(GameState gameState) {
-        super(gameState);
+    public DefaultActionOrder(GameState gameState, List<Selectable> selectableList) {
+        super(gameState, selectableList);
     }
 
     @Override

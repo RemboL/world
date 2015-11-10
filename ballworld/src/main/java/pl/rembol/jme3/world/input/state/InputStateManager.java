@@ -1,17 +1,16 @@
 package pl.rembol.jme3.world.input.state;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-import pl.rembol.jme3.rts.unit.order.Order;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.ballman.order.OrderFactory;
-import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
+import pl.rembol.jme3.rts.unit.order.DefaultActionOrder;
+import pl.rembol.jme3.rts.unit.order.Order;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.world.GameState;
 
 public class InputStateManager {
 
@@ -76,12 +75,10 @@ public class InputStateManager {
         } else if (currentState == InputState.DEFAULT) {
             switch (command) {
                 case InputStateManager.LEFT_CLICK:
-                    gameState.orderFactory.produceOrder(OrderFactory.ORDER_SELECT).perform(
-                            target);
+                    gameState.selectionManager.select(Selectable.class.cast(target));
                     break;
                 case InputStateManager.RIGHT_CLICK:
-                    gameState.orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
-                            .perform(target);
+                    new DefaultActionOrder(gameState, gameState.selectionManager.getSelected()).perform(target);
                     break;
             }
         }
@@ -117,12 +114,9 @@ public class InputStateManager {
         } else if (currentState == InputState.DEFAULT) {
             switch (command) {
                 case InputStateManager.LEFT_CLICK:
-                    gameState.orderFactory.produceOrder(OrderFactory.ORDER_SELECT).perform(
-                            target);
                     break;
                 case InputStateManager.RIGHT_CLICK:
-                    gameState.orderFactory.produceOrder(OrderFactory.ORDER_DEFAULT)
-                            .perform(target);
+                    new DefaultActionOrder(gameState, gameState.selectionManager.getSelected()).perform(target);
                     break;
             }
         }
@@ -167,12 +161,11 @@ public class InputStateManager {
             currentState = transition.get().getTargetState();
             if (currentState == InputState.ISSUE_ORDER
                     || currentState == InputState.ISSUE_BUILD_ORDER) {
-                currentOrder = gameState.orderFactory.produceOrder(transition.get()
-                        .getOrder());
+                currentOrder = transition.get().getOrder(gameState);
                 gameState.buildingSilhouetteManager.createSilhouette(currentOrder);
             } else if (currentState == InputState.ISSUE_ORDER_IMMEDIATELY) {
                 currentOrder = null;
-                gameState.orderFactory.produceOrder(transition.get().getOrder()).perform(
+                transition.get().getOrder(gameState).perform(
                         Selectable.class.cast(null));
                 currentState = InputState.DEFAULT;
             } else {

@@ -1,5 +1,8 @@
 package pl.rembol.jme3.rts.unit.control;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.math.Vector2f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -10,9 +13,6 @@ import pl.rembol.jme3.rts.unit.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.rts.unit.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.rts.unit.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActionQueueControl<T extends WithNode> extends
         AbstractControl implements DefaultActionControl {
@@ -60,7 +60,7 @@ public class ActionQueueControl<T extends WithNode> extends
         }
 
         actionQueue.clear();
-        actionQueue.add(action);
+        addAction(action);
     }
 
     public void addAction(Action<?> action) {

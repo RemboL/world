@@ -4,7 +4,7 @@ import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
 
 public interface WithActionQueueControl extends WithNode {
 
-    default ActionQueueControl actionQueueControl() {
+    default <T extends WithNode> ActionQueueControl<T> actionQueueControl() {
         return getNode().getControl(ActionQueueControl.class);
     }
 }

@@ -1,35 +1,45 @@
 package pl.rembol.jme3.world.input.state;
 
-import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
+import static pl.rembol.jme3.world.input.state.InputState.BUILD_MENU;
+import static pl.rembol.jme3.world.input.state.InputState.DEFAULT;
+import static pl.rembol.jme3.world.input.state.InputState.ISSUE_BUILD_ORDER;
+import static pl.rembol.jme3.world.input.state.InputState.ISSUE_ORDER;
+import static pl.rembol.jme3.world.input.state.InputState.ISSUE_ORDER_IMMEDIATELY;
+import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.HOUSE;
+import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.UNIT;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static pl.rembol.jme3.world.ballman.order.OrderFactory.*;
-import static pl.rembol.jme3.world.input.state.InputState.*;
-import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.HOUSE;
-import static pl.rembol.jme3.world.input.state.SelectionManager.SelectionType.UNIT;
+import pl.rembol.jme3.world.ballman.order.BuildHouseOrder;
+import pl.rembol.jme3.world.ballman.order.BuildToolshopOrder;
+import pl.rembol.jme3.world.ballman.order.BuildWarehouseOrder;
+import pl.rembol.jme3.world.ballman.order.MoveOrder;
+import pl.rembol.jme3.world.ballman.order.OrderProducer;
+import pl.rembol.jme3.world.ballman.order.RecruitOrder;
+import pl.rembol.jme3.world.ballman.order.SmoothenTerrainOrder;
+import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
 
 public class StateTransitions {
-
+    
     private static final List<StateTransition> transitions = new ArrayList<>();
 
     static {
-        register(DEFAULT, UNIT, Command.MOVE, ISSUE_ORDER, ORDER_MOVE);
-        register(DEFAULT, UNIT, Command.FLATTEN, ISSUE_ORDER, ORDER_FLATTEN);
+        register(DEFAULT, UNIT, Command.MOVE, ISSUE_ORDER, MoveOrder::new);
+        register(DEFAULT, UNIT, Command.FLATTEN, ISSUE_ORDER, SmoothenTerrainOrder::new);
         register(DEFAULT, UNIT, Command.BUILD, BUILD_MENU, null);
 
         register(BUILD_MENU, UNIT, Command.BUILD_HOUSE, ISSUE_BUILD_ORDER,
-                ORDER_BUILD_HOUSE);
+                BuildHouseOrder::new);
         register(BUILD_MENU, UNIT, Command.BUILD_TOOLSHOP, ISSUE_BUILD_ORDER,
-                ORDER_BUILD_TOOLSHOP);
+                BuildToolshopOrder::new);
         register(BUILD_MENU, UNIT, Command.BUILD_WAREHOUSE, ISSUE_BUILD_ORDER,
-                ORDER_BUILD_WAREHOUSE);
+                BuildWarehouseOrder::new);
 
         register(DEFAULT, HOUSE, Command.RECRUIT, ISSUE_ORDER_IMMEDIATELY,
-                ORDER_RECRUIT);
+                RecruitOrder::new);
 
         register(ISSUE_ORDER, UNIT, Command.CANCEL, DEFAULT, null);
         register(BUILD_MENU, UNIT, Command.CANCEL, DEFAULT, null);
@@ -37,9 +47,9 @@ public class StateTransitions {
     }
 
     private static void register(InputState startingState, SelectionType type,
-                                 Command commandButton, InputState finishState, String order) {
+                                 Command commandButton, InputState finishState, OrderProducer orderProducer) {
         transitions.add(new StateTransition(startingState, type, commandButton
-                .getCommandKey(), commandButton, finishState, order));
+                .getCommandKey(), commandButton, finishState, orderProducer));
     }
 
     public Optional<StateTransition> match(InputState state,

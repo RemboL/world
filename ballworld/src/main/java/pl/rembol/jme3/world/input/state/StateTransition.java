@@ -1,24 +1,33 @@
 package pl.rembol.jme3.world.input.state;
 
+import pl.rembol.jme3.rts.unit.order.Order;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.ballman.order.OrderProducer;
 import pl.rembol.jme3.world.input.state.SelectionManager.SelectionType;
 
 public class StateTransition {
 
     private InputState currentState;
+
     private String commandKey;
+
     private Command commandButton;
+
     private InputState targetState;
-    private String order;
+
+    private OrderProducer orderProducer;
+
     private SelectionType type;
 
     public StateTransition(InputState currentState, SelectionType type,
-                           String commandKey, Command commandButton, InputState targetState, String order) {
+                           String commandKey, Command commandButton, InputState targetState,
+                           OrderProducer orderProducer) {
         this.currentState = currentState;
         this.type = type;
         this.commandKey = commandKey;
         this.commandButton = commandButton;
         this.targetState = targetState;
-        this.order = order;
+        this.orderProducer = orderProducer;
     }
 
     public boolean match(InputState currentState, SelectionType type,
@@ -35,7 +44,13 @@ public class StateTransition {
         return targetState;
     }
 
-    public String getOrder() {
+    public Order<?> getOrder(GameState gameState) {
+        if (orderProducer == null) {
+            return null;
+        }
+        Order order = orderProducer.produce(gameState, gameState.selectionManager.getSelected());
+//        order.setSelected(gameState.selectionManager.getSelected().stream().filter(order::isApplicableFor).collect(
+//                Collectors.toList()));
         return order;
     }
 

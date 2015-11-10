@@ -1,20 +1,22 @@
 package pl.rembol.jme3.world.ballman.order;
 
+import static pl.rembol.jme3.world.resources.ResourceTypes.WOOD;
+
+import java.util.List;
+
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.resources.Cost;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
 import pl.rembol.jme3.rts.unit.order.Order;
 import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-import pl.rembol.jme3.rts.resources.Cost;
 import pl.rembol.jme3.world.resources.ResourceTypes;
-
-import static pl.rembol.jme3.world.resources.ResourceTypes.WOOD;
 
 public class RecruitOrder extends Order<House> {
 
-    public RecruitOrder(GameState gameState) {
-        super(gameState);
+    public RecruitOrder(GameState gameState, List<Selectable> selectableList) {
+        super(gameState, selectableList);
     }
 
     @Override
