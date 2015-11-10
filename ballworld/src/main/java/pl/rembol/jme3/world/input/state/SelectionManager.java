@@ -1,23 +1,17 @@
 package pl.rembol.jme3.world.input.state;
 
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.building.ConstructionSite;
-import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.rts.player.WithOwner;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SelectionManager {
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import pl.rembol.jme3.rts.player.WithOwner;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.ballman.BallMan;
 
-    public enum SelectionType {
-        UNIT, HOUSE
-    }
+public class SelectionManager {
 
     private List<Selectable> selected = new ArrayList<>();
 
@@ -87,34 +81,6 @@ public class SelectionManager {
 
     public List<Selectable> getSelected() {
         return selected;
-    }
-
-    public SelectionType getSelectionType() {
-        if (!selected.isEmpty()) {
-            if (selected.stream().allMatch(
-                    selectedUnit -> BallMan.class.isInstance(selectedUnit)
-                            && isOwnedByActivePlayer(selectedUnit))) {
-                return SelectionType.UNIT;
-            }
-
-            if (selected.stream().allMatch(
-                    selectedUnit -> House.class.isInstance(selectedUnit)
-                            && isOwnedByActivePlayer(selectedUnit)
-                            && isNotUnderConstruction(selectedUnit))) {
-                return SelectionType.HOUSE;
-            }
-        }
-
-        return null;
-    }
-
-    private boolean isNotUnderConstruction(Selectable selectedUnit) {
-        return selectedUnit.getNode().getControl(ConstructionSite.class) == null;
-    }
-
-    private boolean isOwnedByActivePlayer(Selectable selectedUnit) {
-        return WithOwner.class.cast(selectedUnit).getOwner()
-                .equals(gameState.playerService.getActivePlayer());
     }
 
     public void dragSelect(Vector3f dragStart, Vector3f dragStop) {

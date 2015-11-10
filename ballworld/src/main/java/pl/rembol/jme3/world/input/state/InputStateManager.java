@@ -40,8 +40,6 @@ public class InputStateManager {
 
     private Order<?> currentOrder = null;
 
-    private StateTransitions transitions = new StateTransitions();
-
     private GameState gameState;
 
     public InputStateManager(GameState gameState) {
@@ -154,8 +152,8 @@ public class InputStateManager {
     }
 
     private Optional<StateTransition> getTransitionAndChangeState(String command) {
-        Optional<StateTransition> transition = transitions.match(currentState,
-                gameState.selectionManager.getSelectionType(), command);
+        Optional<StateTransition> transition = gameState.stateTransitions.match(currentState,
+                gameState.selectionManager.getSelected(), command);
 
         if (transition.isPresent()) {
             currentState = transition.get().getTargetState();
@@ -177,9 +175,8 @@ public class InputStateManager {
     }
 
     public List<Command> getAvailableCommands() {
-        gameState.selectionManager.getSelectionType();
-        return transitions
-                .match(currentState, gameState.selectionManager.getSelectionType())
+        return gameState.stateTransitions
+                .match(currentState, gameState.selectionManager.getSelected())
                 .stream().map(StateTransition::getCommandButton)
                 .collect(Collectors.toList());
     }

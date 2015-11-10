@@ -10,9 +10,11 @@ import pl.rembol.jme3.world.input.MouseClickListener;
 import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
 import pl.rembol.jme3.world.input.state.SelectionManager;
+import pl.rembol.jme3.world.input.state.StateTransitions;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class GameState extends pl.rembol.jme3.rts.GameState {
+    
     public final UnitRegistry unitRegistry;
 
     public final SelectionManager selectionManager;
@@ -28,6 +30,8 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
     public final MouseClickListener mouseClickListener;
 
     public final BallManUnitRegistry ballManUnitRegistry;
+
+    public final StateTransitions stateTransitions;
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         super(simpleApplication, settings, bulletAppState);
@@ -45,7 +49,7 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
 
         ballManUnitRegistry = new BallManUnitRegistry(this);
 
-
+        stateTransitions = new StateTransitions(this);
         initResources(ResourceTypes.values());
         playerService.setResourceTypeList(ResourceTypes.values());
     }

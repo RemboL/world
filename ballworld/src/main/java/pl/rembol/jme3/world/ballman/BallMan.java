@@ -1,6 +1,8 @@
 package pl.rembol.jme3.world.ballman;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -228,5 +230,10 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     @Override
     protected SelectionIcon createIcon(GameState gameState) {
         return new BallManIcon(gameState, this);
+    }
+
+    @Override
+    public List<String> getAvailableOrders() {
+        return Arrays.asList("move", "flatten", "build", "house", "toolshop", "warehouse", "cancel");
     }
 }

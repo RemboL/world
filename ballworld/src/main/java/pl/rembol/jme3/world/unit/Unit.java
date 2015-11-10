@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.unit;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import com.jme3.animation.AnimChannel;
@@ -108,4 +110,9 @@ abstract public class Unit implements Selectable,
     abstract protected String getModelName();
     
     abstract protected SelectionIcon createIcon(GameState gameState);
+    
+    @Override
+    public List<String> getAvailableOrders() {
+        return Arrays.asList("move");
+    }
 }

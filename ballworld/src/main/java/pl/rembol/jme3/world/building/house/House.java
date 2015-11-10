@@ -2,6 +2,7 @@ package pl.rembol.jme3.world.building.house;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.jme3.math.Vector2f;
@@ -141,5 +142,13 @@ public class House extends Building {
         super.destroy();
 
         unitsInside.forEach(this::exit);
+    }
+
+    @Override
+    public List<String> getAvailableOrders() {
+        if (isConstructed()) {
+            return Arrays.asList("ballman");
+        }
+        return Collections.emptyList();
     }
 }
