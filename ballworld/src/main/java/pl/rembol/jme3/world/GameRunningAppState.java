@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world;
 
+import java.io.File;
+
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -18,7 +20,6 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
-import pl.rembol.jme3.world.rabbit.Rabbit;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
 import pl.rembol.jme3.world.save.SaveState;
 
@@ -70,7 +71,7 @@ public class GameRunningAppState extends AbstractAppState {
 
         initLightAndShadows(gameState, app.getViewPort());
 
-        SaveState load = SaveState.load("ballworld\\save.xml");
+        SaveState load = SaveState.load("ballworld" + File.separator + "save.xml");
         gameState.terrain.init(load.getTerrain());
         gameState.pathfindingService.initFromTerrain();
 

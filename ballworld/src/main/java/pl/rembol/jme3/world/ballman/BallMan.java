@@ -1,53 +1,37 @@
 package pl.rembol.jme3.world.ballman;
 
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.*;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.particles.SparkParticleEmitter;
+import pl.rembol.jme3.rts.player.Player;
+import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.rts.smallobjects.SmallObject;
 import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
 import pl.rembol.jme3.rts.unit.control.DefaultActionControl;
 import pl.rembol.jme3.rts.unit.control.MovingControl;
-import pl.rembol.jme3.rts.unit.interfaces.WithActionQueueControl;
-import pl.rembol.jme3.rts.unit.interfaces.WithDefaultActionControl;
-import pl.rembol.jme3.rts.unit.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.unit.selection.Destructable;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
 import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
-import pl.rembol.jme3.rts.unit.selection.SelectionNode;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.rts.player.Player;
-import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+import pl.rembol.jme3.world.unit.Unit;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-
-public class BallMan implements Selectable, WithOwner, Destructable,
-        WithMovingControl, WithActionQueueControl, WithDefaultActionControl {
-
-    private GameState gameState;
-
-    private Node node;
-
-    private SelectionIcon icon;
-
-    private Node selectionNode;
+public class BallMan extends Unit implements WithOwner, Destructable {
 
     private Node controlNode;
-
-    private BetterCharacterControl control;
 
     protected static final int MAX_HP = 50;
 
@@ -66,30 +50,22 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     public BallMan(GameState gameState, Vector3f position, String player) {
-        this.gameState = gameState;
-        initNode(gameState.rootNode);
-        icon = new BallManIcon(gameState, this);
-        node.setLocalTranslation(position);
-        node.setLocalRotation(new Quaternion().fromAngleAxis(
-                new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
+        super(gameState, position);
 
         control = new BetterCharacterControl(.6f, 10f, 1);
 
         controlNode = new Node("control node");
-        node.attachChild(controlNode);
+        getNode().attachChild(controlNode);
 
         controlNode.addControl(new BallManControl(gameState, this));
         controlNode.addControl(new MovingControl(this));
         controlNode.addControl(new HungerControl(gameState, this));
 
-        gameState.bulletAppState.getPhysicsSpace().add(control);
-
-        node.addControl(control);
-        control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
-                0f, new Random().nextFloat() - .5f).normalize());
-
-        gameState.unitRegistry.register(this);
         owner = gameState.playerService.getPlayer(player);
+    }
+
+    @Override
+    protected void addControls() {
     }
 
     @Override
@@ -121,36 +97,12 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     @Override
-    public Node getNode() {
-        return node;
-    }
-
-    @Override
     public float getWidth() {
         return 1f;
     }
 
     public int getHp() {
         return hp;
-    }
-
-    @Override
-    public Node initNodeWithScale() {
-        return (Node) gameState.assetManager.loadModel("ballman/ballman.mesh.xml");
-    }
-
-    private void initNode(Node rootNode) {
-        node = initNodeWithScale();
-
-        rootNode.attachChild(node);
-        node.setShadowMode(ShadowMode.Cast);
-        initAnimation();
-    }
-
-    private void initAnimation() {
-        AnimControl animationControl = node.getControl(AnimControl.class);
-        AnimChannel animationChannel = animationControl.createChannel();
-        animationChannel.setAnim("stand");
     }
 
     public enum Hand {
@@ -193,23 +145,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
     }
 
     @Override
-    public void select() {
-        if (selectionNode == null) {
-            selectionNode = new SelectionNode(gameState);
-            node.attachChild(selectionNode);
-            selectionNode.setLocalTranslation(0, .3f, 0);
-        }
-    }
-
-    @Override
-    public void deselect() {
-        if (selectionNode != null) {
-            node.detachChild(selectionNode);
-            selectionNode = null;
-        }
-    }
-
-    @Override
     public Node getStatusDetails() {
         if (status == null) {
             status = new BallManStatus(this, gameState);
@@ -235,7 +170,7 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[]{"skin"};
+        return new String[]{ "skin" };
     }
 
     @Override
@@ -254,11 +189,6 @@ public class BallMan implements Selectable, WithOwner, Destructable,
 
     public BallManControl control() {
         return controlNode.getControl(BallManControl.class);
-    }
-
-    @Override
-    public SelectionIcon getIcon() {
-        return icon;
     }
 
     public HungerControl hunger() {
@@ -289,5 +219,14 @@ public class BallMan implements Selectable, WithOwner, Destructable,
                 .getUserData(this, House.INSIDE_DATA_KEY)
                 .filter(House.class::isInstance)
                 .map(House.class::cast);
+    }
+
+    protected String getModelName() {
+        return "ballman/ballman.mesh.xml";
+    }
+
+    @Override
+    protected SelectionIcon createIcon(GameState gameState) {
+        return new BallManIcon(gameState, this);
     }
 }
