@@ -7,6 +7,7 @@ import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import pl.rembol.jme3.rts.events.EventManager;
 import pl.rembol.jme3.rts.gui.ResourcesBar;
 import pl.rembol.jme3.rts.gui.SelectionBox;
 import pl.rembol.jme3.rts.gui.status.StatusBar;
@@ -18,6 +19,7 @@ import pl.rembol.jme3.rts.player.PlayerService;
 import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.rts.terrain.Terrain;
 import pl.rembol.jme3.rts.threads.ThreadManager;
+import pl.rembol.jme3.rts.unitregistry.UnitRegistry;
 
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class GameState {
     public final InputManager inputManager;
 
     public final ThreadManager threadManager = new ThreadManager();
+    public final EventManager eventManager = new EventManager();
 
     public final PathfindingService pathfindingService;
     public final Terrain terrain;
@@ -41,7 +44,10 @@ public class GameState {
     public final ConsoleLog consoleLog;
     public final ModifierKeysManager modifierKeysManager;
     public final StatusBar statusBar;
+
     public final PlayerService playerService;
+    public final UnitRegistry unitRegistry;
+
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         this.simpleApplication = simpleApplication;
@@ -60,11 +66,12 @@ public class GameState {
         resourcesBar = new ResourcesBar(simpleApplication, settings);
         consoleLog = new ConsoleLog(simpleApplication, settings);
         modifierKeysManager = new ModifierKeysManager(simpleApplication);
-        statusBar = new StatusBar(simpleApplication, settings);
+        statusBar = new StatusBar(simpleApplication, settings, eventManager);
         new SelectionBox(simpleApplication);
         new RtsCamera(simpleApplication);
 
         playerService = new PlayerService(resourcesBar, consoleLog);
+        unitRegistry = new UnitRegistry(this);
     }
 
     protected void initResources(List<ResourceType> resourceTypeList) {

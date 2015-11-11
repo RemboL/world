@@ -4,6 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
+import pl.rembol.jme3.rts.events.EventManager;
 import pl.rembol.jme3.rts.unit.selection.Selectable;
 import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
 
@@ -20,7 +21,7 @@ public class StatusBar extends Node {
 
     private final SimpleApplication simpleApplication;
 
-    public StatusBar(SimpleApplication simpleApplication, AppSettings appSettings) {
+    public StatusBar(SimpleApplication simpleApplication, AppSettings appSettings, EventManager eventManager) {
         super("status bar");
 
         this.simpleApplication = simpleApplication;
@@ -35,6 +36,20 @@ public class StatusBar extends Node {
         attachChild(frame);
 
         attachChild(statusDetails);
+
+        eventManager.onSelectionChanged(selectionChangedEvent -> {
+            List<Selectable> selected = selectionChangedEvent.getSelectableList();
+            if (selected.size() == 0) {
+                clear();
+            } else if (selected.size() == 1) {
+                Node node = selected.get(0).getStatusDetails();
+                if (node != null) {
+                    setStatusDetails(node);
+                }
+            } else {
+                setIcons(selected);
+            }
+        });
     }
 
 

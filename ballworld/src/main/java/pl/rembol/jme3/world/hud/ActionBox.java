@@ -25,6 +25,7 @@ public class ActionBox {
         buttonsNode.move(gameState.settings.getWidth() - 172, 146, 0);
         gameState.guiNode.attachChild(buttonsNode);
 
+        gameState.eventManager.onSelectionChanged(selectionChangedEvent -> updateActionButtons());
     }
 
     public void updateActionButtons() {

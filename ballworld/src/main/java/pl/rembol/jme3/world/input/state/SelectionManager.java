@@ -1,15 +1,15 @@
 package pl.rembol.jme3.world.input.state;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
+import pl.rembol.jme3.rts.events.selectionchanged.SelectionChangedEvent;
 import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.rts.unit.selection.Selectable;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SelectionManager {
 
@@ -19,6 +19,8 @@ public class SelectionManager {
 
     public SelectionManager(GameState gameState) {
         this.gameState = gameState;
+
+        gameState.eventManager.onUnitDestroyed(event -> deselect(event.getUnit()));
     }
 
     public void select(Selectable selectable) {
@@ -29,23 +31,7 @@ public class SelectionManager {
             doSelect(selectable);
         }
 
-        updateSelection();
-        gameState.actionBox.updateActionButtons();
-    }
-
-    public void updateSelection() {
-
-        if (selected.size() == 0) {
-            gameState.statusBar.clear();
-        } else if (selected.size() == 1) {
-            Node node = selected.get(0).getStatusDetails();
-            if (node != null) {
-                gameState.statusBar.setStatusDetails(node);
-            }
-        } else {
-            gameState.statusBar.setIcons(selected);
-        }
-
+        gameState.eventManager.sendEvent(new SelectionChangedEvent(selected));
     }
 
     private void switchSelection(Selectable selectable) {
@@ -59,8 +45,7 @@ public class SelectionManager {
     public void deselect(Selectable selectable) {
         doDeselect(selectable);
 
-        updateSelection();
-        gameState.actionBox.updateActionButtons();
+        gameState.eventManager.sendEvent(new SelectionChangedEvent(selected));
     }
 
     private void clearSelection() {
@@ -119,13 +104,12 @@ public class SelectionManager {
 
         }
 
-        updateSelection();
-        gameState.actionBox.updateActionButtons();
+        gameState.eventManager.sendEvent(new SelectionChangedEvent(selected));
     }
 
     public void updateStatusIfSingleSelected(Selectable selectable) {
         if (selected.size() == 1 && selected.contains(selectable)) {
-            updateSelection();
+            gameState.eventManager.sendEvent(new SelectionChangedEvent(selected));
         }
 
     }

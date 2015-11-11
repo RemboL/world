@@ -137,7 +137,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
 
     public void finishBuilding() {
         if (owner != null) {
-            owner.setResourceLimit(ResourceTypes.HOUSING, gameState.unitRegistry.getHousesByOwner(owner).size()
+            owner.setResourceLimit(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.getHousesByOwner(owner).size()
                     * HOUSING_PER_HOUSE);
         }
 

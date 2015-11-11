@@ -20,7 +20,7 @@ public class SparkParticleEmitter extends ParticleEmitter {
         Material sparkMat = new Material(gameState.assetManager,
                 "Common/MatDefs/Misc/Particle.j3md");
         sparkMat.setTexture("Texture", gameState.assetManager.loadTexture(
-                "Effects/Explosion/spark.png"));
+                "effects/spark.png"));
         setMaterial(sparkMat);
         setImagesX(1);
         setImagesY(1);

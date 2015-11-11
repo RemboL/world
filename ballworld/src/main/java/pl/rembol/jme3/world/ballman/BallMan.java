@@ -165,7 +165,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     public void setOwner(Player player) {
         this.owner = player;
 
-        owner.setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(owner));
+        owner.setResource(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.countHousing(owner));
 
         updateColor();
     }

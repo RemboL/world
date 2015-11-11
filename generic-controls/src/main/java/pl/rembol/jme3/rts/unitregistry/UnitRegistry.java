@@ -1,4 +1,16 @@
-package pl.rembol.jme3.world;
+package pl.rembol.jme3.rts.unitregistry;
+
+import com.jme3.collision.Collidable;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.events.unitdestroyed.UnitDestroyedEvent;
+import pl.rembol.jme3.rts.player.Player;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.save.UnitsDTO;
+import pl.rembol.jme3.rts.unit.interfaces.Solid;
+import pl.rembol.jme3.rts.unit.interfaces.WithNode;
+import pl.rembol.jme3.rts.unit.selection.Selectable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,20 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.jme3.collision.Collidable;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.world.building.Building;
-import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.world.building.house.HouseControl;
-import pl.rembol.jme3.rts.unit.interfaces.Solid;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-import pl.rembol.jme3.rts.player.Player;
-import pl.rembol.jme3.rts.save.UnitDTO;
-import pl.rembol.jme3.rts.save.UnitsDTO;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
 
 public class UnitRegistry {
 
@@ -62,9 +60,10 @@ public class UnitRegistry {
     }
 
     public void unregister(Selectable selectable) {
+        gameState.eventManager.sendEvent(new UnitDestroyedEvent(selectable));
+
         units.remove(selectable.getNode().getUserData(UNIT_DATA_KEY));
         selectable.getNode().setUserData(UNIT_DATA_KEY, null);
-        gameState.selectionManager.deselect(selectable);
 
         if (selectable instanceof Solid) {
             gameState.pathfindingService.removeSolid(selectable.getNode()
@@ -77,26 +76,6 @@ public class UnitRegistry {
             return units.get(node.getUserData(UNIT_DATA_KEY).toString());
         }
         return null;
-    }
-
-    public List<Building> getHousesByOwner(Player player) {
-        return units.values().stream().filter(House.class::isInstance)
-                .map(House.class::cast)
-                .filter(house -> house.getOwner().equals(player))
-                .filter(House::isConstructed).collect(Collectors.toList());
-    }
-
-    public int countHousing(Player player) {
-        long count = units.values().stream().filter(BallMan.class::isInstance)
-                .map(BallMan.class::cast)
-                .filter(ballMan -> ballMan.getOwner().equals(player)).count();
-
-        count += units.values().stream().filter(House.class::isInstance)
-                .map(House.class::cast).map(House::control)
-                .filter(control -> control != null)
-                .filter(HouseControl::isRecruiting).count();
-
-        return (int) count;
     }
 
     public List<Selectable> getSelectableByPosition(Vector3f start,

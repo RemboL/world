@@ -15,8 +15,6 @@ import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class GameState extends pl.rembol.jme3.rts.GameState {
     
-    public final UnitRegistry unitRegistry;
-
     public final SelectionManager selectionManager;
 
     public final BuildingSilhouetteManager buildingSilhouetteManager;
@@ -39,7 +37,6 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
 
         actionBox = new ActionBox(this);
 
-        unitRegistry = new UnitRegistry(this);
         selectionManager = new SelectionManager(this);
         buildingSilhouetteManager = new BuildingSilhouetteManager(this);
         inputStateManager = new InputStateManager(this);

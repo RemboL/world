@@ -1,6 +1,10 @@
 package pl.rembol.jme3.world;
 
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.building.Building;
+import pl.rembol.jme3.world.building.house.House;
+import pl.rembol.jme3.world.building.house.HouseControl;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.rts.player.Player;
@@ -9,9 +13,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class BallManUnitRegistry extends UnitRegistry {
+public class BallManUnitRegistry {
+
+    private final GameState gameState;
+
     public BallManUnitRegistry(GameState gameState) {
-        super(gameState);
+        this.gameState = gameState;
     }
 
     public List<Warehouse> getWarehousesByOwner(Player player) {
@@ -48,4 +55,26 @@ public class BallManUnitRegistry extends UnitRegistry {
                         second.getNode().getWorldTranslation()
                                 .distance(location))).findFirst();
     }
+
+    public List<Building> getHousesByOwner(Player player) {
+        return gameState.unitRegistry.unitsStream().filter(House.class::isInstance)
+                .map(House.class::cast)
+                .filter(house -> house.getOwner().equals(player))
+                .filter(House::isConstructed).collect(Collectors.toList());
+    }
+
+    public int countHousing(Player player) {
+        long count = gameState.unitRegistry.unitsStream().filter(BallMan.class::isInstance)
+                .map(BallMan.class::cast)
+                .filter(ballMan -> ballMan.getOwner().equals(player)).count();
+
+        count += gameState.unitRegistry.unitsStream().filter(House.class::isInstance)
+                .map(House.class::cast).map(House::control)
+                .filter(control -> control != null)
+                .filter(HouseControl::isRecruiting).count();
+
+        return (int) count;
+    }
+
+
 }

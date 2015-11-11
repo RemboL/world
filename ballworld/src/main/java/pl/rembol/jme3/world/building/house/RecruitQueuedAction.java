@@ -54,7 +54,7 @@ public class RecruitQueuedAction {
     public void cancel() {
         houseControl.removeFromQueue(this);
         Player owner = houseControl.getHouse().getOwner();
-        owner.setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(owner));
+        owner.setResource(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.countHousing(owner));
     }
 
     HouseControl getControl() {

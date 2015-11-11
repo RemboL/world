@@ -41,7 +41,7 @@ public class HouseControl extends AbstractControl {
             currentAction.execute(house);
             queue.remove(currentAction);
 
-            house.getOwner().setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(house.getOwner()));
+            house.getOwner().setResource(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.countHousing(house.getOwner()));
         }
 
         gameState.selectionManager.updateStatusIfSingleSelected(house);
@@ -58,7 +58,7 @@ public class HouseControl extends AbstractControl {
     public void addToQueue() {
         queue.add(new RecruitQueuedAction(gameState, this));
 
-        house.getOwner().setResource(ResourceTypes.HOUSING, gameState.unitRegistry.countHousing(house.getOwner()));
+        house.getOwner().setResource(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.countHousing(house.getOwner()));
     }
 
     public boolean isRecruiting() {

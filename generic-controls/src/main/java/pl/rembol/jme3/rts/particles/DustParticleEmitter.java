@@ -24,7 +24,7 @@ public class DustParticleEmitter extends ParticleEmitter {
         dustMaterial.setTexture(
                 "Texture",
                 gameState.assetManager.loadTexture(
-                        "Effects/Explosion/flame.png"));
+                        "effects/flame.png"));
         setMaterial(dustMaterial);
         setImagesX(2);
         setImagesY(2);
