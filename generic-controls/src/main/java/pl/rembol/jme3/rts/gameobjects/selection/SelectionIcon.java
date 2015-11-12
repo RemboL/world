@@ -15,7 +15,6 @@ public class SelectionIcon extends ClickablePicture {
 
     @Override
     public void onClick() {
-        // TODO FIXME
-//        gameState.selectionManager.select(selectable);
+        gameState.selectionManager.select(selectable);
     }
 }

@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 

@@ -1,13 +1,13 @@
 package pl.rembol.jme3.world;
 
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.building.house.HouseControl;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
-import pl.rembol.jme3.rts.player.Player;
 
 import java.util.List;
 import java.util.Optional;

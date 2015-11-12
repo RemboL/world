@@ -1,9 +1,9 @@
 package pl.rembol.jme3.world.building.warehouse;
 
+import pl.rembol.jme3.rts.resources.Cost;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
-import pl.rembol.jme3.rts.resources.Cost;
 
 import static pl.rembol.jme3.world.resources.ResourceTypes.STONE;
 import static pl.rembol.jme3.world.resources.ResourceTypes.WOOD;

@@ -2,12 +2,12 @@ package pl.rembol.jme3.rts.gameobjects.order;
 
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.rts.GameState;
-import pl.rembol.jme3.rts.gameobjects.unit.Unit;
 import pl.rembol.jme3.rts.gameobjects.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.rts.gameobjects.action.MoveTowardsTargetAction;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.unit.Unit;
 
 import java.util.List;
 

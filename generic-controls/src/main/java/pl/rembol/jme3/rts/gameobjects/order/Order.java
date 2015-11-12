@@ -1,13 +1,13 @@
 package pl.rembol.jme3.rts.gameobjects.order;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Order<Type extends Selectable> {
 

@@ -1,11 +1,11 @@
 package pl.rembol.jme3.rts.input.state;
 
 import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.events.selectionchanged.SelectionChangedEvent;
-import pl.rembol.jme3.rts.player.WithOwner;
-import pl.rembol.jme3.rts.gameobjects.unit.Unit;
-import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.events.selectionchanged.SelectionChangedEvent;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.unit.Unit;
+import pl.rembol.jme3.rts.player.WithOwner;
 
 import java.util.ArrayList;
 import java.util.List;

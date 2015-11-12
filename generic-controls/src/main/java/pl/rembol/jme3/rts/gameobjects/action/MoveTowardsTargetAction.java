@@ -4,11 +4,11 @@ import com.jme3.animation.LoopMode;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.rts.GameState;
-import pl.rembol.jme3.rts.pathfinding.Rectangle2f;
-import pl.rembol.jme3.rts.pathfinding.paths.IExternalPath;
 import pl.rembol.jme3.rts.gameobjects.interfaces.Solid;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
+import pl.rembol.jme3.rts.pathfinding.Rectangle2f;
+import pl.rembol.jme3.rts.pathfinding.paths.IExternalPath;
 
 public class MoveTowardsTargetAction extends Action<WithMovingControl> {
 

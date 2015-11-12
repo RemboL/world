@@ -1,8 +1,8 @@
 package pl.rembol.jme3.rts.gameobjects.unit;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
 
 public class UnitControl extends ActionQueueControl<Unit> {
 

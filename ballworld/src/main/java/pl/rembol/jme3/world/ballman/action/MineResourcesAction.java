@@ -2,10 +2,10 @@ package pl.rembol.jme3.world.ballman.action;
 
 import com.jme3.animation.LoopMode;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
-import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 
 import java.util.Optional;
 

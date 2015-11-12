@@ -1,8 +1,8 @@
-package pl.rembol.jme3.world.input;
+package pl.rembol.jme3.rts.input;
 
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 
 public class CommandKeysListener implements ActionListener {
 

@@ -4,12 +4,12 @@ import com.jme3.animation.LoopMode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.rts.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
 import pl.rembol.jme3.world.building.ConstructionSite;
-import pl.rembol.jme3.rts.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.smallobject.tools.Hammer;
 
 import java.util.ArrayList;
@@ -92,8 +92,7 @@ public class BuildAction extends BallManAction {
                     true);
             building.setOwner(ballMan.getOwner());
 
-            // TODO FIXME
-            constructionSite = new ConstructionSite(GameState.class.cast(gameState), building, 5f);
+            constructionSite = new ConstructionSite(gameState, building, 5f);
 
             minX = position.getX() - constructionSite.getBuilding().getWidth()
                     - 5;

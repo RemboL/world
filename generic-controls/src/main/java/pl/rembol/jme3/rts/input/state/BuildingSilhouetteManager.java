@@ -13,9 +13,9 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.order.Order;
 import pl.rembol.jme3.rts.gameobjects.order.WithSilhouette;
-import pl.rembol.jme3.rts.GameState;
 
 public class BuildingSilhouetteManager extends AbstractControl {
 

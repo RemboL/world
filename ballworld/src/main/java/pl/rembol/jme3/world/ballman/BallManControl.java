@@ -5,12 +5,12 @@ import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
+import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.EnterHouseAction;
 import pl.rembol.jme3.world.ballman.action.GatherResourcesAction;
 import pl.rembol.jme3.world.building.house.House;
-import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 
 public class BallManControl extends ActionQueueControl<BallMan> implements
@@ -32,7 +32,7 @@ public class BallManControl extends ActionQueueControl<BallMan> implements
             setAction(new AttackAction(gameState, Destructable.class.cast(target)));
         } else if (target instanceof House && House.class.cast(target).getOwner().equals(unit.getOwner())) {
             setAction(new EnterHouseAction(gameState, (House) target));
-        }else {
+        } else {
             super.performDefaultAction(target);
         }
     }

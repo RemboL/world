@@ -4,8 +4,8 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.rts.smallobjects.SmallObject;
 
 public abstract class ResourceUnit extends SmallObject {

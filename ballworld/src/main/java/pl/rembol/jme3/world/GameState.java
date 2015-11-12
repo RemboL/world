@@ -6,12 +6,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.system.AppSettings;
 import pl.rembol.jme3.rts.input.state.Command;
 import pl.rembol.jme3.world.ballman.order.*;
-import pl.rembol.jme3.world.hud.ActionBox;
-import pl.rembol.jme3.world.input.CommandKeysListener;
-import pl.rembol.jme3.world.input.DragSelectionManager;
-import pl.rembol.jme3.world.input.MouseClickListener;
-import pl.rembol.jme3.world.input.state.InputStateManager;
-import pl.rembol.jme3.world.input.state.StateTransitionsRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 
 import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.*;
@@ -19,41 +13,22 @@ import static pl.rembol.jme3.rts.input.state.InputState.*;
 
 public class GameState extends pl.rembol.jme3.rts.GameState {
 
-    public final ActionBox actionBox;
-
-    public final InputStateManager inputStateManager;
-
-    public final DragSelectionManager dragSelectionManager;
-
-    public final MouseClickListener mouseClickListener;
-
     public final BallManUnitRegistry ballManUnitRegistry;
-
-    public final StateTransitionsRegistry stateTransitionsRegistry;
-
-    public final CommandKeysListener commandKeysListener;
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         super(simpleApplication, settings, bulletAppState);
 
-
-        actionBox = new ActionBox(this);
-
-        inputStateManager = new InputStateManager(this);
-        commandKeysListener = new CommandKeysListener(this);
-        dragSelectionManager = new DragSelectionManager(this);
-        mouseClickListener = new MouseClickListener(this);
-
         ballManUnitRegistry = new BallManUnitRegistry(this);
 
-        stateTransitionsRegistry = new StateTransitionsRegistry(this);
         initResources(ResourceTypes.values());
         playerService.setResourceTypeList(ResourceTypes.values());
 
-        initBallMenCommands();
     }
 
-    private void initBallMenCommands() {
+    @Override
+    protected void initStateTransitions() {
+        super.initStateTransitions();
+
         stateTransitionsRegistry.register(DEFAULT, new Command(UPPER_CENTER, "flatten", KeyInput.KEY_F), ISSUE_ORDER, SmoothenTerrainOrder::new);
         stateTransitionsRegistry.register(DEFAULT, new Command(UPPER_RIGHT, "build", KeyInput.KEY_B), BUILD_MENU, null);
 

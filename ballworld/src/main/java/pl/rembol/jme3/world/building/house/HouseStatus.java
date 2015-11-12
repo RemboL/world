@@ -1,8 +1,5 @@
 package pl.rembol.jme3.world.building.house;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -11,15 +8,18 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import com.jme3.ui.Picture;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.building.BuildingStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HouseStatus extends BuildingStatus {
 
     private static final int FIRST_ACTION_SIZE = 40;
 
     private static final int ACTION_SIZE = 32;
-    
+
     private static final int INSIDE_GRID_WIDTH = 2;
 
     private static final int INSIDE_GRID_HEIGHT = 2;

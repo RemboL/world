@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world.ballman.order;
 
-import java.util.List;
-
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
@@ -13,6 +11,8 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
 import pl.rembol.jme3.world.building.BuildingFactory;
+
+import java.util.List;
 
 public abstract class BuildOrder extends Order<BallMan> implements WithSilhouette {
 

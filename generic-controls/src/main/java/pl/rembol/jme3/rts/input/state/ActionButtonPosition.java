@@ -14,6 +14,7 @@ public enum ActionButtonPosition {
 
     private int x;
     private int y;
+
     private ActionButtonPosition(int x, int y) {
         this.x = x;
         this.y = y;

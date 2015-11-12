@@ -1,11 +1,11 @@
 package pl.rembol.jme3.world.resources.deposits;
 
 import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.resources.units.ResourceUnit;
+import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.resources.units.FruitBasket;
-import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.save.FruitBushDTO;
-import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 import java.util.Optional;

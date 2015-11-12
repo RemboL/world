@@ -1,8 +1,8 @@
-package pl.rembol.jme3.world.hud;
+package pl.rembol.jme3.rts.gui;
 
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.input.state.Command;
 
 public class ActionBox {

@@ -1,16 +1,13 @@
-package pl.rembol.jme3.world.input.state;
+package pl.rembol.jme3.rts.input.state;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.gameobjects.order.WithSilhouette;
-import pl.rembol.jme3.rts.input.state.Command;
-import pl.rembol.jme3.rts.input.state.InputState;
-import pl.rembol.jme3.rts.input.state.StateTransition;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.gameobjects.order.DefaultActionOrder;
 import pl.rembol.jme3.rts.gameobjects.order.Order;
+import pl.rembol.jme3.rts.gameobjects.order.WithSilhouette;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
-import pl.rembol.jme3.world.GameState;
 
 import java.util.List;
 import java.util.Optional;

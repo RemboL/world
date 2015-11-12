@@ -1,9 +1,5 @@
 package pl.rembol.jme3.rts.gameobjects.unit;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -12,6 +8,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithDefaultActionControl;
@@ -19,10 +16,13 @@ import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
-import pl.rembol.jme3.rts.GameState;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 abstract public class Unit implements Selectable,
-        WithMovingControl, WithActionQueueControl, WithDefaultActionControl  {
+        WithMovingControl, WithActionQueueControl, WithDefaultActionControl {
 
     protected GameState gameState;
 
@@ -45,7 +45,7 @@ abstract public class Unit implements Selectable,
         control = new BetterCharacterControl(.6f * getWidth(), 10f, getWidth() * getWidth());
 
         addControls();
-        
+
         node.addControl(control);
 
         gameState.bulletAppState.getPhysicsSpace().add(control);
@@ -55,12 +55,12 @@ abstract public class Unit implements Selectable,
 
         gameState.unitRegistry.register(this);
     }
-    
+
     protected void addControls() {
         node.addControl(new UnitControl(gameState, this));
         node.addControl(new MovingControl(this));
     }
-    
+
     private void initNode(Node rootNode) {
         node = initNodeWithScale();
 
@@ -108,9 +108,9 @@ abstract public class Unit implements Selectable,
     }
 
     abstract protected String getModelName();
-    
+
     abstract protected SelectionIcon createIcon(GameState gameState);
-    
+
     @Override
     public List<String> getAvailableOrders() {
         return Arrays.asList("move");

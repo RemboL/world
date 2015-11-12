@@ -5,8 +5,8 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.rts.GameState;
-import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.rts.particles.DustParticleEmitter;
+import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.tools.Shovel;
 
 import java.util.ArrayList;

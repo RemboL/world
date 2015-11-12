@@ -1,10 +1,10 @@
 package pl.rembol.jme3.rts.gameobjects.selection;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public interface Selectable extends WithNode {
 
@@ -18,5 +18,7 @@ public interface Selectable extends WithNode {
 
     SelectionIcon getIcon();
 
-    default List<String> getAvailableOrders() { return new ArrayList<>(); }
+    default List<String> getAvailableOrders() {
+        return new ArrayList<>();
+    }
 }

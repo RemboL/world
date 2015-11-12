@@ -7,7 +7,7 @@ public class Command {
     private int keyInput;
 
     public Command(ActionButtonPosition position, String iconName,
-                    int keyInput) {
+                   int keyInput) {
         this.position = position;
         this.iconName = iconName;
         this.keyInput = keyInput;

@@ -9,5 +9,5 @@ import java.util.List;
 public interface OrderProducer {
 
     Order<?> produce(GameState gameState, List<Selectable> selectableList);
-    
+
 }

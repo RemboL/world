@@ -9,5 +9,7 @@ public interface WithSilhouette {
         return -1f;
     }
 
-    default boolean snapTargetPositionToGrid() { return false; }
+    default boolean snapTargetPositionToGrid() {
+        return false;
+    }
 }

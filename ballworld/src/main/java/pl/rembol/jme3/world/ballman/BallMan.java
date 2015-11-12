@@ -1,11 +1,5 @@
 package pl.rembol.jme3.world.ballman;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.ColorRGBA;
@@ -13,23 +7,25 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.particles.SparkParticleEmitter;
-import pl.rembol.jme3.rts.player.Player;
-import pl.rembol.jme3.rts.player.WithOwner;
-import pl.rembol.jme3.rts.save.UnitDTO;
-import pl.rembol.jme3.rts.smallobjects.SmallObject;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
+import pl.rembol.jme3.rts.gameobjects.unit.Unit;
+import pl.rembol.jme3.rts.particles.SparkParticleEmitter;
+import pl.rembol.jme3.rts.player.Player;
+import pl.rembol.jme3.rts.player.WithOwner;
+import pl.rembol.jme3.rts.save.UnitDTO;
+import pl.rembol.jme3.rts.smallobjects.SmallObject;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-import pl.rembol.jme3.rts.gameobjects.unit.Unit;
+
+import java.util.*;
 
 public class BallMan extends Unit implements WithOwner, Destructable {
 
@@ -175,7 +171,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[]{ "skin" };
+        return new String[]{"skin"};
     }
 
     @Override

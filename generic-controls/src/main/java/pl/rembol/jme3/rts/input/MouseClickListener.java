@@ -1,9 +1,4 @@
-package pl.rembol.jme3.world.input;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Stream;
+package pl.rembol.jme3.rts.input;
 
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResult;
@@ -18,10 +13,15 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.rts.gui.Clickable;
-import pl.rembol.jme3.world.input.state.InputStateManager;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
+import pl.rembol.jme3.rts.gui.Clickable;
+import pl.rembol.jme3.rts.input.state.InputStateManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class MouseClickListener implements ActionListener, AnalogListener {
 
