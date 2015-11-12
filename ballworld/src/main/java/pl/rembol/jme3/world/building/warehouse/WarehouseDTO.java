@@ -2,7 +2,7 @@ package pl.rembol.jme3.world.building.warehouse;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.rts.GameState;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.save.UnitDTO;
 
 @XStreamAlias("warehouse")

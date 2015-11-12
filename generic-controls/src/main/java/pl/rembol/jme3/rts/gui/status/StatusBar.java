@@ -5,8 +5,8 @@ import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
 import pl.rembol.jme3.rts.events.EventManager;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 
 import java.util.ArrayList;
 import java.util.List;

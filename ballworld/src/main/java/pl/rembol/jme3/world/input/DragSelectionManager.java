@@ -13,6 +13,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.control.AbstractControl;
+import pl.rembol.jme3.rts.input.dragselect.DragSurface;
 import pl.rembol.jme3.world.GameState;
 
 import java.util.ArrayList;

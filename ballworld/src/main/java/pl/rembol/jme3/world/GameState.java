@@ -2,22 +2,22 @@ package pl.rembol.jme3.world;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.KeyInput;
 import com.jme3.system.AppSettings;
+import pl.rembol.jme3.rts.input.state.Command;
+import pl.rembol.jme3.world.ballman.order.*;
 import pl.rembol.jme3.world.hud.ActionBox;
 import pl.rembol.jme3.world.input.CommandKeysListener;
 import pl.rembol.jme3.world.input.DragSelectionManager;
 import pl.rembol.jme3.world.input.MouseClickListener;
-import pl.rembol.jme3.world.input.state.BuildingSilhouetteManager;
 import pl.rembol.jme3.world.input.state.InputStateManager;
-import pl.rembol.jme3.world.input.state.SelectionManager;
-import pl.rembol.jme3.world.input.state.StateTransitions;
+import pl.rembol.jme3.world.input.state.StateTransitionsRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 
-public class GameState extends pl.rembol.jme3.rts.GameState {
-    
-    public final SelectionManager selectionManager;
+import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.*;
+import static pl.rembol.jme3.rts.input.state.InputState.*;
 
-    public final BuildingSilhouetteManager buildingSilhouetteManager;
+public class GameState extends pl.rembol.jme3.rts.GameState {
 
     public final ActionBox actionBox;
 
@@ -29,7 +29,9 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
 
     public final BallManUnitRegistry ballManUnitRegistry;
 
-    public final StateTransitions stateTransitions;
+    public final StateTransitionsRegistry stateTransitionsRegistry;
+
+    public final CommandKeysListener commandKeysListener;
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         super(simpleApplication, settings, bulletAppState);
@@ -37,18 +39,29 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
 
         actionBox = new ActionBox(this);
 
-        selectionManager = new SelectionManager(this);
-        buildingSilhouetteManager = new BuildingSilhouetteManager(this);
         inputStateManager = new InputStateManager(this);
-        new CommandKeysListener(this);
+        commandKeysListener = new CommandKeysListener(this);
         dragSelectionManager = new DragSelectionManager(this);
         mouseClickListener = new MouseClickListener(this);
 
         ballManUnitRegistry = new BallManUnitRegistry(this);
 
-        stateTransitions = new StateTransitions(this);
+        stateTransitionsRegistry = new StateTransitionsRegistry(this);
         initResources(ResourceTypes.values());
         playerService.setResourceTypeList(ResourceTypes.values());
+
+        initBallMenCommands();
+    }
+
+    private void initBallMenCommands() {
+        stateTransitionsRegistry.register(DEFAULT, new Command(UPPER_CENTER, "flatten", KeyInput.KEY_F), ISSUE_ORDER, SmoothenTerrainOrder::new);
+        stateTransitionsRegistry.register(DEFAULT, new Command(UPPER_RIGHT, "build", KeyInput.KEY_B), BUILD_MENU, null);
+
+        stateTransitionsRegistry.register(BUILD_MENU, new Command(UPPER_LEFT, "house", KeyInput.KEY_H), ISSUE_BUILD_ORDER, BuildHouseOrder::new);
+        stateTransitionsRegistry.register(BUILD_MENU, new Command(UPPER_CENTER, "toolshop", KeyInput.KEY_T), ISSUE_BUILD_ORDER, BuildToolshopOrder::new);
+        stateTransitionsRegistry.register(BUILD_MENU, new Command(UPPER_RIGHT, "warehouse", KeyInput.KEY_W), ISSUE_BUILD_ORDER, BuildWarehouseOrder::new);
+
+        stateTransitionsRegistry.register(DEFAULT, new Command(UPPER_LEFT, "ballman", KeyInput.KEY_R), ISSUE_ORDER_IMMEDIATELY, RecruitOrder::new);
     }
 
 }

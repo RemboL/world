@@ -1,10 +1,10 @@
 package pl.rembol.jme3.world.ballman;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
-import pl.rembol.jme3.rts.unit.control.DefaultActionControl;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-import pl.rembol.jme3.rts.unit.selection.Destructable;
+import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
+import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
+import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.action.AttackAction;
 import pl.rembol.jme3.world.ballman.action.EnterHouseAction;

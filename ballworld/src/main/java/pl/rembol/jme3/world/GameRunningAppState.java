@@ -18,8 +18,10 @@ import com.jme3.post.filters.FogFilter;
 import com.jme3.renderer.ViewPort;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
+import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
+import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
 import pl.rembol.jme3.world.save.SaveState;
 
@@ -80,6 +82,7 @@ public class GameRunningAppState extends AbstractAppState {
 
         Building toolshop = new Toolshop(gameState).init(new Vector2f(15, -20));
         toolshop.setOwner(gameState.playerService.getActivePlayer());
+        gameState.playerService.getActivePlayer().addResource(ResourceTypes.WOOD, 200);
 
 //        new Rabbit(gameState, new Vector2f(30, 0));
 //        new Rabbit(gameState, new Vector2f(30, 10));

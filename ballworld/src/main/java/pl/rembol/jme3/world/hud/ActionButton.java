@@ -2,11 +2,9 @@ package pl.rembol.jme3.world.hud;
 
 import pl.rembol.jme3.rts.gui.ClickablePicture;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.world.input.state.Command;
+import pl.rembol.jme3.rts.input.state.Command;
 
 public class ActionButton extends ClickablePicture {
-
-    public static final int SIZE = 32;
 
     private Command command;
 
@@ -19,6 +17,6 @@ public class ActionButton extends ClickablePicture {
     @Override
     public void onClick() {
         // TODO FIXME
-        pl.rembol.jme3.world.GameState.class.cast(gameState).inputStateManager.type(command.getCommandKey());
+        pl.rembol.jme3.world.GameState.class.cast(gameState).inputStateManager.type(command.getKey());
     }
 }

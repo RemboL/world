@@ -2,7 +2,7 @@ package pl.rembol.jme3.rts.events.unitdestroyed;
 
 import pl.rembol.jme3.rts.events.AbstractEvent;
 import pl.rembol.jme3.rts.events.EventType;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 
 public class UnitDestroyedEvent extends AbstractEvent {
 

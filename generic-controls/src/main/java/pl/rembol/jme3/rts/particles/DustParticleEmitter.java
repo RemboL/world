@@ -6,7 +6,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.rts.GameState;
-import pl.rembol.jme3.rts.unit.control.TimeToLiveControl;
+import pl.rembol.jme3.rts.gameobjects.control.TimeToLiveControl;
 
 public class DustParticleEmitter extends ParticleEmitter {
 

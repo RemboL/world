@@ -11,13 +11,13 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.Control;
 import pl.rembol.jme3.world.GameState;
-import pl.rembol.jme3.rts.unit.interfaces.Solid;
+import pl.rembol.jme3.rts.gameobjects.interfaces.Solid;
 import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.rts.player.WithOwner;
-import pl.rembol.jme3.rts.unit.selection.Destructable;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
-import pl.rembol.jme3.rts.unit.selection.SelectionNode;
+import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
+import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public abstract class Building implements Selectable, WithOwner, Destructable, Solid {

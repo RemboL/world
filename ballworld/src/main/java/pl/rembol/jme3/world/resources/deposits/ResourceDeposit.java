@@ -8,11 +8,11 @@ import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.ModelHelper;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
-import pl.rembol.jme3.rts.unit.interfaces.Solid;
+import pl.rembol.jme3.rts.gameobjects.interfaces.Solid;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
-import pl.rembol.jme3.rts.unit.selection.SelectionNode;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
+import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 import java.util.Optional;

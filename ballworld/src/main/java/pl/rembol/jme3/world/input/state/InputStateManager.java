@@ -1,34 +1,22 @@
 package pl.rembol.jme3.world.input.state;
 
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import pl.rembol.jme3.rts.gameobjects.order.WithSilhouette;
+import pl.rembol.jme3.rts.input.state.Command;
+import pl.rembol.jme3.rts.input.state.InputState;
+import pl.rembol.jme3.rts.input.state.StateTransition;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
+import pl.rembol.jme3.rts.gameobjects.order.DefaultActionOrder;
+import pl.rembol.jme3.rts.gameobjects.order.Order;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+import pl.rembol.jme3.world.GameState;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-import pl.rembol.jme3.rts.unit.order.DefaultActionOrder;
-import pl.rembol.jme3.rts.unit.order.Order;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.world.GameState;
-
 public class InputStateManager {
-
-    public static final String M = "command_m";
-
-    public static final String F = "command_f";
-
-    public static final String B = "command_b";
-
-    public static final String H = "command_h";
-
-    public static final String T = "command_t";
-
-    public static final String W = "command_w";
-
-    public static final String C = "command_c";
-
-    public static final String R = "command_r";
 
     public static final String RIGHT_CLICK = "command_rightClick";
 
@@ -47,23 +35,20 @@ public class InputStateManager {
     }
 
     public void click(String command, WithNode target) {
-        if (currentState == InputState.ISSUE_ORDER) {
+        if (currentState == InputState.ISSUE_ORDER
+                || currentState == InputState.ISSUE_BUILD_ORDER) {
             switch (command) {
                 case InputStateManager.LEFT_CLICK:
-                    performOrder(target);
-                    break;
-                case InputStateManager.RIGHT_CLICK:
-                    cancelOrder();
-                    break;
-            }
-        } else if (currentState == InputState.ISSUE_BUILD_ORDER) {
-            switch (command) {
-                case InputStateManager.LEFT_CLICK:
-                    Vector3f location = gameState.buildingSilhouetteManager.getSilhouettePosition();
-                    if (location != null) {
-                        performOrder(new Vector2f(location.x, location.z));
+                    if (currentOrder instanceof WithSilhouette
+                            && ((WithSilhouette) currentOrder).snapTargetPositionToGrid()) {
+                        Vector3f location = gameState.buildingSilhouetteManager.getSilhouettePosition();
+                        if (location != null) {
+                            performOrder(new Vector2f(location.x, location.z));
+                        } else {
+                            cancelOrder();
+                        }
                     } else {
-                        cancelOrder();
+                        performOrder(target);
                     }
                     break;
                 case InputStateManager.RIGHT_CLICK:
@@ -86,23 +71,19 @@ public class InputStateManager {
     }
 
     public void click(String command, Vector2f target) {
-        if (currentState == InputState.ISSUE_ORDER) {
+        if (currentState == InputState.ISSUE_ORDER || currentState == InputState.ISSUE_BUILD_ORDER) {
             switch (command) {
                 case InputStateManager.LEFT_CLICK:
-                    performOrder(target);
-                    break;
-                case InputStateManager.RIGHT_CLICK:
-                    cancelOrder();
-                    break;
-            }
-        } else if (currentState == InputState.ISSUE_BUILD_ORDER) {
-            switch (command) {
-                case InputStateManager.LEFT_CLICK:
-                    Vector3f location = gameState.buildingSilhouetteManager.getSilhouettePosition();
-                    if (location != null) {
-                        performOrder(new Vector2f(location.x, location.z));
+                    if (currentOrder instanceof WithSilhouette
+                            && ((WithSilhouette) currentOrder).snapTargetPositionToGrid()) {
+                        Vector3f location = gameState.buildingSilhouetteManager.getSilhouettePosition();
+                        if (location != null) {
+                            performOrder(new Vector2f(location.x, location.z));
+                        } else {
+                            cancelOrder();
+                        }
                     } else {
-                        cancelOrder();
+                        performOrder(target);
                     }
                     break;
                 case InputStateManager.RIGHT_CLICK:
@@ -123,8 +104,8 @@ public class InputStateManager {
         gameState.buildingSilhouetteManager.removeSilhouette();
     }
 
-    public void type(String command) {
-        getTransitionAndChangeState(command);
+    public void type(int key) {
+        getTransitionAndChangeState(key);
 
         gameState.actionBox.updateActionButtons();
     }
@@ -151,9 +132,9 @@ public class InputStateManager {
 
     }
 
-    private Optional<StateTransition> getTransitionAndChangeState(String command) {
-        Optional<StateTransition> transition = gameState.stateTransitions.match(currentState,
-                gameState.selectionManager.getSelected(), command);
+    private Optional<StateTransition> getTransitionAndChangeState(int key) {
+        Optional<StateTransition> transition = gameState.stateTransitionsRegistry.match(currentState,
+                gameState.selectionManager.getSelected(), key);
 
         if (transition.isPresent()) {
             currentState = transition.get().getTargetState();
@@ -163,8 +144,7 @@ public class InputStateManager {
                 gameState.buildingSilhouetteManager.createSilhouette(currentOrder);
             } else if (currentState == InputState.ISSUE_ORDER_IMMEDIATELY) {
                 currentOrder = null;
-                transition.get().getOrder(gameState).perform(
-                        Selectable.class.cast(null));
+                transition.get().getOrder(gameState).perform(Selectable.class.cast(null));
                 currentState = InputState.DEFAULT;
             } else {
                 currentOrder = null;
@@ -175,7 +155,7 @@ public class InputStateManager {
     }
 
     public List<Command> getAvailableCommands() {
-        return gameState.stateTransitions
+        return gameState.stateTransitionsRegistry
                 .match(currentState, gameState.selectionManager.getSelected())
                 .stream().map(StateTransition::getCommandButton)
                 .collect(Collectors.toList());

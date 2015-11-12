@@ -10,10 +10,12 @@ import com.jme3.system.AppSettings;
 import pl.rembol.jme3.rts.events.EventManager;
 import pl.rembol.jme3.rts.gui.ResourcesBar;
 import pl.rembol.jme3.rts.gui.SelectionBox;
-import pl.rembol.jme3.rts.gui.status.StatusBar;
 import pl.rembol.jme3.rts.gui.console.ConsoleLog;
+import pl.rembol.jme3.rts.gui.status.StatusBar;
 import pl.rembol.jme3.rts.input.ModifierKeysManager;
 import pl.rembol.jme3.rts.input.RtsCamera;
+import pl.rembol.jme3.rts.input.state.BuildingSilhouetteManager;
+import pl.rembol.jme3.rts.input.state.SelectionManager;
 import pl.rembol.jme3.rts.pathfinding.PathfindingService;
 import pl.rembol.jme3.rts.player.PlayerService;
 import pl.rembol.jme3.rts.resources.ResourceType;
@@ -47,6 +49,8 @@ public class GameState {
 
     public final PlayerService playerService;
     public final UnitRegistry unitRegistry;
+    public final SelectionManager selectionManager;
+    public final BuildingSilhouetteManager buildingSilhouetteManager;
 
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
@@ -72,9 +76,15 @@ public class GameState {
 
         playerService = new PlayerService(resourcesBar, consoleLog);
         unitRegistry = new UnitRegistry(this);
+        selectionManager = new SelectionManager(this);
+        buildingSilhouetteManager = new BuildingSilhouetteManager(this);
     }
 
     protected void initResources(List<ResourceType> resourceTypeList) {
         resourcesBar.init(resourceTypeList);
+    }
+
+    protected void initStateTransitions() {
+
     }
 }

@@ -18,18 +18,18 @@ import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.rts.smallobjects.SmallObject;
-import pl.rembol.jme3.rts.unit.control.ActionQueueControl;
-import pl.rembol.jme3.rts.unit.control.DefaultActionControl;
-import pl.rembol.jme3.rts.unit.control.MovingControl;
-import pl.rembol.jme3.rts.unit.selection.Destructable;
-import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
+import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
+import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
+import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
+import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
+import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
 import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-import pl.rembol.jme3.world.unit.Unit;
+import pl.rembol.jme3.rts.gameobjects.unit.Unit;
 
 public class BallMan extends Unit implements WithOwner, Destructable {
 
@@ -47,12 +47,15 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
     private Inventory inventory = new Inventory();
 
+    private GameState gameState;
+
     public BallMan(GameState gameState, Vector2f position, String player) {
         this(gameState, gameState.terrain.getGroundPosition(position), player);
     }
 
     public BallMan(GameState gameState, Vector3f position, String player) {
         super(gameState, position);
+        this.gameState = gameState;
 
         control = new BetterCharacterControl(.6f, 10f, 1);
 
@@ -228,7 +231,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     }
 
     @Override
-    protected SelectionIcon createIcon(GameState gameState) {
+    protected SelectionIcon createIcon(pl.rembol.jme3.rts.GameState gameState) {
         return new BallManIcon(gameState, this);
     }
 

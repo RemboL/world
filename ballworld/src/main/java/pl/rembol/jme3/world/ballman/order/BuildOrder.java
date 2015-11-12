@@ -3,16 +3,18 @@ package pl.rembol.jme3.world.ballman.order;
 import java.util.List;
 
 import com.jme3.math.Vector2f;
+import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
-import pl.rembol.jme3.rts.unit.order.Order;
-import pl.rembol.jme3.rts.unit.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
+import pl.rembol.jme3.rts.gameobjects.order.Order;
+import pl.rembol.jme3.rts.gameobjects.order.WithSilhouette;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
 import pl.rembol.jme3.world.building.BuildingFactory;
 
-public abstract class BuildOrder extends Order<BallMan> {
+public abstract class BuildOrder extends Order<BallMan> implements WithSilhouette {
 
     protected BuildingFactory factory;
 
@@ -26,8 +28,7 @@ public abstract class BuildOrder extends Order<BallMan> {
 
     @Override
     protected void doPerform(BallMan ballMan, Vector2f location) {
-        // TODO FIXME
-        if (!pl.rembol.jme3.world.GameState.class.cast(gameState).unitRegistry.isSpaceFreeWithBuffer(
+        if (!gameState.unitRegistry.isSpaceFreeWithBuffer(
                 gameState.terrain.getGroundPosition(location), factory.width())) {
             gameState.consoleLog.addLine("Can't build here, something's in the way");
             return;
@@ -57,8 +58,19 @@ public abstract class BuildOrder extends Order<BallMan> {
         return unit instanceof BallMan;
     }
 
-    public BuildingFactory factory() {
-        return factory;
+    @Override
+    public Node createNode() {
+        return factory.createNodeWithScale(pl.rembol.jme3.world.GameState.class.cast(gameState));
+    }
+
+    @Override
+    public float requiredFreeWidth() {
+        return factory.width();
+    }
+
+    @Override
+    public boolean snapTargetPositionToGrid() {
+        return true;
     }
 
 }

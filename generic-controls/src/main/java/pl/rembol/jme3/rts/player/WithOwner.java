@@ -1,7 +1,7 @@
 package pl.rembol.jme3.rts.player;
 
 import pl.rembol.jme3.rts.ModelHelper;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 
 public interface WithOwner extends WithNode {
 

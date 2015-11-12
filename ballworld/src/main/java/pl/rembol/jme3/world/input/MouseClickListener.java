@@ -21,7 +21,7 @@ import com.jme3.scene.Spatial;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.rts.gui.Clickable;
 import pl.rembol.jme3.world.input.state.InputStateManager;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 
 public class MouseClickListener implements ActionListener, AnalogListener {
 

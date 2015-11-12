@@ -1,8 +1,8 @@
 package pl.rembol.jme3.world.ballman;
 
-import pl.rembol.jme3.rts.unit.selection.Selectable;
-import pl.rembol.jme3.rts.unit.selection.SelectionIcon;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
+import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.building.house.House;
 
 import java.util.Optional;

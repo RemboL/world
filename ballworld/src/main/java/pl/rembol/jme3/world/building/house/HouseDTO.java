@@ -3,7 +3,7 @@ package pl.rembol.jme3.world.building.house;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.save.UnitDTO;
-import pl.rembol.jme3.rts.unit.interfaces.WithNode;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 
 @XStreamAlias("house")
 public class HouseDTO extends UnitDTO {
