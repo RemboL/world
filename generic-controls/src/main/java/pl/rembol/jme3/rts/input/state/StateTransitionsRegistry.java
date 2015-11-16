@@ -6,6 +6,7 @@ import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.player.WithOwner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -38,6 +39,9 @@ public class StateTransitionsRegistry {
 
 
     public List<StateTransition> match(InputState state, List<Selectable> selectableList) {
+        if (selectableList.isEmpty()) {
+            return Collections.emptyList();
+        }
         return transitions.stream()
                 .filter(allAreOwnedByActivePlayer(selectableList))
                 .filter(allHaveTheCommandAvailable(selectableList))

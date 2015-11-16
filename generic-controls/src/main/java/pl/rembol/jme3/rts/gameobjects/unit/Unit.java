@@ -42,7 +42,7 @@ abstract public class Unit implements Selectable,
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
-        control = new BetterCharacterControl(.6f * getWidth(), 10f, getWidth() * getWidth());
+        control = createCharacterControl(gameState);
 
         addControls();
 
@@ -54,6 +54,10 @@ abstract public class Unit implements Selectable,
                 0f, new Random().nextFloat() - .5f).normalize());
 
         gameState.unitRegistry.register(this);
+    }
+
+    protected BetterCharacterControl createCharacterControl(GameState gameState) {
+        return new BetterCharacterControl(.6f * getWidth(), 10f, getWidth() * getWidth());
     }
 
     protected void addControls() {
@@ -71,8 +75,10 @@ abstract public class Unit implements Selectable,
 
     private void initAnimation() {
         AnimControl animationControl = node.getControl(AnimControl.class);
-        AnimChannel animationChannel = animationControl.createChannel();
-        animationChannel.setAnim("stand");
+        if (animationControl != null) {
+            AnimChannel animationChannel = animationControl.createChannel();
+            animationChannel.setAnim("stand");
+        }
     }
 
     @Override

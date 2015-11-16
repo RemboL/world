@@ -299,6 +299,10 @@ public class Terrain {
                 position.z);
     }
 
+    public Vector3f getGroundNormal(Vector2f position) {
+        return terrain.getNormal(position);
+    }
+
     public TerrainDTO save() {
         return new TerrainDTO(terrain, alphaMap.getImage());
     }

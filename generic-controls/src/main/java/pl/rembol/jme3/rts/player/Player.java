@@ -38,10 +38,12 @@ public class Player {
     }
 
     private void initResources(List<ResourceType> resourceTypeList) {
-        for (ResourceType type : resourceTypeList) {
-            resources.put(type, 0);
-            if (type.isLimited()) {
-                resourcesLimits.put(type, 0);
+        if (resourceTypeList != null) {
+            for (ResourceType type : resourceTypeList) {
+                resources.put(type, 0);
+                if (type.isLimited()) {
+                    resourcesLimits.put(type, 0);
+                }
             }
         }
     }
