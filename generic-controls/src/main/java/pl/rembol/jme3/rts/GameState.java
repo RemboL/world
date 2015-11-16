@@ -55,6 +55,7 @@ public class GameState {
     public final ConsoleLog consoleLog;
     public final ModifierKeysManager modifierKeysManager;
     public final StatusBar statusBar;
+    public final SelectionBox selectionBox;
 
     public final PlayerService playerService;
     public final UnitRegistry unitRegistry;
@@ -85,7 +86,7 @@ public class GameState {
         consoleLog = new ConsoleLog(simpleApplication, settings);
         modifierKeysManager = new ModifierKeysManager(simpleApplication);
         statusBar = new StatusBar(simpleApplication, settings, eventManager);
-        new SelectionBox(simpleApplication);
+        selectionBox = new SelectionBox(simpleApplication);
         new RtsCamera(simpleApplication);
 
         playerService = new PlayerService(resourcesBar, consoleLog);
@@ -112,6 +113,12 @@ public class GameState {
         stateTransitionsRegistry.register(ISSUE_ORDER, new Command(LOWER_RIGHT, "cancel", KeyInput.KEY_C), DEFAULT, null);
         stateTransitionsRegistry.register(BUILD_MENU, new Command(LOWER_RIGHT, "cancel", KeyInput.KEY_C), DEFAULT, null);
         stateTransitionsRegistry.register(ISSUE_BUILD_ORDER, new Command(LOWER_RIGHT, "cancel", KeyInput.KEY_C), DEFAULT, null);
+    }
 
+    protected void initGuiFrames(String themeName) {
+        resourcesBar.initFrame(themeName);
+        selectionBox.initFrame(themeName);
+        actionBox.initFrame(themeName);
+        statusBar.initFrame(themeName);
     }
 }

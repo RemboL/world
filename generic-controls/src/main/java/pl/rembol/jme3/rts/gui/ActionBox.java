@@ -14,18 +14,20 @@ public class ActionBox {
     public ActionBox(GameState gameState) {
         this.gameState = gameState;
 
-        Picture frame = new Picture("Action Box");
-        frame.setImage(gameState.assetManager, "interface/action_box.png", true);
-        frame.move(gameState.settings.getWidth() - 200, 0, -2);
-        frame.setWidth(200);
-        frame.setHeight(200);
-        gameState.guiNode.attachChild(frame);
-
         buttonsNode = new Node("Action buttons");
         buttonsNode.move(gameState.settings.getWidth() - 172, 146, 0);
         gameState.guiNode.attachChild(buttonsNode);
 
         gameState.eventManager.onSelectionChanged(selectionChangedEvent -> updateActionButtons());
+    }
+
+    public void initFrame(String themeName) {
+        Picture frame = new Picture("Action Box");
+        frame.setImage(gameState.assetManager, "interface/" + themeName + "/action_box.png", true);
+        frame.move(gameState.settings.getWidth() - 200, 0, -2);
+        frame.setWidth(200);
+        frame.setHeight(200);
+        gameState.guiNode.attachChild(frame);
     }
 
     public void updateActionButtons() {

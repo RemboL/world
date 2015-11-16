@@ -28,13 +28,6 @@ public class StatusBar extends Node {
         simpleApplication.getGuiNode().attachChild(this);
         move(appSettings.getWidth() / 2 - 200, 0, 0);
 
-        Picture frame = new Picture("Status Bar");
-        frame.setImage(simpleApplication.getAssetManager(), "interface/status_bar.png", true);
-        frame.move(0, 0, -2);
-        frame.setWidth(400);
-        frame.setHeight(120);
-        attachChild(frame);
-
         attachChild(statusDetails);
 
         eventManager.onSelectionChanged(selectionChangedEvent -> {
@@ -50,6 +43,15 @@ public class StatusBar extends Node {
                 setIcons(selected);
             }
         });
+    }
+
+    public void initFrame(String themeName) {
+        Picture frame = new Picture("Status Bar");
+        frame.setImage(simpleApplication.getAssetManager(), "interface/" + themeName + "/status_bar.png", true);
+        frame.move(0, 0, -2);
+        frame.setWidth(400);
+        frame.setHeight(120);
+        attachChild(frame);
     }
 
 

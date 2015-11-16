@@ -23,6 +23,7 @@ public class GameState extends pl.rembol.jme3.rts.GameState {
         initResources(ResourceTypes.values());
         playerService.setResourceTypeList(ResourceTypes.values());
 
+        initGuiFrames("wooden");
     }
 
     @Override

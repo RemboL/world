@@ -39,13 +39,15 @@ public class ResourcesBar extends Node {
         simpleApplication.getGuiNode().attachChild(this);
         move(settings.getWidth() - WIDTH, settings.getHeight() - HEIGHT, 0);
 
+    }
+
+    public void initFrame(String themeName) {
         Picture frame = new Picture("Resources Box");
-        frame.setImage(simpleApplication.getAssetManager(), "interface/resources_bar.png", true);
+        frame.setImage(simpleApplication.getAssetManager(), "interface/" + themeName + "/resources_bar.png", true);
         frame.move(0, 0, -2);
         frame.setWidth(WIDTH);
         frame.setHeight(HEIGHT);
         attachChild(frame);
-
     }
 
     public void init(List<ResourceType> resourceTypeList) {
