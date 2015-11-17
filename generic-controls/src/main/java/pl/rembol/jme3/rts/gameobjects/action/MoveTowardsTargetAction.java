@@ -48,7 +48,7 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
         Vector2f checkpoint = path.getCheckPoint();
         if (checkpoint != null) {
             unit.movingControl().lookTowards(new Vector3f(checkpoint.x, 0, checkpoint.y));
-            unit.movingControl().setTargetVelocity(5f);
+            unit.movingControl().setMaxTargetVelocity();
         } else {
             unit.movingControl().setTargetVelocity(0f);
         }
