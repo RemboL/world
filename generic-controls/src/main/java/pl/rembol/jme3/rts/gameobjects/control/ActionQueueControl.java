@@ -19,6 +19,7 @@ public class ActionQueueControl<T extends WithNode> extends
 
     protected GameState gameState;
     protected T unit;
+    private boolean queueWasEmpty = true;
 
     private List<Action<?>> actionQueue = new ArrayList<>();
 
@@ -43,8 +44,13 @@ public class ActionQueueControl<T extends WithNode> extends
                 actionQueue.remove(action);
                 onFinishedAction();
             }
+
+            queueWasEmpty = false;
         } else {
-            onEmptyQueue();
+            if (!queueWasEmpty) {
+                onEmptyQueue();
+            }
+            queueWasEmpty = true;
         }
     }
 

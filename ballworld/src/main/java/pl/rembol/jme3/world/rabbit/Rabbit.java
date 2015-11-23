@@ -49,13 +49,13 @@ public class Rabbit extends AbstractControl implements Selectable, WithMovingCon
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
         control = new BetterCharacterControl(.6f, 10f, 1);
+        node.addControl(control);
 
         node.addControl(new RabbitControl(gameState, this));
         node.addControl(new MovingControl(this));
 
         gameState.bulletAppState.getPhysicsSpace().add(control);
 
-        node.addControl(control);
         control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
                 0f, new Random().nextFloat() - .5f).normalize());
 

@@ -32,8 +32,6 @@ abstract public class Unit implements Selectable,
 
     protected Node selectionNode;
 
-    protected BetterCharacterControl control;
-
     public Unit(GameState gameState, Vector3f position) {
         this.gameState = gameState;
         initNode(gameState.rootNode);
@@ -42,16 +40,14 @@ abstract public class Unit implements Selectable,
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
-        control = createCharacterControl(gameState);
+        addControls(gameState);
 
-        addControls();
-
-        node.addControl(control);
-
-        gameState.bulletAppState.getPhysicsSpace().add(control);
-
-        control.setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
-                0f, new Random().nextFloat() - .5f).normalize());
+        BetterCharacterControl control = node.getControl(BetterCharacterControl.class);
+        if (control != null) {
+            node.getControl(BetterCharacterControl.class).
+                    setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
+                            0f, new Random().nextFloat() - .5f).normalize());
+        }
 
         gameState.unitRegistry.register(this);
     }
@@ -60,12 +56,23 @@ abstract public class Unit implements Selectable,
         return new BetterCharacterControl(.6f * getWidth(), 10f, getWidth() * getWidth());
     }
 
-    protected void addControls() {
-        node.addControl(new UnitControl(gameState, this));
+    public void addControls(GameState gameState) {
+        node.addControl(new UnitControl(this.gameState, this));
         node.addControl(new MovingControl(this));
+
+        BetterCharacterControl control = createCharacterControl(gameState);
+        node.addControl(control);
+        this.gameState.bulletAppState.getPhysicsSpace().add(control);
     }
 
-    private void initNode(Node rootNode) {
+    public void removeControls() {
+        gameState.bulletAppState.getPhysicsSpace().remove(getNode().getControl(BetterCharacterControl.class));
+        getNode().removeControl(BetterCharacterControl.class);
+        getNode().removeControl(UnitControl.class);
+        getNode().removeControl(MovingControl.class);
+    }
+
+    protected void initNode(Node rootNode) {
         node = initNodeWithScale();
 
         rootNode.attachChild(node);

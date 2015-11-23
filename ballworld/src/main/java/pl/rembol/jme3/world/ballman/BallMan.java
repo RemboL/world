@@ -53,7 +53,9 @@ public class BallMan extends Unit implements WithOwner, Destructable {
         super(gameState, position);
         this.gameState = gameState;
 
-        control = new BetterCharacterControl(.6f, 10f, 1);
+        BetterCharacterControl control = new BetterCharacterControl(.6f, 10f, 1);
+        gameState.bulletAppState.getPhysicsSpace().add(control);
+        node.addControl(control);
 
         controlNode = new Node("control node");
         getNode().attachChild(controlNode);
@@ -66,7 +68,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     }
 
     @Override
-    protected void addControls() {
+    public void addControls(pl.rembol.jme3.rts.GameState gameState) {
     }
 
     @Override
@@ -88,8 +90,8 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
         gameState.unitRegistry.unregister(this);
         gameState.rootNode.detachChild(node);
+        gameState.bulletAppState.getPhysicsSpace().remove(controlNode.getControl(BetterCharacterControl.class));
         node.detachChild(controlNode);
-        gameState.bulletAppState.getPhysicsSpace().remove(control);
     }
 
     @Override
