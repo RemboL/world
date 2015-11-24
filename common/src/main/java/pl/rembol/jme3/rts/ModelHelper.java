@@ -8,6 +8,15 @@ import com.jme3.scene.Spatial;
 
 public class ModelHelper {
 
+    public static Spatial rewriteDiffuseToAmbient(Spatial spatial) {
+        if (spatial instanceof Node) {
+            return rewriteDiffuseToAmbient((Node) spatial);
+        } else if (spatial instanceof Geometry) {
+            rewriteGeometry((Geometry) spatial);
+            return spatial;
+        } else return spatial;
+    }
+    
     /**
      * By default, .blend models have material ambient value set to World
      * ambient lighting color, while JME material ambient value corresponds with

@@ -4,7 +4,6 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
-import pl.rembol.jme3.rts.ModelHelper;
 import pl.rembol.jme3.rts.gui.InventoryIcon;
 import pl.rembol.jme3.rts.smallobjects.SmallObject;
 
@@ -15,7 +14,7 @@ public abstract class Tool extends SmallObject {
     public Tool(GameState gameState) {
         super(gameState);
 
-        node = ModelHelper.rewriteDiffuseToAmbient((Node) gameState.assetManager.loadModel(modelFileName()));
+        node = (Node) gameState.assetManager.loadModel(modelFileName());
         node.setShadowMode(ShadowMode.Cast);
 
         control = new RigidBodyControl(1f);

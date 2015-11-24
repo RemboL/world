@@ -7,7 +7,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.ModelHelper;
 import pl.rembol.jme3.world.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 
@@ -25,8 +24,7 @@ public class HungerIndicator extends Node {
 
     public HungerIndicator(GameState gameState, BallMan ballMan, float hungerFactor) {
 
-        node = ModelHelper.rewriteDiffuseToAmbient((Node) gameState.assetManager.loadModel(
-                "hunger_indicator/hunger_indicator.mesh.xml"));
+        node = (Node) gameState.assetManager.loadModel("hunger_indicator/hunger_indicator.mesh.xml");
         node.setShadowMode(ShadowMode.Off);
 
         this.attachChild(node);
