@@ -33,14 +33,16 @@ public class MovingControl extends AbstractControl {
     protected void controlUpdate(float tpf) {
         BetterCharacterControl characterControl = getCharacterControl();
 
-        if (targetDirection != null) {
-            characterControl.setViewDirection(calculateNewDirection(characterControl));
-        }
+        if (characterControl != null) {
+            if (targetDirection != null) {
+                characterControl.setViewDirection(calculateNewDirection(characterControl));
+            }
 
-        characterControl.setWalkDirection(
-                characterControl
-                        .getViewDirection()
-                        .mult(calculateNewVelocity(characterControl.getWalkDirection().length())));
+            characterControl.setWalkDirection(
+                    characterControl
+                            .getViewDirection()
+                            .mult(calculateNewVelocity(characterControl.getWalkDirection().length())));
+        }
     }
 
     private Vector3f calculateNewDirection(BetterCharacterControl characterControl) {

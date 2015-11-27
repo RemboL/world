@@ -1,15 +1,14 @@
 package pl.rembol.jme3.rts.gameobjects.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.Solid;
-import pl.rembol.jme3.rts.gameobjects.interfaces.WithActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.pathfinding.Rectangle2f;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Action<T extends WithNode> {
 
@@ -78,11 +77,8 @@ public abstract class Action<T extends WithNode> {
 
     protected boolean assertDistance(WithMovingControl unit, WithNode target,
                                      float distance) {
-        if (!isCloseEnough(unit, target, distance)
-                && WithMovingControl.class.isInstance(unit)
-                && WithActionQueueControl.class.isInstance(unit)) {
-            WithActionQueueControl.class.cast(unit)
-                    .actionQueueControl()
+        if (!isCloseEnough(unit, target, distance)) {
+            unit.actionQueueControl()
                     .addActionOnStart(
                             new MoveTowardsTargetAction(gameState, unit, target, distance)
                                     .withParent(this));
@@ -94,11 +90,8 @@ public abstract class Action<T extends WithNode> {
 
     protected boolean assertDistance(WithMovingControl unit, Vector2f target,
                                      float distance) {
-        if (!isCloseEnough(unit, target, distance)
-                && WithActionQueueControl.class.isInstance(unit)) {
-            WithActionQueueControl.class
-                    .cast(unit)
-                    .actionQueueControl()
+        if (!isCloseEnough(unit, target, distance)) {
+            unit.actionQueueControl()
                     .addActionOnStart(
                             new MoveTowardsLocationAction(gameState, unit, target, distance)
                                     .withParent(this));

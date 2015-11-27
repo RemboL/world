@@ -81,10 +81,10 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
             path = gameState.pathfindingService.buildPath(
                     unit.getLocation(),
                     new Rectangle2f(new Vector2f(targetPosition.x
-                            - target.getWidth() - 2, targetPosition.z
-                            - target.getWidth() - 2), new Vector2f(
-                            targetPosition.x + target.getWidth() + 2,
-                            targetPosition.z + target.getWidth() + 2)));
+                            - target.getWidth() - 1, targetPosition.z
+                            - target.getWidth() - 1), new Vector2f(
+                            targetPosition.x + target.getWidth() + 1,
+                            targetPosition.z + target.getWidth() + 1)));
         } else {
             path = gameState.pathfindingService.buildPath(unit.getLocation(),
                     new Rectangle2f(new Vector2f(targetPosition.x - 1,
