@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.rabbit;
 
+import java.util.Random;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -12,14 +14,12 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
-import pl.rembol.jme3.world.GameState;
-
-import java.util.Random;
 
 public class Rabbit extends AbstractControl implements Selectable, WithMovingControl {
 

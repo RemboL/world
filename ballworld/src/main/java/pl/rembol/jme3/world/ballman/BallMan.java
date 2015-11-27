@@ -1,5 +1,11 @@
 package pl.rembol.jme3.world.ballman;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.ColorRGBA;
@@ -18,14 +24,13 @@ import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.rts.smallobjects.SmallObject;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.hunger.HungerControl;
+import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-
-import java.util.*;
 
 public class BallMan extends Unit implements WithOwner, Destructable {
 
@@ -45,6 +50,8 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
     private GameState gameState;
 
+    private BallManUnitRegistry ballManUnitRegistry;
+
     public BallMan(GameState gameState, Vector2f position, String player) {
         this(gameState, gameState.terrain.getGroundPosition(position), player);
     }
@@ -52,6 +59,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     public BallMan(GameState gameState, Vector3f position, String player) {
         super(gameState, position);
         this.gameState = gameState;
+        ballManUnitRegistry = new BallManUnitRegistry(gameState);
 
         BetterCharacterControl control = new BetterCharacterControl(.6f, 10f, 1);
         gameState.bulletAppState.getPhysicsSpace().add(control);
@@ -166,14 +174,14 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     public void setOwner(Player player) {
         this.owner = player;
 
-        owner.setResource(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.countHousing(owner));
+        owner.setResource(ResourceTypes.HOUSING, ballManUnitRegistry.countHousing(owner));
 
         updateColor();
     }
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[]{"skin"};
+        return new String[]{ "skin" };
     }
 
     @Override

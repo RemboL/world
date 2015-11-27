@@ -21,8 +21,7 @@ public class HouseDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        // TODO FIXME
-        return new House(pl.rembol.jme3.world.GameState.class.cast(gameState));
+        return new House(gameState);
     }
 
 }

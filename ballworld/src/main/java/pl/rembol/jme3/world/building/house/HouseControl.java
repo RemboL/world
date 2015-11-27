@@ -1,25 +1,28 @@
 package pl.rembol.jme3.world.building.house;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HouseControl extends AbstractControl {
 
     private static final int MAX_QUEUE_SIZE = 5;
     private List<RecruitQueuedAction> queue = new ArrayList<>();
     private GameState gameState;
+    private BallManUnitRegistry ballManUnitRegistry;
     private House house;
     private List<BallMan> ballMenInside = new ArrayList<>();
 
     public HouseControl(GameState gameState, House house) {
         this.gameState = gameState;
+        this.ballManUnitRegistry = new BallManUnitRegistry(gameState);
         this.house = house;
 
     }
@@ -41,7 +44,7 @@ public class HouseControl extends AbstractControl {
             currentAction.execute(house);
             queue.remove(currentAction);
 
-            house.getOwner().setResource(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.countHousing(house.getOwner()));
+            house.getOwner().setResource(ResourceTypes.HOUSING, ballManUnitRegistry.countHousing(house.getOwner()));
         }
 
         gameState.selectionManager.updateStatusIfSingleSelected(house);
@@ -58,7 +61,7 @@ public class HouseControl extends AbstractControl {
     public void addToQueue() {
         queue.add(new RecruitQueuedAction(gameState, this));
 
-        house.getOwner().setResource(ResourceTypes.HOUSING, gameState.ballManUnitRegistry.countHousing(house.getOwner()));
+        house.getOwner().setResource(ResourceTypes.HOUSING, ballManUnitRegistry.countHousing(house.getOwner()));
     }
 
     public boolean isRecruiting() {

@@ -1,5 +1,8 @@
 package pl.rembol.jme3.world.building;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector2f;
@@ -7,6 +10,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.Control;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.Solid;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
@@ -14,28 +18,36 @@ import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
 import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.rts.player.WithOwner;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Building implements Selectable, WithOwner, Destructable, Solid {
 
     private static final int HOUSING_PER_HOUSE = 10;
 
     private RigidBodyControl control;
+
     private Node node;
+
     private Node building;
+
     private SelectionIcon icon;
+
     private SelectionNode selectionNode;
+
     protected Player owner;
+
     private int hp;
+
     private BuildingStatus status;
+
     protected GameState gameState;
+
+    protected BallManUnitRegistry ballManUnitRegistry;
 
     public Building(GameState gameState) {
         this.gameState = gameState;
+        ballManUnitRegistry = new BallManUnitRegistry(gameState);
     }
 
     public Building init(Vector2f position) {
@@ -115,9 +127,9 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
     }
 
     protected String[] statusLines() {
-        return new String[]{getName(),
+        return new String[]{ getName(),
                 "hp: " + hp + " / " + getMaxHp(),
-                "owner: " + owner.getName()};
+                "owner: " + owner.getName() };
     }
 
     public boolean isConstructed() {
@@ -137,7 +149,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
 
     public void finishBuilding() {
         if (owner != null) {
-            owner.setResourceLimit(ResourceTypes.HOUSING, pl.rembol.jme3.world.GameState.class.cast(gameState).ballManUnitRegistry.getHousesByOwner(owner).size()
+            owner.setResourceLimit(ResourceTypes.HOUSING, ballManUnitRegistry.getHousesByOwner(owner).size()
                     * HOUSING_PER_HOUSE);
         }
 

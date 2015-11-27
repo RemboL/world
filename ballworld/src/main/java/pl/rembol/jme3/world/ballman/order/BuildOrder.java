@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world.ballman.order;
 
+import java.util.List;
+
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
@@ -11,8 +13,6 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.BuildAction;
 import pl.rembol.jme3.world.ballman.action.SmoothenTerrainAction;
 import pl.rembol.jme3.world.building.BuildingFactory;
-
-import java.util.List;
 
 public abstract class BuildOrder extends Order<BallMan> implements WithSilhouette {
 
@@ -39,8 +39,7 @@ public abstract class BuildOrder extends Order<BallMan> implements WithSilhouett
                     -factory.width())),
                     location.add(new Vector2f(factory.width(),
                             factory.width())), 3));
-            // TODO FIXME
-            ballMan.control().addAction(new BuildAction(pl.rembol.jme3.world.GameState.class.cast(gameState), location, factory));
+            ballMan.control().addAction(new BuildAction(gameState, location, factory));
         }
     }
 
@@ -60,7 +59,7 @@ public abstract class BuildOrder extends Order<BallMan> implements WithSilhouett
 
     @Override
     public Node createNode() {
-        return factory.createNodeWithScale(pl.rembol.jme3.world.GameState.class.cast(gameState));
+        return factory.createNodeWithScale(gameState);
     }
 
     @Override

@@ -1,18 +1,19 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
 import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.rts.resources.Cost;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
+import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.ResourceTypes;
-
-import java.util.Optional;
 
 public class EatFoodAction extends Action<BallMan> {
 
     private static final float REQUIRED_DISTANCE = 3;
-    private final GameState ballManGameState;
+    private final BallManUnitRegistry ballManUnitRegistry;
 
     private boolean finished = false;
 
@@ -20,14 +21,13 @@ public class EatFoodAction extends Action<BallMan> {
 
     public EatFoodAction(GameState gameState, float howHungry) {
         super(gameState);
-        this.ballManGameState = gameState;
+        this.ballManUnitRegistry = new BallManUnitRegistry(gameState);
         this.howHungry = (int) howHungry;
     }
 
     @Override
     protected boolean start(BallMan ballMan) {
-        // TODO FIXME
-        Optional<Warehouse> closestWarehouse = ballManGameState.ballManUnitRegistry.getClosestWarehouse(ballMan.getLocation(), ballMan.getOwner());
+        Optional<Warehouse> closestWarehouse = ballManUnitRegistry.getClosestWarehouse(ballMan.getLocation(), ballMan.getOwner());
 
         if (!closestWarehouse.isPresent()) {
             if (ballMan.getOwner().isActive()) {

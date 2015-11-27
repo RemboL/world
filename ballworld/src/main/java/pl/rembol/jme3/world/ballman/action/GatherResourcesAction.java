@@ -1,13 +1,13 @@
 package pl.rembol.jme3.world.ballman.action;
 
+import java.util.Optional;
+
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.building.warehouse.Warehouse;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
-
-import java.util.Optional;
 
 public class GatherResourcesAction extends BallManAction {
 
@@ -43,8 +43,7 @@ public class GatherResourcesAction extends BallManAction {
     }
 
     private Optional<Warehouse> getClosestWarehouse() {
-        // TODO FIXME
-        return pl.rembol.jme3.world.GameState.class.cast(gameState).ballManUnitRegistry.getClosestWarehouse(resourceDeposit.getLocation(), ballMan.getOwner());
+        return ballManUnitRegistry.getClosestWarehouse(resourceDeposit.getLocation(), ballMan.getOwner());
     }
 
 }

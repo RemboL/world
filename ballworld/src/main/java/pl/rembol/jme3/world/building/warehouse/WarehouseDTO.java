@@ -21,8 +21,7 @@ public class WarehouseDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        // TODO FIXME
-        return new Warehouse(pl.rembol.jme3.world.GameState.class.cast(gameState));
+        return new Warehouse(gameState);
     }
 
 }

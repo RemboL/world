@@ -21,8 +21,7 @@ public class ToolshopDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        // TODO FIXME
-        return new Toolshop(pl.rembol.jme3.world.GameState.class.cast(gameState));
+        return new Toolshop(gameState);
     }
 
 }

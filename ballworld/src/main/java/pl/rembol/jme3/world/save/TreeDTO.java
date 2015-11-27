@@ -22,8 +22,7 @@ public class TreeDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        // TODO FIXME
-        return new Tree(pl.rembol.jme3.world.GameState.class.cast(gameState));
+        return new Tree(gameState);
     }
 
 }

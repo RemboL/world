@@ -22,8 +22,7 @@ public class BallManDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        // TODO FIXME
-        return new BallMan(pl.rembol.jme3.world.GameState.class.cast(gameState), getPosition(), player);
+        return new BallMan(gameState, getPosition(), player);
     }
 
 }

@@ -22,9 +22,7 @@ public class FruitBushDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-
-        // TODO FIXME
-        return new FruitBush(pl.rembol.jme3.world.GameState.class.cast(gameState));
+        return new FruitBush(gameState);
     }
 
 }

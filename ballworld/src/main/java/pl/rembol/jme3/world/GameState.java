@@ -1,24 +1,30 @@
 package pl.rembol.jme3.world;
 
+import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.UPPER_CENTER;
+import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.UPPER_LEFT;
+import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.UPPER_RIGHT;
+import static pl.rembol.jme3.rts.input.state.InputState.BUILD_MENU;
+import static pl.rembol.jme3.rts.input.state.InputState.DEFAULT;
+import static pl.rembol.jme3.rts.input.state.InputState.ISSUE_BUILD_ORDER;
+import static pl.rembol.jme3.rts.input.state.InputState.ISSUE_ORDER;
+import static pl.rembol.jme3.rts.input.state.InputState.ISSUE_ORDER_IMMEDIATELY;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
 import com.jme3.system.AppSettings;
 import pl.rembol.jme3.rts.input.state.Command;
-import pl.rembol.jme3.world.ballman.order.*;
+import pl.rembol.jme3.world.ballman.order.BuildHouseOrder;
+import pl.rembol.jme3.world.ballman.order.BuildToolshopOrder;
+import pl.rembol.jme3.world.ballman.order.BuildWarehouseOrder;
+import pl.rembol.jme3.world.ballman.order.RecruitOrder;
+import pl.rembol.jme3.world.ballman.order.SmoothenTerrainOrder;
 import pl.rembol.jme3.world.resources.ResourceTypes;
-
-import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.*;
-import static pl.rembol.jme3.rts.input.state.InputState.*;
 
 public class GameState extends pl.rembol.jme3.rts.GameState {
 
-    public final BallManUnitRegistry ballManUnitRegistry;
-
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         super(simpleApplication, settings, bulletAppState);
-
-        ballManUnitRegistry = new BallManUnitRegistry(this);
 
         initResources(ResourceTypes.values());
         playerService.setResourceTypeList(ResourceTypes.values());

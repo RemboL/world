@@ -22,8 +22,7 @@ public class StoneDepositDTO extends UnitDTO {
 
     @Override
     public WithNode produce(GameState gameState) {
-        // TODO FIXME
-        return new StoneDeposit(pl.rembol.jme3.world.GameState.class.cast(gameState));
+        return new StoneDeposit(gameState);
     }
 
 }

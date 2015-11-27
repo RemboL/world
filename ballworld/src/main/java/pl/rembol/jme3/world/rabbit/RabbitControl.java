@@ -6,7 +6,7 @@ import com.jme3.math.Vector2f;
 import pl.rembol.jme3.rts.gameobjects.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.rts.gameobjects.action.WaitAction;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
-import pl.rembol.jme3.world.GameState;
+import pl.rembol.jme3.rts.GameState;
 
 public class RabbitControl extends ActionQueueControl<Rabbit> {
 
