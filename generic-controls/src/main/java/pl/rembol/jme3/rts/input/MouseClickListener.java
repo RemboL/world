@@ -54,56 +54,67 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 
     @Override
     public void onAnalog(String name, float value, float tpf) {
-        if (isButtonDown
-                && dragStartPosition != null
-                && dragStartPosition.distance(gameState.inputManager.getCursorPosition()) > 5f) {
-            if (!isDragged) {
-                gameState.dragSelectionManager.startDragging();
-                gameState.buildingSilhouetteManager.removeSilhouette();
+        if (gameState.windowManager.getTopWindow().isPresent()) {
+            gameState.dragSelectionManager.cancel();
+            gameState.buildingSilhouetteManager.removeSilhouette();
+        } else {
+
+            if (isButtonDown
+                    && dragStartPosition != null
+                    && dragStartPosition.distance(gameState.inputManager.getCursorPosition()) > 5f) {
+                if (!isDragged) {
+                    gameState.dragSelectionManager.startDragging();
+                    gameState.buildingSilhouetteManager.removeSilhouette();
+                }
+                isDragged = true;
             }
-            isDragged = true;
         }
     }
 
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
-
-        if (name.equals(InputStateManager.LEFT_CLICK) && keyPressed) {
-            isButtonDown = true;
-            dragStartPosition = gameState.inputManager.getCursorPosition().clone();
-            isDragged = false;
-            gameState.dragSelectionManager.start();
-        }
-
-        if ((name.equals(InputStateManager.LEFT_CLICK) || name
-                .equals(InputStateManager.RIGHT_CLICK)) && !keyPressed) {
-            if (!isDragged) {
-                if (!(name.equals(InputStateManager.LEFT_CLICK) && checkClickableButtons())) {
-
-                    Collidable collided = getClosestCollidingObject();
-
-                    if (collidedWithNode(collided)) {
-                        WithNode withNode = gameState.unitRegistry
-                                .getSelectable(Node.class.cast(collided));
-                        gameState.inputStateManager.click(name, withNode);
-                    } else {
-                        Vector3f collisionWithTerrain = getCollisionWithTerrain();
-                        if (collisionWithTerrain != null) {
-                            gameState.inputStateManager.click(name, new Vector2f(
-                                    collisionWithTerrain.x,
-                                    collisionWithTerrain.z));
-                        }
-
-                    }
-                }
-                gameState.dragSelectionManager.cancel();
-            } else if (name.equals(InputStateManager.LEFT_CLICK)) {
-                gameState.dragSelectionManager.confirm();
+        if (gameState.windowManager.getTopWindow().isPresent()) {
+            if (name.equals(InputStateManager.LEFT_CLICK) && keyPressed) {
+                gameState.windowManager.getTopWindow().get().click(gameState.inputManager.getCursorPosition().clone());
+            }
+        } else {
+            if (name.equals(InputStateManager.LEFT_CLICK) && keyPressed) {
+                isButtonDown = true;
+                dragStartPosition = gameState.inputManager.getCursorPosition().clone();
+                isDragged = false;
+                gameState.dragSelectionManager.start();
             }
 
-            isButtonDown = false;
-            dragStartPosition = null;
-            isDragged = false;
+            if ((name.equals(InputStateManager.LEFT_CLICK) || name
+                    .equals(InputStateManager.RIGHT_CLICK)) && !keyPressed) {
+                if (!isDragged) {
+                    if (!(name.equals(InputStateManager.LEFT_CLICK) && checkClickableButtons())) {
+
+                        Collidable collided = getClosestCollidingObject();
+
+                        if (collidedWithNode(collided)) {
+                            WithNode withNode = gameState.unitRegistry
+                                    .getSelectable(Node.class.cast(collided));
+                            gameState.inputStateManager.click(name, withNode);
+                        } else {
+                            Vector3f collisionWithTerrain = getCollisionWithTerrain();
+                            if (collisionWithTerrain != null) {
+                                gameState.inputStateManager.click(name, new Vector2f(
+                                        collisionWithTerrain.x,
+                                        collisionWithTerrain.z));
+                            }
+
+                        }
+                    }
+                    gameState.dragSelectionManager.cancel();
+                } else if (name.equals(InputStateManager.LEFT_CLICK)) {
+                    gameState.dragSelectionManager.confirm();
+                }
+
+                isButtonDown = false;
+                dragStartPosition = null;
+                isDragged = false;
+            }
         }
 
     }

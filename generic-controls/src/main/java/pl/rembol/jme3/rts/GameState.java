@@ -24,6 +24,7 @@ import pl.rembol.jme3.rts.gui.ResourcesBar;
 import pl.rembol.jme3.rts.gui.SelectionBox;
 import pl.rembol.jme3.rts.gui.console.ConsoleLog;
 import pl.rembol.jme3.rts.gui.status.StatusBar;
+import pl.rembol.jme3.rts.gui.window.WindowManager;
 import pl.rembol.jme3.rts.input.CommandKeysListener;
 import pl.rembol.jme3.rts.input.ModifierKeysManager;
 import pl.rembol.jme3.rts.input.MouseClickListener;
@@ -74,6 +75,9 @@ public class GameState {
     public final StateTransitionsRegistry stateTransitionsRegistry;
     public final DragSelectionManager dragSelectionManager;
     public final MouseClickListener mouseClickListener;
+    public final WindowManager windowManager;
+
+    private String themeName = "template";
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         this.simpleApplication = simpleApplication;
@@ -106,6 +110,7 @@ public class GameState {
         stateTransitionsRegistry = new StateTransitionsRegistry(this);
         dragSelectionManager = new DragSelectionManager(this);
         mouseClickListener = new MouseClickListener(this);
+        windowManager = new WindowManager(this);
 
         initStateTransitions();
     }
@@ -123,9 +128,15 @@ public class GameState {
     }
 
     protected void initGuiFrames(String themeName) {
+        this.themeName = themeName;
+
         resourcesBar.initFrame(themeName);
         selectionBox.initFrame(themeName);
         actionBox.initFrame(themeName);
         statusBar.initFrame(themeName);
+    }
+
+    public String themeName() {
+        return themeName;
     }
 }

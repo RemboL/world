@@ -6,9 +6,14 @@ import pl.rembol.jme3.rts.GameState;
 
 abstract public class ClickablePicture extends Picture implements Clickable {
 
-    private static final int SIZE = 32;
+    protected static final int SIZE = 32;
 
     protected final GameState gameState;
+
+    public ClickablePicture(GameState gameState) {
+        super("");
+        this.gameState = gameState;
+    }
 
     public ClickablePicture(GameState gameState, String iconName) {
         super(iconName);
