@@ -1,6 +1,6 @@
 package pl.rembol.jme3.rts.pathfinding.paths;
 
-import pl.rembol.jme3.rts.pathfinding.Vector2i;
+import pl.rembol.jme3.geom.Vector2i;
 
 public interface IPath2i {
 

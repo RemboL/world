@@ -1,4 +1,4 @@
-package pl.rembol.jme3.rts.pathfinding;
+package pl.rembol.jme3.geom;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -75,6 +75,10 @@ public class Rectangle2f {
 
     public boolean isInside(Vector3f vector) {
         return (vector.x >= start.x && vector.z >= start.y && vector.x <= end.x && vector.z <= end.y);
+    }
+
+    public boolean isInside(Vector2f vector) {
+        return (vector.x >= start.x && vector.y >= start.y && vector.x <= end.x && vector.y <= end.y);
     }
 
 }

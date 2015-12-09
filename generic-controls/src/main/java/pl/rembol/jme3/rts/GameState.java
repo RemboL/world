@@ -98,7 +98,7 @@ public class GameState {
         modifierKeysManager = new ModifierKeysManager(simpleApplication);
         statusBar = new StatusBar(simpleApplication, settings, eventManager);
         selectionBox = new SelectionBox(simpleApplication);
-        new RtsCamera(simpleApplication);
+        new RtsCamera(this);
 
         playerService = new PlayerService(resourcesBar, consoleLog);
         unitRegistry = new UnitRegistry(this);

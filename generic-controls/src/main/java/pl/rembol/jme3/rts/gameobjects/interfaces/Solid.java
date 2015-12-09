@@ -1,7 +1,7 @@
 package pl.rembol.jme3.rts.gameobjects.interfaces;
 
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.pathfinding.Rectangle2f;
+import pl.rembol.jme3.geom.Rectangle2f;
 
 public interface Solid extends WithNode {
 

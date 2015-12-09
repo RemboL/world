@@ -1,5 +1,7 @@
 package pl.rembol.jme3.world;
 
+import java.io.File;
+
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -22,8 +24,6 @@ import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
 import pl.rembol.jme3.world.save.SaveState;
-
-import java.io.File;
 
 public class GameRunningAppState extends AbstractAppState {
 
@@ -91,7 +91,7 @@ public class GameRunningAppState extends AbstractAppState {
 
         new FruitBush(gameState).init(new Vector2f(35, -20));
 
-        gameState.windowManager.addWindow(new Window(gameState), new Vector2f(100, 100));
+        gameState.windowManager.addWindow(new Window(gameState, 640, 480), new Vector2f(100, 100));
 
 //        new SaveState(gameState.terrain.save(), gameState.playerService.savePlayers(),
 //                gameState.unitRegistry.save())

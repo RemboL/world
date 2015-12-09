@@ -17,6 +17,6 @@ public class AddButton extends ClickablePicture {
 
     @Override
     public void onClick() {
-        gameState.windowManager.addWindow(new Window(gameState), new Vector2f(FastMath.nextRandomFloat() * 200 + 10, FastMath.nextRandomFloat() * 200 + 10));
+        gameState.windowManager.addWindow(new Window(gameState, 640, 480), new Vector2f(FastMath.nextRandomFloat() * 200 + 10, FastMath.nextRandomFloat() * 200 + 10));
     }
 }

@@ -1,6 +1,5 @@
 package pl.rembol.jme3.rts.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
@@ -9,6 +8,7 @@ import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import pl.rembol.jme3.rts.GameState;
 
 public class RtsCamera implements AnalogListener {
 
@@ -46,12 +46,12 @@ public class RtsCamera implements AnalogListener {
 
     private Vector3f cameraCenter;
 
-    private SimpleApplication simpleApplication;
+    private final GameState gameState;
 
-    public RtsCamera(SimpleApplication simpleApplication) {
-        this.simpleApplication = simpleApplication;
+    public RtsCamera(GameState gameState) {
+        this.gameState = gameState;
 
-        cameraCenter = simpleApplication.getCamera().getLocation().clone();
+        cameraCenter = gameState.camera.getLocation().clone();
 
         updateCamera();
 
@@ -62,8 +62,8 @@ public class RtsCamera implements AnalogListener {
         Quaternion rotationQuaternion = new Quaternion().fromAngleAxis(
                 rotation, Vector3f.UNIT_Y).mult(
                 new Quaternion().fromAngleAxis(tilt, Vector3f.UNIT_X));
-        simpleApplication.getCamera().setRotation(rotationQuaternion);
-        simpleApplication.getCamera().setLocation(cameraCenter.subtract(rotationQuaternion
+        gameState.camera.setRotation(rotationQuaternion);
+        gameState.camera.setLocation(cameraCenter.subtract(rotationQuaternion
                 .mult(Vector3f.UNIT_Z.mult(zoomOut))));
     }
 
@@ -158,37 +158,39 @@ public class RtsCamera implements AnalogListener {
 
     @Override
     public void onAnalog(String name, float value, float tpf) {
-        switch (name) {
-            case MOVE_FORWARD:
-                moveForward(value);
-                break;
-            case MOVE_BACKWARD:
-                moveBackward(value);
-                break;
-            case MOVE_LEFT:
-                moveLeft(value);
-                break;
-            case MOVE_RIGHT:
-                moveRight(value);
-                break;
-            case ROTATE_LEFT:
-                rotateLeft(value);
-                break;
-            case ROTATE_RIGHT:
-                rotateRight(value);
-                break;
-            case TILT_UP:
-                tiltUp(value);
-                break;
-            case TILT_DOWN:
-                tiltDown(value);
-                break;
-            case ZOOM_IN:
-                zoomIn(value);
-                break;
-            case ZOOM_OUT:
-                zoomOut(value);
-                break;
+        if (!gameState.windowManager.getTopWindow().isPresent()) {
+            switch (name) {
+                case MOVE_FORWARD:
+                    moveForward(value);
+                    break;
+                case MOVE_BACKWARD:
+                    moveBackward(value);
+                    break;
+                case MOVE_LEFT:
+                    moveLeft(value);
+                    break;
+                case MOVE_RIGHT:
+                    moveRight(value);
+                    break;
+                case ROTATE_LEFT:
+                    rotateLeft(value);
+                    break;
+                case ROTATE_RIGHT:
+                    rotateRight(value);
+                    break;
+                case TILT_UP:
+                    tiltUp(value);
+                    break;
+                case TILT_DOWN:
+                    tiltDown(value);
+                    break;
+                case ZOOM_IN:
+                    zoomIn(value);
+                    break;
+                case ZOOM_OUT:
+                    zoomOut(value);
+                    break;
+            }
         }
     }
 
@@ -207,15 +209,15 @@ public class RtsCamera implements AnalogListener {
         registerKey(ZOOM_IN, KeyInput.KEY_INSERT);
         registerKey(ZOOM_OUT, KeyInput.KEY_PGUP);
 
-        simpleApplication.getInputManager().addMapping(ZOOM_IN, new MouseAxisTrigger(
+        gameState.inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(
                 MouseInput.AXIS_WHEEL, false));
-        simpleApplication.getInputManager().addMapping(ZOOM_OUT, new MouseAxisTrigger(
+        gameState.inputManager.addMapping(ZOOM_OUT, new MouseAxisTrigger(
                 MouseInput.AXIS_WHEEL, true));
     }
 
     private void registerKey(String name, int key) {
-        simpleApplication.getInputManager().addMapping(name, new KeyTrigger(key));
-        simpleApplication.getInputManager().addListener(this, name);
+        gameState.inputManager.addMapping(name, new KeyTrigger(key));
+        gameState.inputManager.addListener(this, name);
     }
 
 }

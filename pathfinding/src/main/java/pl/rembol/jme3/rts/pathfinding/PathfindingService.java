@@ -1,22 +1,33 @@
 package pl.rembol.jme3.rts.pathfinding;
 
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.pathfinding.PathfindingCluster.Direction;
-import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
-import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
-import pl.rembol.jme3.rts.pathfinding.algorithms.DijkstraAlgorithm;
-import pl.rembol.jme3.rts.pathfinding.paths.*;
-import pl.rembol.jme3.rts.terrain.Terrain;
-import pl.rembol.jme3.rts.threads.Executor;
-import pl.rembol.jme3.rts.threads.ThreadManager;
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.ceil;
-import static java.lang.Math.floor;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import pl.rembol.jme3.geom.Direction;
+import pl.rembol.jme3.geom.Rectangle2f;
+import pl.rembol.jme3.geom.Vector2i;
+import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
+import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
+import pl.rembol.jme3.rts.pathfinding.algorithms.DijkstraAlgorithm;
+import pl.rembol.jme3.rts.pathfinding.paths.ComplexPath;
+import pl.rembol.jme3.rts.pathfinding.paths.FuturePath;
+import pl.rembol.jme3.rts.pathfinding.paths.IExternalPath;
+import pl.rembol.jme3.rts.pathfinding.paths.SectorPath;
+import pl.rembol.jme3.rts.pathfinding.paths.Vector2iPath;
+import pl.rembol.jme3.rts.pathfinding.paths.VectorPath;
+import pl.rembol.jme3.rts.terrain.Terrain;
+import pl.rembol.jme3.rts.threads.Executor;
+import pl.rembol.jme3.rts.threads.ThreadManager;
 
 public class PathfindingService {
 

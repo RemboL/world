@@ -1,7 +1,7 @@
 package pl.rembol.jme3.rts.pathfinding.algorithms;
 
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.pathfinding.Vector2i;
+import pl.rembol.jme3.geom.Vector2i;
 import pl.rembol.jme3.rts.pathfinding.paths.Vector2iPath;
 
 import java.util.*;

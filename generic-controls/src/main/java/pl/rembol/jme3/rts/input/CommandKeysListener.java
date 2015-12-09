@@ -15,9 +15,11 @@ public class CommandKeysListener implements ActionListener {
 
     @Override
     public void onAction(String name, boolean keyPressed, float tpf) {
-        if (keyPressed) {
-            if (name.matches(COMMAND_KEY_PREFIX + "\\d+")) {
-                gameState.inputStateManager.type(Integer.valueOf(name.replaceAll(COMMAND_KEY_PREFIX, "")));
+        if (!gameState.windowManager.getTopWindow().isPresent()) {
+            if (keyPressed) {
+                if (name.matches(COMMAND_KEY_PREFIX + "\\d+")) {
+                    gameState.inputStateManager.type(Integer.valueOf(name.replaceAll(COMMAND_KEY_PREFIX, "")));
+                }
             }
         }
     }

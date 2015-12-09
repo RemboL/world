@@ -3,6 +3,7 @@ package pl.rembol.jme3.rts.gui.window;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -10,43 +11,94 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import pl.rembol.jme3.rts.GameState;
 
-class WindowShade extends Node {
+public class WindowShade extends Node {
 
     private static Material muchLighterShade;
+
     private static Material slightlyLighterShade;
+
     private static Material slightlyDarkerShade;
+
     private static Material muchDarkerShade;
+
     private static Material muchMuchDarkerShade;
 
     private final GameState gameState;
 
-    private static final int EDGE = 5;
+    private final int width;
 
-    private static final int TOP_FRAME = 42;
+    private final int height;
 
-    private static final int FRAME = 20;
+    private final int depth;
+
+    public static final int EDGE = 5;
+
+    public static final int TOP_FRAME = 42;
+
+    public static final int FRAME = 20;
 
     public WindowShade(GameState gameState, int width, int height, int depth) {
         this.gameState = gameState;
-        initShades(width, height, depth);
-
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
     }
 
-    private void initShades(int width, int height, int depth) {
-        initShade(getMuchDarkerShade(), new Vector3f(0, 0, depth), new Vector3f(EDGE, EDGE, depth), new Vector3f(EDGE, height - EDGE, depth), new Vector3f(0, height, depth));
-        initShade(getSlightlyDarkerShade(), new Vector3f(0, 0, depth), new Vector3f(width, 0, depth), new Vector3f(width - EDGE, EDGE, depth), new Vector3f(EDGE, EDGE, depth));
-        initShade(getMuchLighterShade(), new Vector3f(width, 0, depth), new Vector3f(width, height, depth), new Vector3f(width - EDGE, height - EDGE, depth), new Vector3f(width - EDGE, EDGE, depth));
-        initShade(getSlightlyLighterShade(), new Vector3f(0, height, depth), new Vector3f(EDGE, height - EDGE, depth), new Vector3f(width - EDGE, height - EDGE, depth), new Vector3f(width, height, depth));
+    public void initAllShades() {
+        initOuterShades();
 
-        initShade(getMuchLighterShade(), new Vector3f(FRAME - EDGE, FRAME - EDGE, depth), new Vector3f(FRAME, FRAME, depth), new Vector3f(FRAME, height - TOP_FRAME, depth), new Vector3f(FRAME - EDGE, height - TOP_FRAME + EDGE, depth));
-        initShade(getSlightlyLighterShade(), new Vector3f(FRAME - EDGE, FRAME - EDGE, depth), new Vector3f(width - FRAME + EDGE, FRAME - EDGE, depth), new Vector3f(width - FRAME, FRAME, depth), new Vector3f(FRAME, FRAME, depth));
-        initShade(getMuchDarkerShade(), new Vector3f(width - FRAME + EDGE, FRAME - EDGE, depth), new Vector3f(width - FRAME + EDGE, height - TOP_FRAME + EDGE, depth), new Vector3f(width - FRAME, height - TOP_FRAME, depth), new Vector3f(width - FRAME, FRAME, depth));
-        initShade(getSlightlyDarkerShade(), new Vector3f(FRAME - EDGE, height - TOP_FRAME + EDGE, depth), new Vector3f(FRAME, height - TOP_FRAME, depth), new Vector3f(width - FRAME, height - TOP_FRAME, depth), new Vector3f(width - FRAME + EDGE, height - TOP_FRAME + EDGE, depth));
+        initInnerShades();
 
-        initShade(getMuchMuchDarkerShade(), new Vector3f(FRAME, FRAME, depth), new Vector3f(width - FRAME, FRAME, depth), new Vector3f(width - FRAME, height - TOP_FRAME, depth), new Vector3f(FRAME, height - TOP_FRAME, depth));
+        initShade(getMuchMuchDarkerShade(),
+                new Vector3f(FRAME, FRAME, depth),
+                new Vector3f(width - FRAME, FRAME, depth),
+                new Vector3f(width - FRAME, height - TOP_FRAME, depth),
+                new Vector3f(FRAME, height - TOP_FRAME, depth));
     }
 
-    private void initShade(Material material, Vector3f vertex1, Vector3f vertex2, Vector3f vertex3, Vector3f vertex4) {
+    public void initBox(Vector2f start, Vector2f end, boolean convex) {
+        float startX = Math.min(start.x, end.x);
+        float endX = Math.max(start.x, end.x);
+        float startY = Math.min(start.y, end.y);
+        float endY = Math.max(start.y, end.y);
+
+        initShade(convex ? getMuchDarkerShade() : getMuchLighterShade(),
+                new Vector3f(startX, startY, depth),
+                new Vector3f(startX + EDGE, startY + EDGE, depth),
+                new Vector3f(startX + EDGE, endY - EDGE, depth),
+                new Vector3f(startX, endY, depth));
+        initShade(convex ? getSlightlyDarkerShade() : getSlightlyLighterShade(),
+                new Vector3f(startX, startY, depth),
+                new Vector3f(endX, startY, depth),
+                new Vector3f(endX - EDGE, startY + EDGE, depth),
+                new Vector3f(startX + EDGE, startY + EDGE, depth));
+        initShade(convex ? getMuchLighterShade() : getMuchDarkerShade(),
+                new Vector3f(endX, startY, depth),
+                new Vector3f(endX, endY, depth),
+                new Vector3f(endX - EDGE, endY - EDGE, depth),
+                new Vector3f(endX - EDGE, startY + EDGE, depth));
+        initShade(convex ? getSlightlyLighterShade() : getSlightlyDarkerShade(),
+                new Vector3f(startX, endY, depth),
+                new Vector3f(startX + EDGE, endY - EDGE, depth),
+                new Vector3f(endX - EDGE, endY - EDGE, depth),
+                new Vector3f(endX, endY, depth));
+    }
+
+    public void initOuterShades() {
+        initBox(
+                new Vector2f(0, 0),
+                new Vector2f(width, height),
+                true);
+    }
+
+    public void initInnerShades() {
+        initBox(
+                new Vector2f(FRAME - EDGE, FRAME - EDGE),
+                new Vector2f(width - FRAME + EDGE, height - TOP_FRAME + EDGE),
+                false);
+    }
+
+    public void initShade(Material material, Vector3f vertex1, Vector3f vertex2, Vector3f vertex3, Vector3f vertex4) {
         Spatial spatial = new Geometry("shade", new QuadrangleMesh(vertex1, vertex2, vertex3, vertex4));
         spatial.setQueueBucket(RenderQueue.Bucket.Gui);
         spatial.setCullHint(Spatial.CullHint.Never);
@@ -102,6 +154,5 @@ class WindowShade extends Node {
 
         return muchMuchDarkerShade;
     }
-
 
 }
