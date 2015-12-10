@@ -37,11 +37,6 @@ public class Toolshop extends Building {
     }
 
     @Override
-    public String getIconName() {
-        return "toolshop";
-    }
-
-    @Override
     public int getMaxHp() {
         return 75;
     }

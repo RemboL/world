@@ -75,7 +75,7 @@ public class StatusBar extends Node {
             SelectionIcon icon = selectable.getIcon();
             icon.setLocalTranslation(
                     40 + (index % ICON_ROW_SIZE) * 36,
-                    44 + (1 - (index / ICON_ROW_SIZE)) * 32,
+                    40 + (1 - (index / ICON_ROW_SIZE)) * 36,
                     1);
             statusDetails.attachChild(icon);
             selectionIcons.add(icon);

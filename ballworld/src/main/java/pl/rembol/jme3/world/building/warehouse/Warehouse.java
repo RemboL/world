@@ -40,11 +40,6 @@ public class Warehouse extends Building {
         return new String[]{"Flag"};
     }
 
-    @Override
-    public String getIconName() {
-        return "warehouse";
-    }
-
     private void increaseResources(int resources, ResourceType resourceType) {
         if (owner != null) {
             owner.addResource(resourceType, resources);

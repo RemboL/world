@@ -52,11 +52,6 @@ public class House extends Building {
     }
 
     @Override
-    public String getIconName() {
-        return "house";
-    }
-
-    @Override
     public int getMaxHp() {
         return 150;
     }

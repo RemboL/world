@@ -62,7 +62,7 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
 
         node = new Node();
         building = initNodeWithScale();
-        icon = new SelectionIcon(gameState, this, getIconName());
+        icon = new SelectionIcon(gameState, this, initNode());
 
         building.setShadowMode(ShadowMode.Cast);
         if (startUnderGround) {
@@ -219,8 +219,6 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
     public abstract float getWidth();
 
     public abstract String getName();
-
-    public abstract String getIconName();
 
     public abstract int getMaxHp();
 
