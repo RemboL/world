@@ -26,6 +26,17 @@ public class WindowManager {
         window.setLocalTranslation(location.x, location.y, getTopWindowOffset());
         windowStack.add(window);
     }
+    
+    public void addWindowCentered(Window window) {
+        gameState.guiNode.attachChild(window);
+
+        Vector2f location = new Vector2f(gameState.settings.getWidth(), gameState.settings.getHeight())
+                .subtract(new Vector2f(window.width, window.height))
+                .divide(2); 
+        
+        window.setLocalTranslation(location.x, location.y, getTopWindowOffset());
+        windowStack.add(window);
+    }
 
     private Vector2f normalizeWindowLocation(Window window, Vector2f location) {
         Vector2f newLocation = location.clone();
