@@ -1,13 +1,13 @@
 package pl.rembol.jme3.rts.gui.window;
 
-import java.util.Optional;
-
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gui.Clickable;
+
+import java.util.Optional;
 
 public class Window extends Node {
 
@@ -32,7 +32,6 @@ public class Window extends Node {
         initShades();
 
         initCloseButton();
-        initAddButton();
     }
 
     protected void initFrame() {
@@ -55,13 +54,6 @@ public class Window extends Node {
 
         closeButton.setLocalTranslation(width - 37, height - 37, 0);
         attachChild(closeButton);
-    }
-
-    protected void initAddButton() {
-        AddButton addButton = new AddButton(gameState);
-
-        addButton.setLocalTranslation(width - 74, height - 37, 0);
-        attachChild(addButton);
     }
 
     public Integer getTopOffset() {

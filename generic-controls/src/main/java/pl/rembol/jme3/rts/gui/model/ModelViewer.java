@@ -90,6 +90,7 @@ public class ModelViewer {
         modelNode.detachAllChildren();
         if (child != null) {
             modelNode.attachChild(child);
+            child.setLocalTranslation(Vector3f.ZERO);
             child.setLocalRotation(Quaternion.IDENTITY);
         }
         scene.updateGeometricState();

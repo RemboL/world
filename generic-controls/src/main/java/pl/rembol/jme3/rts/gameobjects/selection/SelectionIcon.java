@@ -20,7 +20,7 @@ public class SelectionIcon extends ClickablePicture {
     public SelectionIcon(GameState gameState, Selectable selectable, Spatial model) {
         super(gameState);
         this.selectable = selectable;
-        new ModelViewer(gameState, 32, 32).withBackgroundColor(new ColorRGBA(.2f, .2f, .2f, .2f)).withModel(model).updateViewer(this);
+        updateWithModel(model);
         setWidth(SIZE);
         setHeight(SIZE);
     }
@@ -28,5 +28,9 @@ public class SelectionIcon extends ClickablePicture {
     @Override
     public void onClick() {
         gameState.selectionManager.select(selectable);
+    }
+
+    public void updateWithModel(Spatial model) {
+        new ModelViewer(gameState, 32, 32).withBackgroundColor(new ColorRGBA(.2f, .2f, .2f, .2f)).withModel(model).updateViewer(this);
     }
 }

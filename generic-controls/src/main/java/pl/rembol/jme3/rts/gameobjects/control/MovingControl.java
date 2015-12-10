@@ -103,4 +103,9 @@ public class MovingControl extends AbstractControl {
         this.rotationOnlyOnMove = rotationOnlyOnMove;
     }
 
+    @Override
+    protected Object clone() {
+        return new MovingControl(unit);
+    }
+
 }
