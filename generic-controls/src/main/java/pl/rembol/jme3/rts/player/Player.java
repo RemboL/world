@@ -1,15 +1,15 @@
 package pl.rembol.jme3.rts.player;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.jme3.math.ColorRGBA;
 import pl.rembol.jme3.rts.gui.ResourcesBar;
 import pl.rembol.jme3.rts.gui.console.ConsoleLog;
 import pl.rembol.jme3.rts.resources.Cost;
 import pl.rembol.jme3.rts.resources.ResourceType;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class Player {
 

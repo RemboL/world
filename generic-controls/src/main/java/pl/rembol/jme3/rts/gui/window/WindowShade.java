@@ -57,10 +57,21 @@ public class WindowShade extends Node {
     }
 
     public void initBox(Vector2f start, Vector2f end, boolean convex) {
+        initBox(start, end, convex, false);
+    }
+    
+    public void initBox(Vector2f start, Vector2f end, boolean convex, boolean outerShade) {
         float startX = Math.min(start.x, end.x);
         float endX = Math.max(start.x, end.x);
         float startY = Math.min(start.y, end.y);
         float endY = Math.max(start.y, end.y);
+        
+        if (outerShade) {
+            startX -= EDGE;
+            startY -= EDGE;
+            endX += EDGE;
+            endY += EDGE;
+        }
 
         initShade(convex ? getMuchDarkerShade() : getMuchLighterShade(),
                 new Vector3f(startX, startY, depth),

@@ -13,9 +13,9 @@ public class Window extends Node {
 
     protected final GameState gameState;
 
-    private final int width;
+    protected final int width;
 
-    private final int height;
+    protected final int height;
 
     protected WindowShade windowShade;
 
