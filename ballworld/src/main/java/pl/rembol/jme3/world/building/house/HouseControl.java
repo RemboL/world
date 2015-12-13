@@ -1,8 +1,5 @@
 package pl.rembol.jme3.world.building.house;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -10,6 +7,9 @@ import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HouseControl extends AbstractControl {
 

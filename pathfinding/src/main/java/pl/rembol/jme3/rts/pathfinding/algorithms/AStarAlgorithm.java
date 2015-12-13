@@ -1,10 +1,10 @@
 package pl.rembol.jme3.rts.pathfinding.algorithms;
 
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.pathfinding.ClusterBorder;
-import pl.rembol.jme3.rts.pathfinding.PathfindingCluster;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
+import pl.rembol.jme3.rts.pathfinding.ClusterBorder;
+import pl.rembol.jme3.rts.pathfinding.PathfindingCluster;
 import pl.rembol.jme3.rts.pathfinding.paths.ComplexPath;
 import pl.rembol.jme3.rts.pathfinding.paths.IPath2i;
 import pl.rembol.jme3.rts.pathfinding.paths.Vector2iPath;

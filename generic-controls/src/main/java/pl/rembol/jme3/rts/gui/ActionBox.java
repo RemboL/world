@@ -38,7 +38,7 @@ public class ActionBox {
     }
 
     private void createActionButton(Command command) {
-        Picture button = new ActionButton(gameState, command);
+        Node button = new ActionButton(gameState, command);
         buttonsNode.attachChild(button);
     }
 

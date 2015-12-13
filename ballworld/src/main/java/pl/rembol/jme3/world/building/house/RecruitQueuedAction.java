@@ -2,9 +2,9 @@ package pl.rembol.jme3.world.building.house;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
-import com.jme3.ui.Picture;
-import pl.rembol.jme3.rts.player.Player;
+import com.jme3.scene.Spatial;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
@@ -51,7 +51,7 @@ public class RecruitQueuedAction {
         return progress / TIME;
     }
 
-    public Picture getActionIcon() {
+    public Spatial getActionIcon() {
         return actionIcon;
     }
 

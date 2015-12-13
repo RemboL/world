@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world.rabbit;
 
-import java.util.Random;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -20,6 +18,8 @@ import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
+
+import java.util.Random;
 
 public class Rabbit extends AbstractControl implements Selectable, WithMovingControl {
 

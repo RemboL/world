@@ -1,7 +1,6 @@
 package pl.rembol.jme3.rts.gameobjects.selection;
 
 import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gui.ClickablePicture;
@@ -11,18 +10,22 @@ public class SelectionIcon extends ClickablePicture {
 
     protected Selectable selectable;
 
-    public SelectionIcon(GameState gameState, Selectable selectable, String iconName) {
-        super(gameState, iconName);
+    private SelectionIcon(GameState gameState, Selectable selectable) {
+        super(gameState);
+        picture.setHeight(32);
+        picture.setWidth(32);
         this.selectable = selectable;
-        setImage(gameState.assetManager, "interface/icons/" + iconName + ".png", true);
+    }
+
+    public SelectionIcon(GameState gameState, Selectable selectable, String iconName) {
+        this(gameState, selectable);
+        picture.setName(iconName);
+        picture.setImage(gameState.assetManager, "interface/icons/" + iconName + ".png", true);
     }
 
     public SelectionIcon(GameState gameState, Selectable selectable, Spatial model) {
-        super(gameState);
-        this.selectable = selectable;
+        this(gameState, selectable);
         updateWithModel(model);
-        setWidth(SIZE);
-        setHeight(SIZE);
     }
 
     @Override
@@ -31,6 +34,6 @@ public class SelectionIcon extends ClickablePicture {
     }
 
     public void updateWithModel(Spatial model) {
-        new ModelViewer(gameState, 32, 32).withBackgroundColor(new ColorRGBA(.2f, .2f, .2f, .2f)).withModel(model).updateViewer(this);
+        new ModelViewer(gameState, 32, 32).withBackgroundColor(new ColorRGBA(.2f, .2f, .2f, .2f)).withModel(model).updateViewer(picture);
     }
 }

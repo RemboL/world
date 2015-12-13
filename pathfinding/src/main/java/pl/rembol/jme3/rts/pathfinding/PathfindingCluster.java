@@ -1,13 +1,5 @@
 package pl.rembol.jme3.rts.pathfinding;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import pl.rembol.jme3.geom.Direction;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
@@ -15,6 +7,10 @@ import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.paths.Vector2iPath;
 import pl.rembol.jme3.rts.pathfinding.paths.VectorPath;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PathfindingCluster {
 

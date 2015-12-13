@@ -1,22 +1,18 @@
 package pl.rembol.jme3.geom;
 
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+
+import java.util.*;
+
 import static com.jme3.math.FastMath.sqr;
 import static com.jme3.math.FastMath.sqrt;
 import static java.lang.Math.round;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-
 public class Vector2i {
 
-    public int x;
-    public int y;
+    public final int x;
+    public final int y;
 
     public Vector2i(int x, int y) {
         this.x = x;

@@ -2,8 +2,8 @@ package pl.rembol.jme3.world.building;
 
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.resources.Cost;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.resources.Cost;
 
 public abstract class BuildingFactory {
 

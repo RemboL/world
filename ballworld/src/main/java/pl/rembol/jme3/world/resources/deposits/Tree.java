@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world.resources.deposits;
 
-import java.util.Optional;
-
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
@@ -10,6 +8,8 @@ import pl.rembol.jme3.world.resources.units.Log;
 import pl.rembol.jme3.world.save.TreeDTO;
 import pl.rembol.jme3.world.smallobject.tools.Axe;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+
+import java.util.Optional;
 
 public class Tree extends ResourceDeposit {
 

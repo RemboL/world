@@ -1,17 +1,6 @@
 package pl.rembol.jme3.rts;
 
-import java.util.EnumSet;
-import java.util.List;
-
-import com.jme3.asset.AssetEventListener;
-import com.jme3.asset.AssetInfo;
-import com.jme3.asset.AssetKey;
-import com.jme3.asset.AssetLoader;
-import com.jme3.asset.AssetLocator;
-import com.jme3.asset.AssetManager;
-import com.jme3.asset.FilterKey;
-import com.jme3.asset.ModelKey;
-import com.jme3.asset.TextureKey;
+import com.jme3.asset.*;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioKey;
 import com.jme3.font.BitmapFont;
@@ -23,6 +12,9 @@ import com.jme3.shader.Shader;
 import com.jme3.shader.ShaderGenerator;
 import com.jme3.shader.ShaderKey;
 import com.jme3.texture.Texture;
+
+import java.util.EnumSet;
+import java.util.List;
 
 public class AssetManagerWrapper implements AssetManager {
 

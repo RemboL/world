@@ -1,8 +1,5 @@
 package pl.rembol.jme3.world.building;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector2f;
@@ -20,6 +17,9 @@ import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.rts.player.WithOwner;
 import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Building implements Selectable, WithOwner, Destructable, Solid {
 

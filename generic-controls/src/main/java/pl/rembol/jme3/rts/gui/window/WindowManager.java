@@ -1,11 +1,11 @@
 package pl.rembol.jme3.rts.gui.window;
 
+import com.jme3.math.Vector2f;
+import pl.rembol.jme3.rts.GameState;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.GameState;
 
 public class WindowManager {
 

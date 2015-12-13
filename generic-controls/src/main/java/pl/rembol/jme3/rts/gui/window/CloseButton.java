@@ -10,9 +10,9 @@ public class CloseButton extends ClickablePicture {
     public CloseButton(GameState gameState, Window window) {
         super(gameState);
         this.setName("close button");
-        setImage(gameState.assetManager, "interface/" + gameState.themeName() + "/close_button.png", true);
-        setWidth(SIZE);
-        setHeight(SIZE);
+        picture.setImage(gameState.assetManager, "interface/" + gameState.themeName() + "/close_button.png", true);
+        picture.setWidth(32);
+        picture.setHeight(32);
         this.window = window;
     }
 

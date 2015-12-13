@@ -1,7 +1,7 @@
 package pl.rembol.jme3.rts.pathfinding.paths;
 
-import pl.rembol.jme3.rts.pathfinding.ClusterBorder;
 import pl.rembol.jme3.geom.Vector2i;
+import pl.rembol.jme3.rts.pathfinding.ClusterBorder;
 
 import java.util.ArrayList;
 import java.util.List;

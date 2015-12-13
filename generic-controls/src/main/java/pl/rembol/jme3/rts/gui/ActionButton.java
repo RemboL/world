@@ -5,16 +5,16 @@ import pl.rembol.jme3.rts.input.state.Command;
 
 public class ActionButton extends ClickablePicture {
 
-    private Command command;
-
     public ActionButton(GameState gameState, Command command) {
-        super(gameState, command.getIconName());
-        this.command = command;
+        super(gameState);
+
+        picture.setHeight(32);
+        picture.setWidth(32);
+        picture.setName(command.getIconName());
+        picture.setImage(gameState.assetManager, "interface/icons/" + command.getIconName() + ".png", true);
         move(60 * command.getPositionX(), -60 * command.getPositionY(), 0);
+
+        addOnClickListener(() -> gameState.inputStateManager.type(command.getKey()));
     }
 
-    @Override
-    public void onClick() {
-        gameState.inputStateManager.type(command.getKey());
-    }
 }

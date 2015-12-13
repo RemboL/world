@@ -6,8 +6,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
-import com.jme3.ui.Picture;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.world.building.BuildingStatus;
 
@@ -90,7 +90,7 @@ public class HouseStatus extends BuildingStatus {
 
         int offset = 0;
         for (RecruitQueuedAction queueAction : queue) {
-            Picture icon = queueAction.getActionIcon();
+            Spatial icon = queueAction.getActionIcon();
             recruitmentQueueNode.attachChild(icon);
             icon.setLocalTranslation(offset, 0, 0);
             if (queueAction == queue.get(0)) {

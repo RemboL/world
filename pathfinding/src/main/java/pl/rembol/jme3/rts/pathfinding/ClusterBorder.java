@@ -112,10 +112,8 @@ public class ClusterBorder {
                 borderPoints.get(0).y);
 
         for (Vector2i point : borderPoints) {
-            min.x = Math.min(min.x, point.x);
-            min.y = Math.min(min.y, point.y);
-            max.x = Math.max(max.x, point.x);
-            max.y = Math.max(max.y, point.y);
+            min = new Vector2i(Math.min(min.x, point.x), Math.min(min.y, point.y));
+            max = new Vector2i(Math.max(max.x, point.x), Math.max(max.y, point.y));
         }
 
         Vector3f min3f = new Vector3f(min.x, 2f, min.y);

@@ -6,7 +6,7 @@ import com.jme3.ui.Picture;
 import pl.rembol.jme3.rts.GameState;
 
 public class ClickablePictureWrapper extends Node implements Clickable {
-    
+
     @FunctionalInterface
     public interface Callback {
         void call();
@@ -15,7 +15,7 @@ public class ClickablePictureWrapper extends Node implements Clickable {
     protected final GameState gameState;
 
     protected final Picture picture;
-    
+
     protected final Callback callback;
 
     public ClickablePictureWrapper(GameState gameState, Picture picture, Callback callback) {

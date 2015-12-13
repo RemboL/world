@@ -1,10 +1,10 @@
 package pl.rembol.jme3.rts.pathfinding.paths;
 
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.pathfinding.PathfindingCluster;
-import pl.rembol.jme3.rts.pathfinding.PathfindingService;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
+import pl.rembol.jme3.rts.pathfinding.PathfindingCluster;
+import pl.rembol.jme3.rts.pathfinding.PathfindingService;
 import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.rts.threads.Executor;

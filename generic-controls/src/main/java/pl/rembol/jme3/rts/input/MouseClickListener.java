@@ -12,16 +12,13 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.gui.Clickable;
 import pl.rembol.jme3.rts.input.state.InputStateManager;
+import pl.rembol.jme3.utils.Spatials;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class MouseClickListener implements ActionListener, AnalogListener {
 
@@ -119,21 +116,8 @@ public class MouseClickListener implements ActionListener, AnalogListener {
 
     }
 
-    private static Stream<Spatial> getDescendants(Spatial spatial) {
-        if (spatial == null) {
-            return new ArrayList<Spatial>().stream();
-        }
-
-        if (!(spatial instanceof Node)) {
-            return Collections.singletonList(spatial).stream();
-        }
-
-        Node node = (Node) spatial;
-        return node.getChildren().stream().flatMap(MouseClickListener::getDescendants);
-    }
-
-    private boolean checkClickableButtons() {
-        Optional<Clickable> clickedButton = getDescendants(gameState.guiNode)
+   private boolean checkClickableButtons() {
+        Optional<Clickable> clickedButton = Spatials.getDescendants(gameState.guiNode)
                 .filter(Clickable.class::isInstance)
                 .map(Clickable.class::cast)
                 .filter(clickable -> clickable.isClicked(gameState.inputManager.getCursorPosition()))

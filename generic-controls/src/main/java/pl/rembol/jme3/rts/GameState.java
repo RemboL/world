@@ -1,14 +1,5 @@
 package pl.rembol.jme3.rts;
 
-import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.LOWER_RIGHT;
-import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.UPPER_LEFT;
-import static pl.rembol.jme3.rts.input.state.InputState.BUILD_MENU;
-import static pl.rembol.jme3.rts.input.state.InputState.DEFAULT;
-import static pl.rembol.jme3.rts.input.state.InputState.ISSUE_BUILD_ORDER;
-import static pl.rembol.jme3.rts.input.state.InputState.ISSUE_ORDER;
-
-import java.util.List;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -30,17 +21,19 @@ import pl.rembol.jme3.rts.input.ModifierKeysManager;
 import pl.rembol.jme3.rts.input.MouseClickListener;
 import pl.rembol.jme3.rts.input.RtsCamera;
 import pl.rembol.jme3.rts.input.dragselect.DragSelectionManager;
-import pl.rembol.jme3.rts.input.state.BuildingSilhouetteManager;
-import pl.rembol.jme3.rts.input.state.Command;
-import pl.rembol.jme3.rts.input.state.InputStateManager;
-import pl.rembol.jme3.rts.input.state.SelectionManager;
-import pl.rembol.jme3.rts.input.state.StateTransitionsRegistry;
+import pl.rembol.jme3.rts.input.state.*;
 import pl.rembol.jme3.rts.pathfinding.PathfindingService;
 import pl.rembol.jme3.rts.player.PlayerService;
 import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.rts.terrain.Terrain;
 import pl.rembol.jme3.rts.threads.ThreadManager;
 import pl.rembol.jme3.rts.unitregistry.UnitRegistry;
+
+import java.util.List;
+
+import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.LOWER_RIGHT;
+import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.UPPER_LEFT;
+import static pl.rembol.jme3.rts.input.state.InputState.*;
 
 public class GameState {
 

@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.ballman;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gui.status.DefaultStatus;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BallManStatus extends DefaultStatus {
 

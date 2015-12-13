@@ -1,12 +1,12 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import java.util.Optional;
-
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+
+import java.util.Optional;
 
 public abstract class BallManAction extends Action<BallMan> {
     

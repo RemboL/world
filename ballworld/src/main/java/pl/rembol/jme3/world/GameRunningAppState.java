@@ -1,7 +1,5 @@
 package pl.rembol.jme3.world;
 
-import java.io.File;
-
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -24,6 +22,8 @@ import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.resources.deposits.FruitBush;
 import pl.rembol.jme3.world.save.SaveState;
+
+import java.io.File;
 
 public class GameRunningAppState extends AbstractAppState {
 

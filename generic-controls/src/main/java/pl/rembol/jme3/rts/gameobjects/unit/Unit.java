@@ -1,9 +1,5 @@
 package pl.rembol.jme3.rts.gameobjects.unit;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -20,6 +16,10 @@ import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 abstract public class Unit implements Selectable,
         WithMovingControl, WithActionQueueControl, WithDefaultActionControl {
