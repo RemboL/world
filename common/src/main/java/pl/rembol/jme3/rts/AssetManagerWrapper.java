@@ -1,6 +1,18 @@
 package pl.rembol.jme3.rts;
 
-import com.jme3.asset.*;
+import java.io.InputStream;
+import java.util.EnumSet;
+import java.util.List;
+
+import com.jme3.asset.AssetEventListener;
+import com.jme3.asset.AssetInfo;
+import com.jme3.asset.AssetKey;
+import com.jme3.asset.AssetLoader;
+import com.jme3.asset.AssetLocator;
+import com.jme3.asset.AssetManager;
+import com.jme3.asset.FilterKey;
+import com.jme3.asset.ModelKey;
+import com.jme3.asset.TextureKey;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioKey;
 import com.jme3.font.BitmapFont;
@@ -12,9 +24,6 @@ import com.jme3.shader.Shader;
 import com.jme3.shader.ShaderGenerator;
 import com.jme3.shader.ShaderKey;
 import com.jme3.texture.Texture;
-
-import java.util.EnumSet;
-import java.util.List;
 
 public class AssetManagerWrapper implements AssetManager {
 
@@ -37,16 +46,6 @@ public class AssetManagerWrapper implements AssetManager {
     @Override
     public List<ClassLoader> getClassLoaders() {
         return delegate.getClassLoaders();
-    }
-
-    @Override
-    public void registerLoader(String s, String... strings) {
-        delegate.registerLoader(s, strings);
-    }
-
-    @Override
-    public void registerLocator(String s, String s1) {
-        delegate.registerLocator(s, s1);
     }
 
     @Override
@@ -85,13 +84,13 @@ public class AssetManagerWrapper implements AssetManager {
     }
 
     @Override
-    public void setAssetEventListener(AssetEventListener assetEventListener) {
-        delegate.setAssetEventListener(assetEventListener);
+    public AssetInfo locateAsset(AssetKey<?> assetKey) {
+        return delegate.locateAsset(assetKey);
     }
 
     @Override
-    public AssetInfo locateAsset(AssetKey<?> assetKey) {
-        return delegate.locateAsset(assetKey);
+    public <T> T loadAssetFromStream(AssetKey<T> key, InputStream inputStream) {
+        return null;
     }
 
     @Override
@@ -167,5 +166,25 @@ public class AssetManagerWrapper implements AssetManager {
     @Override
     public ShaderGenerator getShaderGenerator(EnumSet<Caps> enumSet) {
         return delegate.getShaderGenerator(enumSet);
+    }
+
+    @Override
+    public <T> T getFromCache(AssetKey<T> key) {
+        return null;
+    }
+
+    @Override
+    public <T> void addToCache(AssetKey<T> key, T asset) {
+
+    }
+
+    @Override
+    public <T> boolean deleteFromCache(AssetKey<T> key) {
+        return false;
+    }
+
+    @Override
+    public void clearCache() {
+
     }
 }

@@ -1,5 +1,11 @@
 package pl.rembol.jme3.world.ballman;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.ColorRGBA;
@@ -25,8 +31,6 @@ import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-
-import java.util.*;
 
 public class BallMan extends Unit implements WithOwner, Destructable {
 

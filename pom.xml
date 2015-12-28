@@ -8,16 +8,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
+        <jmonkey.version>3.1.0-SNAPSHOT</jmonkey.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>sonatype-public</id>
-            <name>sonatype public</name>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-    </repositories>
 
     <modules>
         <module>common</module>

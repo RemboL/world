@@ -42,11 +42,11 @@ public class BlinkControl extends AbstractControl {
 
         if (timeToLive > 0) {
             ColorRGBA color = new ColorRGBA();
-            color.interpolate(ColorRGBA.White, ColorRGBA.Red, timeToLive);
+            color.interpolateLocal(ColorRGBA.White, ColorRGBA.Red, timeToLive);
             material.setColor("Color", color);
 
             Vector3f position = new Vector3f();
-            position.interpolate(finishPosition, startPosition, timeToLive);
+            position.interpolateLocal(finishPosition, startPosition, timeToLive);
             picture.setLocalTranslation(position);
 
             float scale = size * (1 + timeToLive);

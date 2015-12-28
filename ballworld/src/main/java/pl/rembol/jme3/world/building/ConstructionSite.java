@@ -56,7 +56,7 @@ public class ConstructionSite extends AbstractControl {
             finishBuilding();
         } else {
             building.getNode().setLocalTranslation(
-                    startingPosition.clone().interpolate(finishedPosition,
+                    startingPosition.clone().interpolateLocal(finishedPosition,
                             progress / buildingTimeInSeconds));
         }
     }

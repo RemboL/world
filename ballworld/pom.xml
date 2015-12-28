@@ -63,98 +63,63 @@
             <version>${project.parent.version}</version>
         </dependency>
 
-        <dependency>
-            <!-- Contains just the jme3test demo classes, with main methods -->
-            <groupId>com.jme3</groupId>
-            <artifactId>jmonkeyengine3</artifactId>
-            <version>${jmonkey.version}</version>
-        </dependency>
-
         <!-- The core library -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-core</artifactId>
+            <artifactId>jme3-core</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
 
         <!-- LWJGL stuff -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-lwjgl</artifactId>
-            <version>${jmonkey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jme3</groupId>
-            <artifactId>jME3-lwjgl-natives</artifactId>
-            <version>${jmonkey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jme3</groupId>
-            <artifactId>lwjgl</artifactId>
+            <artifactId>jme3-lwjgl</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
 
         <!-- Bullet stuff -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-jbullet</artifactId>
+            <artifactId>jme3-bullet</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jbullet</artifactId>
+            <artifactId>jme3-bullet-native</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
-
 
         <!-- Feature libs -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-blender</artifactId>
+            <artifactId>jme3-blender</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-desktop</artifactId>
+            <artifactId>jme3-desktop</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-effects</artifactId>
+            <artifactId>jme3-effects</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-networking</artifactId>
+            <artifactId>jme3-networking</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-plugins</artifactId>
+            <artifactId>jme3-plugins</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
 
         <!-- Ogg audio stuff -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-jogg</artifactId>
-            <version>${jmonkey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jme3</groupId>
-            <artifactId>j-ogg-oggd</artifactId>
-            <version>${jmonkey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jme3</groupId>
-            <artifactId>j-ogg-vorbisd</artifactId>
-            <version>${jmonkey.version}</version>
-        </dependency>
-
-        <!-- Third party libs -->
-        <dependency>
-            <groupId>com.jme3</groupId>
-            <artifactId>vecmath</artifactId>
+            <artifactId>jme3-jogg</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
 

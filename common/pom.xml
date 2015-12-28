@@ -29,7 +29,7 @@
         <!-- The core library -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-core</artifactId>
+            <artifactId>jme3-core</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
 

@@ -1,5 +1,8 @@
 package pl.rembol.jme3.world.resources.deposits;
 
+import java.util.Optional;
+import java.util.Random;
+
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -13,9 +16,6 @@ import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
-
-import java.util.Optional;
-import java.util.Random;
 
 public abstract class ResourceDeposit implements Selectable, Solid {
 

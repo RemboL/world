@@ -42,7 +42,7 @@ public class ConsoleLogLine extends AbstractControl {
 
         if (timeToLive < FADEOUT_TIME && timeToLive > 0) {
             ColorRGBA color = new ColorRGBA(1f, 1f, 1f, 0f);
-            color.interpolate(ColorRGBA.White, timeToLive / FADEOUT_TIME);
+            color.interpolateLocal(ColorRGBA.White, timeToLive / FADEOUT_TIME);
             textLine.setColor(color);
         }
 

@@ -1,11 +1,11 @@
 package pl.rembol.jme3.rts.terrain;
 
+import java.nio.ByteBuffer;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
-
-import java.nio.ByteBuffer;
 
 public class AlphaMapManipulator {
 
@@ -33,7 +33,7 @@ public class AlphaMapManipulator {
                     getPixelColor(currentColor, image, x, y);
 
                     float intensity = (1.0f - (distanceSquared / radiusSquared));
-                    currentColor.interpolate(channel, intensity);
+                    currentColor.interpolateLocal(channel, intensity);
 
                     savePixelColor(currentColor, image, x, y);
                 }
@@ -53,7 +53,7 @@ public class AlphaMapManipulator {
         float height = image.getHeight();
         getPixelColor(currentColor, image, Math.round(spot.x * width),
                 Math.round(spot.y * height));
-        currentColor.interpolate(channel, scale);
+        currentColor.interpolateLocal(channel, scale);
 
         savePixelColor(currentColor, image, Math.round(spot.x * width),
                 Math.round(spot.y * height));

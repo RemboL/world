@@ -46,19 +46,14 @@
         <!-- The core library -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-core</artifactId>
+            <artifactId>jme3-core</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
 
         <!-- Bullet stuff -->
         <dependency>
             <groupId>com.jme3</groupId>
-            <artifactId>jME3-jbullet</artifactId>
-            <version>${jmonkey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jme3</groupId>
-            <artifactId>jbullet</artifactId>
+            <artifactId>jme3-bullet</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
     </dependencies>

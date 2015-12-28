@@ -44,9 +44,9 @@ public class HungerIndicator extends Node {
     public void hunger(float hungerFactor) {
         ColorRGBA newColor = new ColorRGBA();
         if (hungerFactor > .1f) {
-            newColor.interpolate(YELLOW, GREEN, (hungerFactor - .1f) * 10);
+            newColor.interpolateLocal(YELLOW, GREEN, (hungerFactor - .1f) * 10);
         } else {
-            newColor.interpolate(RED, YELLOW, hungerFactor * 10);
+            newColor.interpolateLocal(RED, YELLOW, hungerFactor * 10);
         }
 
         material.setColor("Color", newColor);
