@@ -6,14 +6,15 @@ import java.util.Random;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
+import pl.rembol.jme3.rts.gameobjects.control.MovingPhysicsControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithDefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
@@ -31,7 +32,7 @@ abstract public class Unit implements Selectable,
     protected SelectionIcon icon;
 
     protected Node selectionNode;
-    
+
     public Unit(GameState gameState) {
         this.gameState = gameState;
         initNode(null);
@@ -47,32 +48,32 @@ abstract public class Unit implements Selectable,
 
         addControls(gameState);
 
-        BetterCharacterControl control = node.getControl(BetterCharacterControl.class);
+        MovingPhysicsControl control = node.getControl(MovingPhysicsControl.class);
         if (control != null) {
-            node.getControl(BetterCharacterControl.class).
-                    setViewDirection(new Vector3f(new Random().nextFloat() - .5f,
+            node.getControl(MovingPhysicsControl.class).
+                    turnTowards(new Vector3f(new Random().nextFloat() - .5f,
                             0f, new Random().nextFloat() - .5f).normalize());
         }
 
         gameState.unitRegistry.register(this);
     }
 
-    protected BetterCharacterControl createCharacterControl(GameState gameState) {
-        return new BetterCharacterControl(.6f * getWidth(), 10f, getWidth() * getWidth());
+    protected MovingPhysicsControl createCharacterControl(GameState gameState) {
+        return new CharacterBasedControl(.6f * getWidth(), 10f, getWidth() * getWidth());
     }
 
     public void addControls(GameState gameState) {
         node.addControl(new UnitControl(this.gameState, this));
         node.addControl(new MovingControl(this));
 
-        BetterCharacterControl control = createCharacterControl(gameState);
+        MovingPhysicsControl control = createCharacterControl(gameState);
         node.addControl(control);
         this.gameState.bulletAppState.getPhysicsSpace().add(control);
     }
 
     public void removeControls() {
-        gameState.bulletAppState.getPhysicsSpace().remove(getNode().getControl(BetterCharacterControl.class));
-        getNode().removeControl(BetterCharacterControl.class);
+        gameState.bulletAppState.getPhysicsSpace().remove(getNode().getControl(MovingPhysicsControl.class));
+        getNode().removeControl(MovingPhysicsControl.class);
         getNode().removeControl(UnitControl.class);
         getNode().removeControl(MovingControl.class);
     }

@@ -1,5 +1,8 @@
 package pl.rembol.jme3.rts.terrain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -19,18 +22,20 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import pl.rembol.jme3.rts.terrain.save.TerrainDTO;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Terrain {
 
     private TerrainQuad terrain;
+
     private Material terrainMaterial;
+
     private Texture alphaMap;
+
     private AlphaMapManipulator manipulator = new AlphaMapManipulator();
+
     private RigidBodyControl terrainBodyControl;
 
     private final SimpleApplication simpleApplication;
+
     private BulletAppState bulletAppState;
 
     public Terrain(SimpleApplication simpleApplication, BulletAppState bulletAppState) {
@@ -41,8 +46,12 @@ public class Terrain {
     }
 
     public void init(int size) {
-
         init(createTerrainQuad(size));
+    }
+
+    public void initFlat(int size) {
+        init(new TerrainQuad("my terrain", size + 1, size + 1,
+                new FlatHeightMap(size).getHeightMap()));
     }
 
     public void init(TerrainDTO terrainDTO) {

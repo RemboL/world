@@ -38,7 +38,7 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
         if (path != null) {
             path.clearPath();
         }
-        unit.movingControl().setTargetVelocity(0f);
+        unit.movingControl().stopMoving();
     }
 
     @Override
@@ -47,10 +47,9 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
 
         Vector2f checkpoint = path.getCheckPoint();
         if (checkpoint != null) {
-            unit.movingControl().lookTowards(new Vector3f(checkpoint.x, 0, checkpoint.y));
-            unit.movingControl().setMaxTargetVelocity();
+            unit.movingControl().moveTowards(new Vector3f(checkpoint.x, 0, checkpoint.y));
         } else {
-            unit.movingControl().setTargetVelocity(0f);
+            unit.movingControl().stopMoving();
         }
 
         if (targetPosition.distance(target.getNode().getWorldTranslation()) > targetDistance) {
@@ -65,7 +64,7 @@ public class MoveTowardsTargetAction extends Action<WithMovingControl> {
     public boolean isFinished(WithMovingControl unit) {
         if (unit.getLocation().distance(target.getNode().getWorldTranslation()) < targetDistance
                 || (path != null && path.isFinished(new Vector2f(unit.getLocation().x, unit.getLocation().z)))) {
-            unit.movingControl().setTargetVelocity(0f);
+            unit.movingControl().stopMoving();
             unit.movingControl().lookTowards(target);
             return true;
         }

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.jme3.animation.SkeletonControl;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -15,8 +14,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
+import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
+import pl.rembol.jme3.rts.gameobjects.control.MovingPhysicsControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.unit.Unit;
@@ -61,7 +62,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
         this.gameState = gameState;
         ballManUnitRegistry = new BallManUnitRegistry(gameState);
 
-        BetterCharacterControl control = new BetterCharacterControl(.6f, 10f, 1);
+        CharacterBasedControl control = new CharacterBasedControl(.6f, 10f, 1);
         gameState.bulletAppState.getPhysicsSpace().add(control);
         node.addControl(control);
 
@@ -98,7 +99,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
         gameState.unitRegistry.unregister(this);
         gameState.rootNode.detachChild(node);
-        gameState.bulletAppState.getPhysicsSpace().remove(controlNode.getControl(BetterCharacterControl.class));
+        gameState.bulletAppState.getPhysicsSpace().remove(controlNode.getControl(MovingPhysicsControl.class));
         node.detachChild(controlNode);
     }
 

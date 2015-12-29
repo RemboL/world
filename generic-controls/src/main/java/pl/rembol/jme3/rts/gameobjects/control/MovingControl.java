@@ -1,6 +1,7 @@
 package pl.rembol.jme3.rts.gameobjects.control;
 
-import com.jme3.bullet.control.BetterCharacterControl;
+import java.util.Optional;
+
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -15,10 +16,6 @@ public class MovingControl extends AbstractControl {
 
     private float maxVelocity = 5f;
 
-    private float acceleration = .1f;
-
-    private boolean rotationOnlyOnMove = false;
-
     private WithNode unit;
 
     public MovingControl(WithNode unit) {
@@ -31,46 +28,17 @@ public class MovingControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        BetterCharacterControl characterControl = getCharacterControl();
-
-        if (characterControl != null) {
+        getCharacterControl().ifPresent(characterBasedControl -> {
             if (targetDirection != null) {
-                characterControl.setViewDirection(calculateNewDirection(characterControl));
+                characterBasedControl.turnTowards(targetDirection);
             }
+            characterBasedControl.move(targetVelocity, targetDirection);
 
-            characterControl.setWalkDirection(
-                    characterControl
-                            .getViewDirection()
-                            .mult(calculateNewVelocity(characterControl.getWalkDirection().length())));
-        }
+        });
     }
 
-    private Vector3f calculateNewDirection(BetterCharacterControl characterControl) {
-        Vector3f currentDirection = characterControl.getViewDirection();
-        if (!rotationOnlyOnMove) {
-            return currentDirection.add(targetDirection).setY(0).normalize();
-        }
-
-        if (maxVelocity == 0) {
-            return currentDirection;
-        }
-        float velocityFactor = Math.min(maxVelocity, characterControl.getWalkDirection().length()) / maxVelocity * acceleration;
-        return currentDirection.add(targetDirection.mult(velocityFactor)).setY(0).normalize();
-
-    }
-
-    private float calculateNewVelocity(float currentVelocity) {
-        if (targetVelocity > currentVelocity) {
-            return Math.min(targetVelocity, currentVelocity + acceleration);
-        } else if (targetVelocity < currentVelocity) {
-            return Math.max(0, currentVelocity - acceleration);
-        } else {
-            return currentVelocity;
-        }
-    }
-
-    private BetterCharacterControl getCharacterControl() {
-        return unit.getNode().getControl(BetterCharacterControl.class);
+    private Optional<MovingPhysicsControl> getCharacterControl() {
+        return Optional.ofNullable(unit.getNode().getControl(MovingPhysicsControl.class));
     }
 
     public void lookTowards(WithNode target) {
@@ -83,8 +51,13 @@ public class MovingControl extends AbstractControl {
                 .normalize();
     }
 
-    public void setTargetVelocity(float targetVelocity) {
-        this.targetVelocity = Math.min(targetVelocity, maxVelocity);
+    public void stopMoving() {
+        this.targetVelocity = 0F;
+    }
+
+    public void moveTowards(Vector3f location) {
+        lookTowards(location);
+        setMaxTargetVelocity();
     }
 
     public void setMaxTargetVelocity() {
@@ -96,11 +69,7 @@ public class MovingControl extends AbstractControl {
     }
 
     public void setAcceleration(float acceleration) {
-        this.acceleration = acceleration;
-    }
-
-    public void setRotationOnlyOnMove(boolean rotationOnlyOnMove) {
-        this.rotationOnlyOnMove = rotationOnlyOnMove;
+        getCharacterControl().ifPresent(characterBasedControl -> characterBasedControl.setAcceleration(acceleration));
     }
 
     @Override

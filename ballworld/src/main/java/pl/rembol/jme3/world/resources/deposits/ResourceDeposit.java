@@ -3,12 +3,12 @@ package pl.rembol.jme3.world.resources.deposits;
 import java.util.Optional;
 import java.util.Random;
 
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.Solid;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
@@ -19,7 +19,7 @@ import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 public abstract class ResourceDeposit implements Selectable, Solid {
 
-    private BetterCharacterControl control;
+    private CharacterBasedControl control;
 
     private Node node;
 
@@ -56,7 +56,7 @@ public abstract class ResourceDeposit implements Selectable, Solid {
         gameState.rootNode.attachChild(node);
         node.setLocalTranslation(position);
 
-        control = new BetterCharacterControl(getPhysicsRadius(), 5f, 0);
+        control = new CharacterBasedControl(getPhysicsRadius(), 5f, 0);
         node.addControl(control);
 
         control.setViewDirection(getInitialDirection());

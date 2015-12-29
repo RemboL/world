@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -15,6 +14,7 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
@@ -29,7 +29,7 @@ public class Rabbit extends AbstractControl implements Selectable, WithMovingCon
 
     private SelectionIcon icon;
 
-    private BetterCharacterControl control;
+    private CharacterBasedControl control;
 
     private Node selectionNode;
 
@@ -48,7 +48,7 @@ public class Rabbit extends AbstractControl implements Selectable, WithMovingCon
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
-        control = new BetterCharacterControl(.6f, 10f, 1);
+        control = new CharacterBasedControl(.6f, 10f, 1);
         node.addControl(control);
 
         node.addControl(new RabbitControl(gameState, this));
