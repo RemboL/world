@@ -10,4 +10,6 @@ public interface MovingPhysicsControl extends Control {
     void move(float velocity, Vector3f direction);
     
     void setAcceleration(float acceleration);
+
+    void setMaxVelocity(float maxVelocity);
 }

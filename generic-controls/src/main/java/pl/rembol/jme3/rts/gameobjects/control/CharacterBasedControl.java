@@ -7,6 +7,8 @@ public class CharacterBasedControl extends BetterCharacterControl implements Mov
     
     private float acceleration = .1F;
 
+    private float maxVelocity = 5f;
+
     public CharacterBasedControl(float radius, float height, float mass) {
         super(radius, height, mass);
     }
@@ -26,6 +28,11 @@ public class CharacterBasedControl extends BetterCharacterControl implements Mov
     @Override
     public void setAcceleration(float acceleration) {
         this.acceleration = acceleration;
+    }
+
+    @Override
+    public void setMaxVelocity(float maxVelocity) {
+        this.maxVelocity = maxVelocity;
     }
 
     private float calculateNewVelocity(float targetVelocity, float currentVelocity) {
