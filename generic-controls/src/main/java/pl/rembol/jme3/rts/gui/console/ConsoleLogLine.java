@@ -9,7 +9,9 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 
-public class ConsoleLogLine extends AbstractControl {
+import java.util.Objects;
+
+class ConsoleLogLine extends AbstractControl {
 
     private BitmapText textLine;
 
@@ -17,11 +19,12 @@ public class ConsoleLogLine extends AbstractControl {
 
     private static final float FADEOUT_TIME = 2;
 
-    public ConsoleLogLine(AssetManager assetManager, Node node, String text) {
+    ConsoleLogLine(AssetManager assetManager, Node node, String text) {
 
         node.getChildren().stream()
-                .filter(spatial -> spatial.getControl(ConsoleLogLine.class) != null)
-                .forEach(spatial -> spatial.getControl(ConsoleLogLine.class).shiftUp());
+                .map(spatial -> spatial.getControl(ConsoleLogLine.class))
+                .filter(Objects::nonNull)
+                .forEach(ConsoleLogLine::shiftUp);
 
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         textLine = new BitmapText(guiFont);

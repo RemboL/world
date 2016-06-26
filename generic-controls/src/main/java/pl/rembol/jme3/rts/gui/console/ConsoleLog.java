@@ -25,9 +25,6 @@ public class ConsoleLog extends Node {
     }
 
     public void addLineExternal(String text) {
-        simpleApplication.enqueue(() -> {
-            addLine(text);
-            return null;
-        });
+        simpleApplication.enqueue(() -> addLine(text));
     }
 }

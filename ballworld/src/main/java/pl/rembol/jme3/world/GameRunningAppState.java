@@ -16,7 +16,9 @@ import com.jme3.post.filters.FogFilter;
 import com.jme3.renderer.ViewPort;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
+import pl.rembol.jme3.rts.gameobjects.logger.OpenUnitLogButton;
 import pl.rembol.jme3.rts.gui.window.Window;
+import pl.rembol.jme3.rts.gui.window.text.TextWindow;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.resources.ResourceTypes;
@@ -91,7 +93,9 @@ public class GameRunningAppState extends AbstractAppState {
 
         new FruitBush(gameState).init(new Vector2f(35, -20));
 
-        gameState.windowManager.addWindow(new Window(gameState, 640, 480), new Vector2f(100, 100));
+        OpenUnitLogButton openUnitLogButton = new OpenUnitLogButton(gameState);
+        openUnitLogButton.setLocalTranslation(32, settings.getHeight() - 32, 0);
+        gameState.guiNode.attachChild(openUnitLogButton);
 
 //        new SaveState(gameState.terrain.save(), gameState.playerService.savePlayers(),
 //                gameState.unitRegistry.save())

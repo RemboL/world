@@ -116,4 +116,8 @@ public class Window extends Node {
         attachChild(spatial);
         spatial.setLocalTranslation(location);
     }
+
+    protected Vector2f getInnerFrameTopLeftCorner() {
+        return new Vector2f(WindowShade.FRAME, height - WindowShade.TOP_FRAME);
+    }
 }

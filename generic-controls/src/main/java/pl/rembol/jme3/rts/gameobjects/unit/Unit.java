@@ -1,9 +1,5 @@
 package pl.rembol.jme3.rts.gameobjects.unit;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.math.FastMath;
@@ -18,12 +14,18 @@ import pl.rembol.jme3.rts.gameobjects.control.MovingPhysicsControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithDefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
+import pl.rembol.jme3.rts.gameobjects.logger.LoggerControl;
+import pl.rembol.jme3.rts.gameobjects.interfaces.WithLoggerControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 abstract public class Unit implements Selectable,
-        WithMovingControl, WithActionQueueControl, WithDefaultActionControl {
+        WithMovingControl, WithActionQueueControl, WithDefaultActionControl, WithLoggerControl {
 
     protected GameState gameState;
 
@@ -65,6 +67,7 @@ abstract public class Unit implements Selectable,
     public void addControls(GameState gameState) {
         node.addControl(new UnitControl(this.gameState, this));
         node.addControl(new MovingControl(this));
+        node.addControl(new LoggerControl());
 
         MovingPhysicsControl control = createCharacterControl(gameState);
         node.addControl(control);
@@ -76,6 +79,7 @@ abstract public class Unit implements Selectable,
         getNode().removeControl(MovingPhysicsControl.class);
         getNode().removeControl(UnitControl.class);
         getNode().removeControl(MovingControl.class);
+        getNode().removeControl(LoggerControl.class);
     }
 
     protected void initNode(Node rootNode) {
@@ -134,6 +138,6 @@ abstract public class Unit implements Selectable,
 
     @Override
     public List<String> getAvailableOrders() {
-        return Arrays.asList("move");
+        return Collections.singletonList("move");
     }
 }

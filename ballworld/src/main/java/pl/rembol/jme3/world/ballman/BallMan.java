@@ -1,11 +1,5 @@
 package pl.rembol.jme3.world.ballman;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.jme3.animation.SkeletonControl;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -18,6 +12,7 @@ import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingPhysicsControl;
+import pl.rembol.jme3.rts.gameobjects.logger.LoggerControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.rts.gameobjects.unit.Unit;
@@ -32,6 +27,12 @@ import pl.rembol.jme3.world.building.house.House;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 import pl.rembol.jme3.world.save.BallManDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class BallMan extends Unit implements WithOwner, Destructable {
 
@@ -72,6 +73,9 @@ public class BallMan extends Unit implements WithOwner, Destructable {
         controlNode.addControl(new BallManControl(gameState, this));
         controlNode.addControl(new MovingControl(this));
         controlNode.addControl(new HungerControl(gameState, this));
+        controlNode.addControl(new LoggerControl());
+
+        log("unit created");
 
         owner = gameState.playerService.getPlayer(player);
     }
@@ -182,7 +186,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
     @Override
     public String[] getGeometriesWithChangeableColor() {
-        return new String[]{ "skin" };
+        return new String[]{"skin"};
     }
 
     @Override
@@ -220,6 +224,11 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     @Override
     public DefaultActionControl defaultActionControl() {
         return controlNode.getControl(DefaultActionControl.class);
+    }
+
+    @Override
+    public LoggerControl loggerControl() {
+        return controlNode.getControl(LoggerControl.class);
     }
 
     public Optional<House> isInside() {
