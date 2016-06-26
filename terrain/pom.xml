@@ -28,19 +28,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.jme3</groupId>
+            <groupId>org.jmonkeyengine</groupId>
             <artifactId>jme3-core</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.jme3</groupId>
+            <groupId>org.jmonkeyengine</groupId>
             <artifactId>jme3-terrain</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>
 
         <!-- Bullet stuff -->
         <dependency>
-            <groupId>com.jme3</groupId>
+            <groupId>org.jmonkeyengine</groupId>
             <artifactId>jme3-bullet</artifactId>
             <version>${jmonkey.version}</version>
         </dependency>

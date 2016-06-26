@@ -1,9 +1,5 @@
 package pl.rembol.jme3.rts;
 
-import java.io.InputStream;
-import java.util.EnumSet;
-import java.util.List;
-
 import com.jme3.asset.AssetEventListener;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
@@ -20,16 +16,18 @@ import com.jme3.material.Material;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Caps;
 import com.jme3.scene.Spatial;
-import com.jme3.shader.Shader;
 import com.jme3.shader.ShaderGenerator;
-import com.jme3.shader.ShaderKey;
 import com.jme3.texture.Texture;
 
-public class AssetManagerWrapper implements AssetManager {
+import java.io.InputStream;
+import java.util.EnumSet;
+import java.util.List;
+
+class AssetManagerWrapper implements AssetManager {
 
     private final AssetManager delegate;
 
-    public AssetManagerWrapper(AssetManager delegate) {
+    AssetManagerWrapper(AssetManager delegate) {
         this.delegate = delegate;
     }
 
@@ -139,11 +137,6 @@ public class AssetManagerWrapper implements AssetManager {
     }
 
     @Override
-    public Shader loadShader(ShaderKey shaderKey) {
-        return delegate.loadShader(shaderKey);
-    }
-
-    @Override
     public BitmapFont loadFont(String s) {
         return delegate.loadFont(s);
     }
@@ -170,21 +163,21 @@ public class AssetManagerWrapper implements AssetManager {
 
     @Override
     public <T> T getFromCache(AssetKey<T> key) {
-        return null;
+        return delegate.getFromCache(key);
     }
 
     @Override
     public <T> void addToCache(AssetKey<T> key, T asset) {
-
+        delegate.addToCache(key, asset);
     }
 
     @Override
     public <T> boolean deleteFromCache(AssetKey<T> key) {
-        return false;
+        return delegate.deleteFromCache(key);
     }
 
     @Override
     public void clearCache() {
-
+        delegate.clearCache();
     }
 }
