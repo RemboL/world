@@ -20,7 +20,7 @@ public class PathfindingCluster {
 
     private Vector2i offset;
 
-    private Map<Integer, Map<Integer, PathfindingBlock>> blocks = new HashMap<>();
+    private Map<Vector2i, PathfindingBlock> blocks = new HashMap<>();
 
     private Map<Direction, Boolean> borderInitialized = new HashMap<>();
 
@@ -35,7 +35,7 @@ public class PathfindingCluster {
         return this;
     }
 
-    boolean isBorderInitialized(Direction direction) {
+    private boolean isBorderInitialized(Direction direction) {
         return borderInitialized.get(direction) != null
                 && borderInitialized.get(direction);
     }
@@ -46,45 +46,27 @@ public class PathfindingCluster {
         }
     }
 
-    public List<ClusterBorder> getBorders() {
+    List<ClusterBorder> getBorders() {
         return borders;
     }
 
     public boolean isBlockFree(Vector2i vector) {
-        return isBlockFree(vector.x, vector.y);
+        return blocks.containsKey(vector) && blocks.get(vector).isFree();
+
     }
 
-    boolean isBlockFree(int x, int y) {
-        if (!blocks.containsKey(x)) {
-            return false;
-        }
-
-        if (!blocks.get(x).containsKey(y)) {
-            return false;
-        }
-
-        return blocks.get(x).get(y).isFree();
-    }
-
-    void setBlock(int x, int y, boolean isBlockFree) {
+    void setBlock(Vector2i vector, boolean isBlockFree) {
         if (isClusterInitialized) {
             clearBorders();
         }
 
-        if (x < offset.x || x >= offset.x + SIZE || y < offset.y
-                || y >= offset.y + SIZE) {
+        if (vector.x < offset.x || vector.x >= offset.x + SIZE || vector.y < offset.y
+                || vector.y >= offset.y + SIZE) {
             return;
         }
 
-        if (blocks.get(x) == null) {
-            blocks.put(x, new HashMap<>());
-        }
-
-        if (blocks.get(x).get(y) == null) {
-            blocks.get(x).put(y, new PathfindingBlock());
-        }
-
-        blocks.get(x).get(y).setFree(isBlockFree);
+        blocks.putIfAbsent(vector, new PathfindingBlock());
+        blocks.get(vector).setFree(isBlockFree);
     }
 
     private void clearBorders() {
@@ -193,7 +175,7 @@ public class PathfindingCluster {
         return connectedBorderingPoints;
     }
 
-    void setBorders(Direction direction, List<ClusterBorder> borders) {
+    private void setBorders(Direction direction, List<ClusterBorder> borders) {
         doClearBorder(direction);
 
         this.borders.addAll(borders);
@@ -251,18 +233,18 @@ public class PathfindingCluster {
                         .map(y -> new Vector2i(offset.x + SIZE - 1, y))
                         .collect(Collectors.toList());
             default:
-                return null;
+                return Collections.emptyList();
         }
     }
 
     public String toString() {
-        int minX = blocks.keySet().stream()
+        int minX = blocks.keySet().stream().map(vector2i -> vector2i.x)
                 .reduce(999, Math::min);
-        int maxX = blocks.keySet().stream()
+        int maxX = blocks.keySet().stream().map(vector2i -> vector2i.x)
                 .reduce(-999, Math::max);
-        int minY = blocks.get(minX).keySet().stream()
+        int minY = blocks.keySet().stream().map(vector2i -> vector2i.y)
                 .reduce(999, Math::min);
-        int maxY = blocks.get(maxX).keySet().stream()
+        int maxY = blocks.keySet().stream().map(vector2i -> vector2i.y)
                 .reduce(-999, Math::max);
 
         return "(" + minX + ", " + minY + ") - (" + maxX + ", " + maxY + ")";

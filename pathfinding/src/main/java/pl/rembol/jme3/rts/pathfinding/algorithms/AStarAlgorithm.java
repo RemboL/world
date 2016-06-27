@@ -15,11 +15,11 @@ import java.util.function.Function;
 
 public class AStarAlgorithm {
 
-    public static class AStarComparator implements Comparator<IPath2i> {
+    private static class AStarComparator implements Comparator<IPath2i> {
 
         private Rectangle2f target;
 
-        public AStarComparator(Rectangle2f target) {
+        AStarComparator(Rectangle2f target) {
             this.target = target;
         }
 

@@ -5,11 +5,11 @@ class PathfindingBlock {
 
     private boolean isFree = true;
 
-    public boolean isFree() {
+    boolean isFree() {
         return isFree;
     }
 
-    public void setFree(boolean isFree) {
+    void setFree(boolean isFree) {
         this.isFree = isFree;
 
     }

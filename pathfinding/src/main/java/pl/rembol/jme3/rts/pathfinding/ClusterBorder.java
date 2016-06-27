@@ -142,7 +142,6 @@ public class ClusterBorder {
                 }
                 border.paths.removeAll(toRemove);
 
-
                 border.connectedBorders.remove(this);
             }
         }

@@ -4,12 +4,17 @@ import com.jme3.math.Vector2f;
 import pl.rembol.jme3.geom.Vector2i;
 import pl.rembol.jme3.rts.pathfinding.paths.Vector2iPath;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.function.Function;
 
 public class DijkstraAlgorithm {
 
-    static class PointerPath {
+    private static class PointerPath {
 
         private Vector2i point;
 
@@ -96,8 +101,7 @@ public class DijkstraAlgorithm {
                 && neighborEntry
                 .getValue()
                 .stream()
-                .allMatch(
-                        vector2i -> isBlockFreeFunction.apply(vector2i));
+                .allMatch(isBlockFreeFunction::apply);
     }
 
 }

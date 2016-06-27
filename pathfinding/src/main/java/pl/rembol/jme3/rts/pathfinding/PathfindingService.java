@@ -8,12 +8,22 @@ import pl.rembol.jme3.geom.Vector2i;
 import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.DijkstraAlgorithm;
-import pl.rembol.jme3.rts.pathfinding.paths.*;
+import pl.rembol.jme3.rts.pathfinding.paths.ComplexPath;
+import pl.rembol.jme3.rts.pathfinding.paths.FuturePath;
+import pl.rembol.jme3.rts.pathfinding.paths.IExternalPath;
+import pl.rembol.jme3.rts.pathfinding.paths.SectorPath;
+import pl.rembol.jme3.rts.pathfinding.paths.Vector2iPath;
+import pl.rembol.jme3.rts.pathfinding.paths.VectorPath;
 import pl.rembol.jme3.rts.terrain.Terrain;
 import pl.rembol.jme3.rts.threads.Executor;
 import pl.rembol.jme3.rts.threads.ThreadManager;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -26,7 +36,7 @@ public class PathfindingService {
 
     public static final int MAX_PATHFINDING_ITERATIONS = 1000000;
 
-    private Map<Integer, Map<Integer, PathfindingCluster>> clusters = new HashMap<>();
+    private Map<Vector2i, PathfindingCluster> clusters = new HashMap<>();
     private Terrain terrain;
     private ThreadManager threadManager;
 
@@ -50,7 +60,7 @@ public class PathfindingService {
                 isTerrainSmooth &= checkTerrainSmooth(x, y - 1, height);
                 isTerrainSmooth &= checkTerrainSmooth(x, y + 1, height);
 
-                setBlock(x, y, isTerrainSmooth);
+                setBlock(new Vector2i(x, y), isTerrainSmooth);
             }
         }
 
@@ -59,46 +69,28 @@ public class PathfindingService {
     }
 
     private void connectClusters() {
-        for (Integer x : clusters.keySet()) {
-            for (Integer y : clusters.get(x).keySet()) {
-                PathfindingCluster currentCluster = clusters.get(x).get(y);
+        for (Vector2i point : clusters.keySet()) {
+            PathfindingCluster currentCluster = clusters.get(point);
 
-                currentCluster
-                        .setNeighbor(Direction.LEFT, getCluster(x - 1, y));
-                currentCluster.setNeighbor(Direction.RIGHT,
-                        getCluster(x + 1, y));
-                currentCluster.setNeighbor(Direction.UP, getCluster(x, y + 1));
-                currentCluster
-                        .setNeighbor(Direction.DOWN, getCluster(x, y - 1));
-            }
+            Arrays.stream(Direction.values())
+                    .forEach(direction -> currentCluster.setNeighbor(direction, getCluster(point.move(direction))));
         }
     }
 
     private void initBorders() {
-        for (Integer x : clusters.keySet()) {
-            for (Integer y : clusters.get(x).keySet()) {
-                clusters.get(x).get(y).initBorders();
-            }
-        }
+        clusters.values().forEach(PathfindingCluster::initBorders);
     }
 
     private void initBordersIfNeeded() {
-        for (Integer x : clusters.keySet()) {
-            for (Integer y : clusters.get(x).keySet()) {
-                clusters.get(x).get(y).initBordersIfNeeded();
-            }
-        }
+        clusters.values().forEach(PathfindingCluster::initBordersIfNeeded);
     }
 
-    private Optional<PathfindingCluster> getCluster(int x, int y) {
-        if (clusters.containsKey(x) && clusters.get(x).containsKey(y)) {
-            return Optional.of(clusters.get(x).get(y));
-        }
-        return Optional.empty();
+    private Optional<PathfindingCluster> getCluster(Vector2i point) {
+        return Optional.ofNullable(clusters.get(point));
     }
 
-    private void setBlock(int x, int y, boolean isBlockFree) {
-        getClusterByPoint(new Vector2i(x, y)).setBlock(x, y, isBlockFree);
+    private void setBlock(Vector2i point, boolean isBlockFree) {
+        getClusterByPoint(point).setBlock(point, isBlockFree);
     }
 
     public PathfindingCluster getClusterByPoint(Vector2i point) {
@@ -107,19 +99,13 @@ public class PathfindingService {
         int clusterY = point.y >= 0 ? point.y / PathfindingCluster.SIZE
                 : -((PathfindingCluster.SIZE - 1 - point.y) / PathfindingCluster.SIZE);
 
-        if (clusters.get(clusterX) == null) {
-            clusters.put(clusterX, new HashMap<>());
-        }
+        clusters.putIfAbsent(new Vector2i(clusterX, clusterY),
+                new PathfindingCluster().withOffset(
+                        new Vector2i(
+                                clusterX * PathfindingCluster.SIZE,
+                                clusterY * PathfindingCluster.SIZE)));
 
-        if (clusters.get(clusterX).get(clusterY) == null) {
-            clusters.get(clusterX).put(
-                    clusterY,
-                    new PathfindingCluster().withOffset(new Vector2i(clusterX
-                            * PathfindingCluster.SIZE, clusterY
-                            * PathfindingCluster.SIZE)));
-        }
-
-        return clusters.get(clusterX).get(clusterY);
+        return clusters.get(new Vector2i(clusterX, clusterY));
     }
 
     private boolean checkTerrainSmooth(int x, int y, float height) {
@@ -140,7 +126,7 @@ public class PathfindingService {
                 + width); ++x) {
             for (int y = (int) floor(position.z - width); y <= (int) ceil(position.z
                     + width); ++y) {
-                setBlock(x, y, false);
+                setBlock(new Vector2i(x, y), false);
             }
         }
 
@@ -152,7 +138,7 @@ public class PathfindingService {
                 + width); ++x) {
             for (int y = Math.round(position.z - width); y <= Math
                     .round(position.z + width); ++y) {
-                setBlock(x, y, true);
+                setBlock(new Vector2i(x, y), true);
             }
         }
     }
