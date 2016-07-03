@@ -9,8 +9,6 @@ import pl.rembol.jme3.world.save.StoneDepositDTO;
 import pl.rembol.jme3.world.smallobject.tools.PickAxe;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-import java.util.Optional;
-
 public class StoneDeposit extends ResourceDeposit {
 
     public StoneDeposit(GameState gameState) {
@@ -24,7 +22,7 @@ public class StoneDeposit extends ResourceDeposit {
 
     @Override
     public float getWidth() {
-        return 5f;
+        return 3f;
     }
 
     @Override
@@ -71,8 +69,8 @@ public class StoneDeposit extends ResourceDeposit {
     }
 
     @Override
-    public Optional<Class<? extends Tool>> requiredTool() {
-        return Optional.of(PickAxe.class);
+    public Class<? extends Tool> requiredTool() {
+        return PickAxe.class;
     }
 
 }

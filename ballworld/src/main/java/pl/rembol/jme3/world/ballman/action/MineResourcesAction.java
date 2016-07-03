@@ -7,9 +7,7 @@ import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
 import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 
-import java.util.Optional;
-
-public class MineResourcesAction extends BallManAction {
+class MineResourcesAction extends BallManAction {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
 
@@ -30,7 +28,7 @@ public class MineResourcesAction extends BallManAction {
      */
     private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-    public MineResourcesAction(GameState gameState, ResourceDeposit resourceDeposit) {
+    MineResourcesAction(GameState gameState, ResourceDeposit resourceDeposit) {
         super(gameState);
         this.resourceDeposit = resourceDeposit;
     }
@@ -69,8 +67,7 @@ public class MineResourcesAction extends BallManAction {
     private void increaseHeldResourceCount(BallMan ballMan, int count) {
         if (!resourceDeposit.givesResource().isInstance(
                 ballMan.getWieldedObject(Hand.LEFT))) {
-            ballMan.wield(Optional.of(resourceDeposit.produceResource()),
-                    Hand.LEFT);
+            ballMan.wield(resourceDeposit.produceResource(), Hand.LEFT);
         }
 
         ResourceUnit.class.cast(ballMan.getWieldedObject(Hand.LEFT))

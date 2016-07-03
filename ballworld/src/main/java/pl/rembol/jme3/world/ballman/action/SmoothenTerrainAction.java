@@ -11,7 +11,6 @@ import pl.rembol.jme3.world.smallobject.tools.Shovel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public class SmoothenTerrainAction extends BallManAction {
@@ -45,7 +44,7 @@ public class SmoothenTerrainAction extends BallManAction {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        if (!assertWielded(ballMan, Optional.of(Shovel.class))) {
+        if (!assertWielded(ballMan, Shovel.class)) {
             return false;
         }
         if (!assertDistance(ballMan, start.add(end).divideLocal(2), start.distance(end) / 2)) {

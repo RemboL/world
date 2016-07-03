@@ -9,19 +9,19 @@ import pl.rembol.jme3.world.ballman.BallMan.Hand;
 
 import java.util.Optional;
 
-public class SwitchToolAction extends Action<BallMan> {
+class SwitchToolAction extends Action<BallMan> {
 
     private static final int SWITCH_FRAME = 17 * 1000 / 30;
 
     private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-    private Optional<? extends SmallObject> smallObject;
+    private SmallObject smallObject;
 
     private long animationStart;
 
     private boolean switched = false;
 
-    public SwitchToolAction(GameState gameState, Optional<? extends SmallObject> smallObject) {
+    SwitchToolAction(GameState gameState, SmallObject smallObject) {
         super(gameState);
         this.smallObject = smallObject;
     }

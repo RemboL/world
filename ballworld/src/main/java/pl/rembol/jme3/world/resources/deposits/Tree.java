@@ -9,8 +9,6 @@ import pl.rembol.jme3.world.save.TreeDTO;
 import pl.rembol.jme3.world.smallobject.tools.Axe;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-import java.util.Optional;
-
 public class Tree extends ResourceDeposit {
 
     public Tree(GameState gameState) {
@@ -65,8 +63,8 @@ public class Tree extends ResourceDeposit {
     }
 
     @Override
-    public Optional<Class<? extends Tool>> requiredTool() {
-        return Optional.of(Axe.class);
+    public Class<? extends Tool> requiredTool() {
+        return Axe.class;
     }
 
     @Override

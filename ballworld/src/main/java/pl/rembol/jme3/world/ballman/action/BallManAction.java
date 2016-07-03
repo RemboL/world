@@ -8,39 +8,38 @@ import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 import java.util.Optional;
 
-public abstract class BallManAction extends Action<BallMan> {
-    
-    protected BallManUnitRegistry ballManUnitRegistry;
+abstract class BallManAction extends Action<BallMan> {
 
-    public BallManAction(GameState gameState) {
+    BallManUnitRegistry ballManUnitRegistry;
+
+    BallManAction(GameState gameState) {
         super(gameState);
         ballManUnitRegistry = new BallManUnitRegistry(gameState);
     }
 
-    protected boolean assertWielded(BallMan ballMan,
-                                    Optional<Class<? extends Tool>> wieldedClass) {
-        if (!wieldedClass.isPresent()) {
+    boolean assertWielded(BallMan ballMan,
+                          Class<? extends Tool> wieldedClass) {
+        if (wieldedClass == null) {
             if (ballMan.getWieldedObject(BallMan.Hand.RIGHT) != null) {
                 ballMan.control().addActionOnStart(
-                        new SwitchToolAction(gameState, Optional.empty()).withParent(this));
+                        new SwitchToolAction(gameState, null).withParent(this));
                 return false;
             }
             return true;
         }
 
-        if (!wieldedClass.get()
-                .isInstance(ballMan.getWieldedObject(BallMan.Hand.RIGHT))) {
+        if (!wieldedClass.isInstance(ballMan.getWieldedObject(BallMan.Hand.RIGHT))) {
             try {
                 Optional<Tool> toolFromInventory = ballMan.inventory().get(
-                        wieldedClass.get());
+                        wieldedClass);
                 if (toolFromInventory.isPresent()) {
                     ballMan.control().addActionOnStart(
-                            new SwitchToolAction(gameState, toolFromInventory).withParent(
+                            new SwitchToolAction(gameState, toolFromInventory.get()).withParent(
                                     this));
                     return false;
                 } else {
                     ballMan.control().addActionOnStart(
-                            new GetToolFromToolshopAction(gameState, wieldedClass.get())
+                            new GetToolFromToolshopAction(gameState, wieldedClass)
                                     .withParent(this));
                     return false;
                 }

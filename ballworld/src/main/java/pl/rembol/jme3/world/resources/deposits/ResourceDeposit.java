@@ -187,7 +187,7 @@ public abstract class ResourceDeposit implements Selectable, Solid {
 
     public abstract ResourceUnit produceResource();
 
-    public abstract Optional<Class<? extends Tool>> requiredTool();
+    public abstract Class<? extends Tool> requiredTool();
 
     public abstract Class<? extends ResourceUnit> givesResource();
 

@@ -8,10 +8,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.GameState;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
-import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingPhysicsControl;
+import pl.rembol.jme3.rts.gameobjects.control.NonClippingControl;
 import pl.rembol.jme3.rts.gameobjects.logger.LoggerControl;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
@@ -63,7 +63,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
         this.gameState = gameState;
         ballManUnitRegistry = new BallManUnitRegistry(gameState);
 
-        CharacterBasedControl control = new CharacterBasedControl(.6f, 10f, 1);
+        NonClippingControl control = new NonClippingControl(gameState, .6f);
         gameState.bulletAppState.getPhysicsSpace().add(control);
         node.addControl(control);
 
@@ -132,18 +132,18 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
     }
 
-    public void wield(Optional<? extends SmallObject> item, Hand hand) {
+    public void wield(SmallObject item, Hand hand) {
         if (wielded.get(hand) != null) {
             dropAndDestroy(hand);
         }
 
-        if (item.isPresent()) {
-            item.get().attach(
+        if (item != null) {
+            item.attach(
                     node.getControl(SkeletonControl.class).getAttachmentsNode(
                             hand.bone));
 
-            item.get().getNode().setLocalRotation(Quaternion.IDENTITY);
-            wielded.put(hand, item.get());
+            item.getNode().setLocalRotation(Quaternion.IDENTITY);
+            wielded.put(hand, item);
 
             gameState.selectionManager.updateStatusIfSingleSelected(this);
         }

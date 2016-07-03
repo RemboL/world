@@ -8,8 +8,6 @@ import pl.rembol.jme3.world.resources.units.FruitBasket;
 import pl.rembol.jme3.world.save.FruitBushDTO;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
-import java.util.Optional;
-
 public class FruitBush extends ResourceDeposit {
 
     public FruitBush(GameState gameState) {
@@ -64,8 +62,8 @@ public class FruitBush extends ResourceDeposit {
     }
 
     @Override
-    public Optional<Class<? extends Tool>> requiredTool() {
-        return Optional.empty();
+    public Class<? extends Tool> requiredTool() {
+        return null;
     }
 
     @Override

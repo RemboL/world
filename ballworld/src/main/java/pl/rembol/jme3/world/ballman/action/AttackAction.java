@@ -6,8 +6,6 @@ import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.tools.Sword;
 
-import java.util.Optional;
-
 public class AttackAction extends BallManAction {
 
     private static final int HIT_FRAME = 20 * 1000 / 30;
@@ -34,7 +32,7 @@ public class AttackAction extends BallManAction {
 
     @Override
     protected boolean start(BallMan ballMan) {
-        if (!assertWielded(ballMan, Optional.of(Sword.class))) {
+        if (!assertWielded(ballMan, Sword.class)) {
             return false;
         }
         if (!assertDistance(ballMan, target, REQUIRED_DISTANCE)) {

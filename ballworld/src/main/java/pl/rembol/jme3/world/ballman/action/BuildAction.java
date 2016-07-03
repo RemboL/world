@@ -75,7 +75,7 @@ public class BuildAction extends BallManAction {
             return true;
         }
 
-        if (!assertWielded(ballMan, Optional.of(Hammer.class))) {
+        if (!assertWielded(ballMan, Hammer.class)) {
             return false;
         }
 
@@ -123,7 +123,7 @@ public class BuildAction extends BallManAction {
         if (constructionSite != null && constructionSite.isFinished()) {
             isFinished = true;
         }
-        if (!isFinished) {
+        if (constructionSite != null && !isFinished) {
             constructionSite.addBuildProgress(tpf);
 
             particleEmitters.forEach(this::randomizeEmitterLocation);
@@ -153,7 +153,7 @@ public class BuildAction extends BallManAction {
         hit = false;
     }
 
-    protected void randomizeEmitterLocation(ParticleEmitter emitter) {
+    private void randomizeEmitterLocation(ParticleEmitter emitter) {
 
         float x = minX + (maxX - minX) * random.nextFloat();
         float y = minY + (maxY - minY) * random.nextFloat();
