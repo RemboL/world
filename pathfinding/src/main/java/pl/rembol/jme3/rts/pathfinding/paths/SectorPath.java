@@ -4,8 +4,9 @@ import com.jme3.math.Vector2f;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
 import pl.rembol.jme3.rts.pathfinding.PathfindingService;
-import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
+import pl.rembol.jme3.rts.pathfinding.algorithms.AbstractAStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
+import pl.rembol.jme3.rts.pathfinding.algorithms.UnitAStarAlgorithm;
 import pl.rembol.jme3.rts.threads.Executor;
 import pl.rembol.jme3.rts.threads.ThreadManager;
 
@@ -134,26 +135,27 @@ public class SectorPath implements IExternalPath {
 
             }
 
-            Optional<VectorPath> path = AStarAlgorithm.buildUnitPath(
+            Vector2iPath path = new UnitAStarAlgorithm(
                     start.asVector2f(),
                     new Rectangle2f(target.asVector2f()),
-                    PathfindingService.MAX_PATHFINDING_ITERATIONS, isFree);
+                    isFree).buildPath();
 
-            if (path.isPresent()) {
+            if (path != null) {
+                VectorPath vectorPath = new VectorPath(path);
                 if (step + 1 < farList.size()) {
                     List<Vector2i> newList = new ArrayList<>();
 
-                    for (Vector2f vector : path.get().getVectorList()) {
+                    for (Vector2f vector : vectorPath.getVectorList()) {
                         newList.add(new Vector2i(vector));
                         if (farList.get(step + 1).isBlockFreeFunction.apply(new Vector2i(vector))) {
-                            path.get().clearPath();
+                            vectorPath.clearPath();
                             return new VectorPath(
                                     new Vector2iPath(newList));
                         }
                     }
                 }
 
-                return new VectorPath(new Vector2iPath(path.get().getVectorList()
+                return new VectorPath(new Vector2iPath(vectorPath.getVectorList()
                         .stream().map(Vector2i::new)
                         .collect(Collectors.toList())));
             }

@@ -1,4 +1,4 @@
-package pl.rembol.jme3.rts.pathfinding;
+package pl.rembol.jme3.rts.pathfinding.clusters;
 
 
 class PathfindingBlock {

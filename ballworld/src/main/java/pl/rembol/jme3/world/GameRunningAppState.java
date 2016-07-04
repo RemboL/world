@@ -77,7 +77,7 @@ public class GameRunningAppState extends AbstractAppState {
 
         SaveState load = SaveState.load("ballworld" + File.separator + "save.xml");
         gameState.terrain.init(load.getTerrain());
-        gameState.pathfindingService.initFromTerrain();
+        gameState.pathfindingService.initFromTerrain(gameState.terrain);
 
         gameState.playerService.loadPlayers(load.getPlayers());
         gameState.unitRegistry.load(load.getUnits());

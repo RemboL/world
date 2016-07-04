@@ -1,10 +1,10 @@
-package pl.rembol.jme3.rts.pathfinding;
+package pl.rembol.jme3.rts.pathfinding.clusters;
 
 import pl.rembol.jme3.geom.Direction;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
-import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
+import pl.rembol.jme3.rts.pathfinding.algorithms.UnitAStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.paths.Vector2iPath;
 import pl.rembol.jme3.rts.pathfinding.paths.VectorPath;
 
@@ -12,9 +12,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class PathfindingCluster {
+class PathfindingCluster {
 
-    public static final int SIZE = 16;
+    static final int SIZE = 16;
 
     private static final int MAX_PATHFINDING_ITERATIONS = 1000;
 
@@ -40,9 +40,9 @@ public class PathfindingCluster {
                 && borderInitialized.get(direction);
     }
 
-    void setNeighbor(Direction direction, Optional<PathfindingCluster> cluster) {
-        if (cluster.isPresent()) {
-            neighbouringClusters.put(direction, cluster.get());
+    void setNeighbor(Direction direction, PathfindingCluster cluster) {
+        if (cluster != null) {
+            neighbouringClusters.put(direction, cluster);
         }
     }
 
@@ -50,7 +50,7 @@ public class PathfindingCluster {
         return borders;
     }
 
-    public boolean isBlockFree(Vector2i vector) {
+    boolean isBlockFree(Vector2i vector) {
         return blocks.containsKey(vector) && blocks.get(vector).isFree();
 
     }
@@ -203,12 +203,13 @@ public class PathfindingCluster {
                 startBorder.addPath(targetBorder, new VectorPath(path));
 
             } else {
-                Optional<VectorPath> path = AStarAlgorithm.buildUnitPath(
-                        startBorder.middlePoint.asVector2f(), new Rectangle2f(
-                                targetBorder.middlePoint.asVector2f()), MAX_PATHFINDING_ITERATIONS,
-                        this::isBlockFree);
-                if (path.isPresent()) {
-                    startBorder.addPath(targetBorder, path.get());
+                Vector2iPath path = new UnitAStarAlgorithm(
+                        startBorder.middlePoint.asVector2f(),
+                        new Rectangle2f(targetBorder.middlePoint.asVector2f()),
+                        this::isBlockFree)
+                        .buildPath();
+                if (path != null) {
+                    startBorder.addPath(targetBorder, new VectorPath(path));
                 }
             }
         }

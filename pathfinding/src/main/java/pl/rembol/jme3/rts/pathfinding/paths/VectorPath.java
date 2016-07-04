@@ -23,7 +23,7 @@ public class VectorPath implements IExternalPath {
                 .collect(Collectors.toList());
     }
 
-    public List<Vector2f> getVectorList() {
+    List<Vector2f> getVectorList() {
         return vectorList;
     }
 

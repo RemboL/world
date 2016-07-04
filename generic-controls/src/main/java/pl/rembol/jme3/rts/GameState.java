@@ -84,7 +84,7 @@ public class GameState {
         inputManager = simpleApplication.getInputManager();
 
         terrain = new Terrain(simpleApplication, bulletAppState);
-        pathfindingService = new PathfindingService(terrain, threadManager);
+        pathfindingService = new PathfindingService(threadManager);
 
         resourcesBar = new ResourcesBar(simpleApplication, settings);
         consoleLog = new ConsoleLog(simpleApplication, settings);

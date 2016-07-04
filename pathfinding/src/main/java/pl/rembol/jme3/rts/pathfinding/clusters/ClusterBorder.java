@@ -1,4 +1,4 @@
-package pl.rembol.jme3.rts.pathfinding;
+package pl.rembol.jme3.rts.pathfinding.clusters;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -100,7 +100,7 @@ public class ClusterBorder {
         middlePoint = closestToAverage;
     }
 
-    public ClusterBorder init() {
+    ClusterBorder init() {
 
         Vector2i min = new Vector2i(borderPoints.get(0).x,
                 borderPoints.get(0).y);
@@ -120,7 +120,7 @@ public class ClusterBorder {
         return this;
     }
 
-    public void clear() {
+    void clear() {
         for (VectorPath path : paths) {
             path.clearPath();
         }
