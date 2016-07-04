@@ -60,10 +60,6 @@ public class ClusterBorder {
         return connectedBorders.containsKey(border);
     }
 
-    public List<Vector2i> getBorderPoints() {
-        return borderPoints;
-    }
-
     ClusterBorder addPath(ClusterBorder border, VectorPath path) {
         connectedBorders.put(border, path.length());
 

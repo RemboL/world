@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.ceil;
@@ -259,4 +260,11 @@ public class PathfindingService {
         return getClusterByPoint(neighbor).isBlockFree(neighbor);
     }
 
+    public boolean isSameCluster(Vector2i point1, Vector2i point2) {
+        return getClusterByPoint(point1) == getClusterByPoint(point2);
+    }
+
+    public Function<Vector2i, Boolean> getIsBlockFreeFunctionByCluster(Vector2i point) {
+        return getClusterByPoint(point)::isBlockFree;
+    }
 }

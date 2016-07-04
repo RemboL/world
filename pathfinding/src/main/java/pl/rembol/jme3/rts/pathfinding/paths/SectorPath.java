@@ -3,7 +3,6 @@ package pl.rembol.jme3.rts.pathfinding.paths;
 import com.jme3.math.Vector2f;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
-import pl.rembol.jme3.rts.pathfinding.PathfindingCluster;
 import pl.rembol.jme3.rts.pathfinding.PathfindingService;
 import pl.rembol.jme3.rts.pathfinding.algorithms.AStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
@@ -26,15 +25,15 @@ public class SectorPath implements IExternalPath {
 
         Vector2f point;
 
-        PathfindingCluster cluster;
+        Function<Vector2i, Boolean> isBlockFreeFunction;
 
         VectorPath path = null;
 
         Future<VectorPath> pathWorker = null;
 
-        public FarStep(Vector2f point, PathfindingCluster cluster) {
+        FarStep(Vector2f point, Function<Vector2i, Boolean> isBlockFreeFunction) {
             this.point = point;
-            this.cluster = cluster;
+            this.isBlockFreeFunction = isBlockFreeFunction;
         }
 
     }
@@ -47,26 +46,23 @@ public class SectorPath implements IExternalPath {
 
     public SectorPath(ComplexPath vectorPath, Vector2f start, ThreadManager threadManager, PathfindingService pathfindingService) {
         this.threadManager = threadManager;
-        PathfindingCluster lastCluster = null;
         Vector2i lastClusterPoint = null;
 
         for (Vector2i point : vectorPath.toVector2iList()) {
-            PathfindingCluster currentCluster = pathfindingService.getClusterByPoint(point);
-
-            if (lastCluster == null) {
-                lastCluster = currentCluster;
+            if (lastClusterPoint == null) {
                 lastClusterPoint = point;
-            } else if (currentCluster == lastCluster) {
+            } else if (pathfindingService.isSameCluster(lastClusterPoint, point)) {
                 lastClusterPoint = point;
             } else {
-                farList.add(new FarStep(lastClusterPoint.asVector2f(), lastCluster));
+                farList.add(new FarStep(lastClusterPoint.asVector2f(), pathfindingService.getIsBlockFreeFunctionByCluster(lastClusterPoint)));
 
-                lastCluster = currentCluster;
                 lastClusterPoint = point;
             }
         }
 
-        farList.add(new FarStep(lastClusterPoint.asVector2f(), lastCluster));
+        if (lastClusterPoint != null) {
+            farList.add(new FarStep(lastClusterPoint.asVector2f(), pathfindingService.getIsBlockFreeFunctionByCluster(lastClusterPoint)));
+        }
 
         if (farList.size() > 0) {
             try {
@@ -105,13 +101,13 @@ public class SectorPath implements IExternalPath {
 
             if (step + 1 < farList.size()) {
                 isFree = vector2i -> (start.equals(vector2i)
-                        || farList.get(step).cluster.isBlockFree(vector2i) || farList
-                        .get(step + 1).cluster.isBlockFree(vector2i));
+                        || farList.get(step).isBlockFreeFunction.apply(vector2i) || farList
+                        .get(step + 1).isBlockFreeFunction.apply(vector2i));
 
                 target = new Vector2i(farList.get(step + 1).point);
             } else {
                 isFree = vector2i -> (start.equals(vector2i) || farList
-                        .get(step).cluster.isBlockFree(vector2i));
+                        .get(step).isBlockFreeFunction.apply(vector2i));
                 target = new Vector2i(farList.get(step).point);
             }
 
@@ -124,8 +120,7 @@ public class SectorPath implements IExternalPath {
                     for (Vector2f vector = start.asVector2f(); vector
                             .distance(target.asVector2f()) >= 1; vector = vector
                             .add(delta)) {
-                        if (farList.get(step + 1).cluster
-                                .isBlockFree(new Vector2i(vector))) {
+                        if (farList.get(step + 1).isBlockFreeFunction.apply(new Vector2i(vector))) {
                             return new VectorPath(new Vector2iPath(
                                     Arrays.asList(start, new Vector2i(
                                             vector))));
@@ -150,8 +145,7 @@ public class SectorPath implements IExternalPath {
 
                     for (Vector2f vector : path.get().getVectorList()) {
                         newList.add(new Vector2i(vector));
-                        if (farList.get(step + 1).cluster
-                                .isBlockFree(new Vector2i(vector))) {
+                        if (farList.get(step + 1).isBlockFreeFunction.apply(new Vector2i(vector))) {
                             path.get().clearPath();
                             return new VectorPath(
                                     new Vector2iPath(newList));
