@@ -9,17 +9,21 @@ import com.jme3.scene.Spatial;
 
 public class Materials {
 
-    public static void setAlpha(Node node, float alpha) {
-        for (Spatial spatial : node.getChildren()) {
-            if(spatial instanceof Node) {
-                setAlpha((Node)spatial, alpha);
-            } else if(spatial instanceof Geometry) {
-                setAlpha((Geometry)spatial, alpha);
-            }
+    public static void setAlpha(Spatial spatial, float alpha) {
+        if (spatial instanceof Node) {
+            setAlphaToNode((Node) spatial, alpha);
+        } else if (spatial instanceof Geometry) {
+            setAlphaToGemoetry((Geometry) spatial, alpha);
         }
     }
 
-    private static void setAlpha(Geometry geometry, float alpha) {
+    private static void setAlphaToNode(Node node, float alpha) {
+        for (Spatial spatial : node.getChildren()) {
+            setAlpha(spatial, alpha);
+        }
+    }
+
+    private static void setAlphaToGemoetry(Geometry geometry, float alpha) {
         Material material = geometry.getMaterial();
         if (!(material.getAdditionalRenderState().getBlendMode() == RenderState.BlendMode.Alpha)) {
             material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
