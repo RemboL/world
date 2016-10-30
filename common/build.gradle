@@ -1,0 +1,4 @@
+
+dependencies {
+    compile "org.jmonkeyengine:jme3-core:$jmeVersion"
+}

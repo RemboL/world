@@ -8,10 +8,12 @@
 
 # Compiled projects #
 target/
+build/
 
 # project files
 .project
 .classpath
+.gradle/
 *.iml
 .settings/
 .idea/

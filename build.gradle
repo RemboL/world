@@ -1,0 +1,26 @@
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    group = 'pl.rembol.jme3.rts'
+    version = '0.0.1-SNAPSHOT'
+
+    sourceCompatibility = 1.8
+
+    ext {
+        jmeVersion = '3.2.0-SNAPSHOT'
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+}
