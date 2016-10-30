@@ -10,32 +10,36 @@ import com.jme3.scene.Spatial;
 public class Materials {
 
     public static void setAlpha(Spatial spatial, float alpha) {
+        setAlpha(spatial, "Color", alpha);
+    }
+
+    public static void setAlpha(Spatial spatial, String colorName, float alpha) {
         if (spatial instanceof Node) {
-            setAlphaToNode((Node) spatial, alpha);
+            setAlphaToNode((Node) spatial, colorName, alpha);
         } else if (spatial instanceof Geometry) {
-            setAlphaToGemoetry((Geometry) spatial, alpha);
+            setAlphaToGemoetry((Geometry) spatial, colorName, alpha);
         }
     }
 
-    private static void setAlphaToNode(Node node, float alpha) {
+    private static void setAlphaToNode(Node node, String colorName, float alpha) {
         for (Spatial spatial : node.getChildren()) {
-            setAlpha(spatial, alpha);
+            setAlpha(spatial, colorName, alpha);
         }
     }
 
-    private static void setAlphaToGemoetry(Geometry geometry, float alpha) {
+    private static void setAlphaToGemoetry(Geometry geometry, String colorName, float alpha) {
         Material material = geometry.getMaterial();
         if (!(material.getAdditionalRenderState().getBlendMode() == RenderState.BlendMode.Alpha)) {
             material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
         }
-        rewriteAlpha(material, alpha);
+        rewriteAlpha(material, colorName, alpha);
 
     }
 
-    private static void rewriteAlpha(Material material, float alpha) {
-        ColorRGBA color = ((ColorRGBA) material.getParam("Color").getValue());
+    private static void rewriteAlpha(Material material, String colorName, float alpha) {
+        ColorRGBA color = ((ColorRGBA) material.getParam(colorName).getValue());
         color.a = alpha;
-        material.setColor("Color", color);
+        material.setColor(colorName, color);
     }
 
 }
