@@ -1,10 +1,10 @@
 package pl.rembol.jme3.world.smallobject.tools;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 
 public class Axe extends Tool {
 
-    public Axe(GameState gameState) {
+    public Axe(RtsGameState gameState) {
         super(gameState);
     }
 

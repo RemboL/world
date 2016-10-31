@@ -2,7 +2,7 @@ package pl.rembol.jme3.world.ballman.order;
 
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.gameobjects.order.Order;
 import pl.rembol.jme3.rts.gameobjects.order.WithSilhouette;
@@ -18,7 +18,7 @@ public abstract class BuildOrder extends Order<BallMan> implements WithSilhouett
 
     protected BuildingFactory factory;
 
-    public BuildOrder(GameState gameState, List<Selectable> selected) {
+    public BuildOrder(RtsGameState gameState, List<Selectable> selected) {
         super(gameState, selected);
 
         factory = createBuildingFactory();

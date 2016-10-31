@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.ballman;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
 import pl.rembol.jme3.rts.gameobjects.selection.SelectionIcon;
 import pl.rembol.jme3.world.building.house.House;
@@ -8,7 +8,7 @@ import pl.rembol.jme3.world.building.house.House;
 import java.util.Optional;
 
 public class BallManIcon extends SelectionIcon {
-    public BallManIcon(GameState gameState, Selectable selectable) {
+    public BallManIcon(RtsGameState gameState, Selectable selectable) {
         super(gameState, selectable, "ballman");
     }
 

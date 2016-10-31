@@ -7,7 +7,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.Control;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.Solid;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
@@ -41,11 +41,11 @@ public abstract class Building implements Selectable, WithOwner, Destructable, S
 
     private BuildingStatus status;
 
-    protected GameState gameState;
+    protected RtsGameState gameState;
 
     protected BallManUnitRegistry ballManUnitRegistry;
 
-    public Building(GameState gameState) {
+    public Building(RtsGameState gameState) {
         this.gameState = gameState;
         ballManUnitRegistry = new BallManUnitRegistry(gameState);
     }

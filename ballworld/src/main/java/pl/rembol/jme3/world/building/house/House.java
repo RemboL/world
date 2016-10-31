@@ -4,7 +4,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.Control;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
@@ -22,7 +22,7 @@ public class House extends Building {
 
     private List<BallMan> unitsInside = new ArrayList<>();
 
-    public House(GameState gameState) {
+    public House(RtsGameState gameState) {
         super(gameState);
     }
 

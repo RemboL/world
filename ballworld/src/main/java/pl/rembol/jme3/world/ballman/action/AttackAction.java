@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.selection.Destructable;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.tools.Sword;
@@ -25,7 +25,7 @@ public class AttackAction extends BallManAction {
      */
     private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-    public AttackAction(GameState gameState, Destructable target) {
+    public AttackAction(RtsGameState gameState, Destructable target) {
         super(gameState);
         this.target = target;
     }

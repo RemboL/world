@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.ballman.BallMan;
@@ -12,7 +12,7 @@ public class ReturnResourcesAction extends Action<BallMan> {
     private float targetDistance = 3;
     private Warehouse warehouse;
 
-    public ReturnResourcesAction(GameState gameState, Warehouse target) {
+    public ReturnResourcesAction(RtsGameState gameState, Warehouse target) {
         super(gameState);
         this.warehouse = target;
     }

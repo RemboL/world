@@ -6,7 +6,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.particles.DustParticleEmitter;
 
 import java.util.ArrayList;
@@ -31,9 +31,9 @@ public class BuildingDestructionControl extends AbstractControl {
     private float maxY;
     private Random random = new Random();
 
-    private GameState gameState;
+    private RtsGameState gameState;
 
-    public BuildingDestructionControl(GameState gameState, Building building) {
+    public BuildingDestructionControl(RtsGameState gameState, Building building) {
         this.gameState = gameState;
         this.building = building;
 

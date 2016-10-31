@@ -1,10 +1,10 @@
 package pl.rembol.jme3.world.smallobject.tools;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 
 public class Hammer extends Tool {
 
-    public Hammer(GameState gameState) {
+    public Hammer(RtsGameState gameState) {
         super(gameState);
     }
 

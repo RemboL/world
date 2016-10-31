@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.building.warehouse;
 
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.resources.ResourceType;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.rts.save.UnitDTO;
@@ -11,7 +11,7 @@ import pl.rembol.jme3.world.building.Building;
 
 public class Warehouse extends Building {
 
-    public Warehouse(GameState gameState) {
+    public Warehouse(RtsGameState gameState) {
         super(gameState);
     }
 

@@ -4,7 +4,7 @@ import com.jme3.animation.LoopMode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
@@ -14,7 +14,6 @@ import pl.rembol.jme3.world.smallobject.tools.Hammer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public class BuildAction extends BallManAction {
@@ -47,7 +46,7 @@ public class BuildAction extends BallManAction {
 
     private BuildingFactory factory;
 
-    public BuildAction(GameState gameState, Vector2f position,
+    public BuildAction(RtsGameState gameState, Vector2f position,
                        BuildingFactory factory) {
         super(gameState);
         this.position = position;

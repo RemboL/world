@@ -4,16 +4,14 @@ import com.jme3.math.Vector2f;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
 import pl.rembol.jme3.rts.pathfinding.PathfindingService;
-import pl.rembol.jme3.rts.pathfinding.algorithms.AbstractAStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.UnitAStarAlgorithm;
-import pl.rembol.jme3.rts.threads.Executor;
-import pl.rembol.jme3.rts.threads.ThreadManager;
+import pl.rembol.jme3.threads.Executor;
+import pl.rembol.jme3.threads.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

@@ -4,15 +4,14 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import pl.rembol.jme3.geom.Rectangle2f;
 import pl.rembol.jme3.geom.Vector2i;
-import pl.rembol.jme3.rts.pathfinding.algorithms.AbstractAStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.BresenhamAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.algorithms.ClusterAStarAlgorithm;
 import pl.rembol.jme3.rts.pathfinding.clusters.ClusterBorder;
 import pl.rembol.jme3.rts.pathfinding.clusters.ClusterManager;
 import pl.rembol.jme3.rts.pathfinding.paths.*;
 import pl.rembol.jme3.rts.terrain.Terrain;
-import pl.rembol.jme3.rts.threads.Executor;
-import pl.rembol.jme3.rts.threads.ThreadManager;
+import pl.rembol.jme3.threads.Executor;
+import pl.rembol.jme3.threads.ThreadManager;
 
 import java.util.Map;
 import java.util.concurrent.Callable;

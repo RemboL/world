@@ -7,7 +7,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 
 public class HungerIndicator extends Node {
@@ -22,7 +22,7 @@ public class HungerIndicator extends Node {
 
     private static final ColorRGBA RED = new ColorRGBA(1f, 0f, 0f, .2f);
 
-    public HungerIndicator(GameState gameState, BallMan ballMan, float hungerFactor) {
+    public HungerIndicator(RtsGameState gameState, BallMan ballMan, float hungerFactor) {
 
         node = (Node) gameState.assetManager.loadModel("hunger_indicator/hunger_indicator.mesh.xml");
         node.setShadowMode(ShadowMode.Off);

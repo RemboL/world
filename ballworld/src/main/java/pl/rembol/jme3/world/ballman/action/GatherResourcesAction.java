@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
@@ -15,7 +15,7 @@ public class GatherResourcesAction extends BallManAction {
 
     private BallMan ballMan;
 
-    public GatherResourcesAction(GameState gameState, BallMan ballMan, ResourceDeposit resourceDeposit) {
+    public GatherResourcesAction(RtsGameState gameState, BallMan ballMan, ResourceDeposit resourceDeposit) {
         super(gameState);
         this.ballMan = ballMan;
         this.resourceDeposit = resourceDeposit;

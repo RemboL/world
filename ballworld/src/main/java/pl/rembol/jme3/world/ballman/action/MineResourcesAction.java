@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
@@ -28,7 +28,7 @@ class MineResourcesAction extends BallManAction {
      */
     private static final int ANIMATION_LENGTH = 35 * 1000 / 30;
 
-    MineResourcesAction(GameState gameState, ResourceDeposit resourceDeposit) {
+    MineResourcesAction(RtsGameState gameState, ResourceDeposit resourceDeposit) {
         super(gameState);
         this.resourceDeposit = resourceDeposit;
     }

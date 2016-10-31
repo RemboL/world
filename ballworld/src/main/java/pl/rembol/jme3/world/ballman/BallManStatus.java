@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman;
 
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gui.status.DefaultStatus;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
 
@@ -14,7 +14,7 @@ public class BallManStatus extends DefaultStatus {
 
     private final BallMan ballMan;
 
-    public BallManStatus(BallMan ballMan, GameState gameState) {
+    public BallManStatus(BallMan ballMan, RtsGameState gameState) {
         super(gameState);
         this.ballMan = ballMan;
 

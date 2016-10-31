@@ -8,7 +8,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.world.building.BuildingStatus;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class HouseStatus extends BuildingStatus {
 
     private Geometry progressRectangle;
 
-    public HouseStatus(House house, GameState gameState) {
+    public HouseStatus(House house, RtsGameState gameState) {
         super(house, gameState);
         this.house = house;
 

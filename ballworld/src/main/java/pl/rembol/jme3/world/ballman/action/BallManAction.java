@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
@@ -12,7 +12,7 @@ abstract class BallManAction extends Action<BallMan> {
 
     BallManUnitRegistry ballManUnitRegistry;
 
-    BallManAction(GameState gameState) {
+    BallManAction(RtsGameState gameState) {
         super(gameState);
         ballManUnitRegistry = new BallManUnitRegistry(gameState);
     }

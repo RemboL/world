@@ -1,0 +1,9 @@
+
+dependencies {
+    compile project(':common')
+    compile "org.jmonkeyengine:jme3-core:$jmeVersion"
+    compile "org.jmonkeyengine:jme3-bullet:$jmeVersion"
+    compile "org.jmonkeyengine:jme3-plugins:$jmeVersion"
+    runtime "org.jmonkeyengine:jme3-bullet-native:$jmeVersion"
+    runtime "org.jmonkeyengine:jme3-lwjgl:$jmeVersion"
+}

@@ -4,7 +4,7 @@ import com.jme3.animation.LoopMode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.particles.DustParticleEmitter;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.smallobject.tools.Shovel;
@@ -35,7 +35,7 @@ public class SmoothenTerrainAction extends BallManAction {
     private float maxY;
     private Random random = new Random();
 
-    public SmoothenTerrainAction(GameState gameState, Vector2f start, Vector2f end, int border) {
+    public SmoothenTerrainAction(RtsGameState gameState, Vector2f start, Vector2f end, int border) {
         super(gameState);
         this.start = start;
         this.end = end;

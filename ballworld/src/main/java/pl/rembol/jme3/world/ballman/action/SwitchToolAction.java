@@ -1,13 +1,11 @@
 package pl.rembol.jme3.world.ballman.action;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.rts.smallobjects.SmallObject;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.BallMan.Hand;
-
-import java.util.Optional;
 
 class SwitchToolAction extends Action<BallMan> {
 
@@ -21,7 +19,7 @@ class SwitchToolAction extends Action<BallMan> {
 
     private boolean switched = false;
 
-    SwitchToolAction(GameState gameState, SmallObject smallObject) {
+    SwitchToolAction(RtsGameState gameState, SmallObject smallObject) {
         super(gameState);
         this.smallObject = smallObject;
     }

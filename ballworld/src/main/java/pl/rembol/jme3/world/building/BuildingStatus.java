@@ -1,13 +1,13 @@
 package pl.rembol.jme3.world.building;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gui.status.DefaultStatus;
 
 public class BuildingStatus extends DefaultStatus {
 
     private final Building building;
 
-    public BuildingStatus(Building building, GameState gameState) {
+    public BuildingStatus(Building building, RtsGameState gameState) {
         super(gameState);
 
         this.building = building;

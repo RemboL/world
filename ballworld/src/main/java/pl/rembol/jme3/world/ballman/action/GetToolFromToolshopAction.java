@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.toolshop.Toolshop;
 import pl.rembol.jme3.world.smallobject.tools.Tool;
@@ -16,7 +16,7 @@ public class GetToolFromToolshopAction extends BallManAction {
 
     private boolean finished = false;
 
-    public GetToolFromToolshopAction(GameState gameState, Class<? extends Tool> toolClass) {
+    public GetToolFromToolshopAction(RtsGameState gameState, Class<? extends Tool> toolClass) {
         super(gameState);
         this.toolClass = toolClass;
     }
@@ -44,7 +44,7 @@ public class GetToolFromToolshopAction extends BallManAction {
     protected void doAct(BallMan ballMan, float tpf) {
         try {
 
-            ballMan.addToInventory(toolClass.getDeclaredConstructor(GameState.class).newInstance(gameState));
+            ballMan.addToInventory(toolClass.getDeclaredConstructor(RtsGameState.class).newInstance(gameState));
             finished = true;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException
                 e) {

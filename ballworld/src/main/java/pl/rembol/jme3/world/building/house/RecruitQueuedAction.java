@@ -3,7 +3,7 @@ package pl.rembol.jme3.world.building.house;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Spatial;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
@@ -15,7 +15,7 @@ public class RecruitQueuedAction {
 
     private static final float TIME = 10;
 
-    private final GameState gameState;
+    private final RtsGameState gameState;
     
     private final BallManUnitRegistry ballManUnitRegistry;
 
@@ -31,7 +31,7 @@ public class RecruitQueuedAction {
         return progress >= TIME;
     }
 
-    public RecruitQueuedAction(GameState gameState, HouseControl houseControl) {
+    public RecruitQueuedAction(RtsGameState gameState, HouseControl houseControl) {
         this.gameState = gameState;
         this.ballManUnitRegistry = new BallManUnitRegistry(gameState);
         this.houseControl = houseControl;

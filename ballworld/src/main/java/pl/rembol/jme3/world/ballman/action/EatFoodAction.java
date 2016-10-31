@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.ballman.action;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.action.Action;
 import pl.rembol.jme3.rts.resources.Cost;
 import pl.rembol.jme3.world.ballman.BallMan;
@@ -19,7 +19,7 @@ public class EatFoodAction extends Action<BallMan> {
 
     int howHungry;
 
-    public EatFoodAction(GameState gameState, float howHungry) {
+    public EatFoodAction(RtsGameState gameState, float howHungry) {
         super(gameState);
         this.ballManUnitRegistry = new BallManUnitRegistry(gameState);
         this.howHungry = (int) howHungry;

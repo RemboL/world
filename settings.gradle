@@ -1,1 +1,1 @@
-include 'common', 'generic-controls', 'terrain', 'pathfinding', 'ballworld'
+include 'common', 'terrain', 'pathfinding', 'generic-game', 'generic-rts', 'ballworld'

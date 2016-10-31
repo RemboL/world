@@ -13,7 +13,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithMovingControl;
@@ -23,7 +23,7 @@ import pl.rembol.jme3.rts.gameobjects.selection.SelectionNode;
 
 public class Rabbit extends AbstractControl implements Selectable, WithMovingControl {
 
-    private GameState gameState;
+    private RtsGameState gameState;
 
     private Node node;
 
@@ -35,11 +35,11 @@ public class Rabbit extends AbstractControl implements Selectable, WithMovingCon
 
     private RabbitStatus status;
 
-    public Rabbit(GameState gameState, Vector2f position) {
+    public Rabbit(RtsGameState gameState, Vector2f position) {
         this(gameState, gameState.terrain.getGroundPosition(position));
     }
 
-    public Rabbit(GameState gameState, Vector3f position) {
+    public Rabbit(RtsGameState gameState, Vector3f position) {
         this.gameState = gameState;
 
         initNode(gameState.rootNode);
@@ -48,7 +48,7 @@ public class Rabbit extends AbstractControl implements Selectable, WithMovingCon
         node.setLocalRotation(new Quaternion().fromAngleAxis(
                 new Random().nextFloat() * FastMath.PI, Vector3f.UNIT_Y));
 
-        control = new CharacterBasedControl(.6f, 10f, 1);
+        control = new CharacterBasedControl(gameState, .6f, 10f, 1);
         node.addControl(control);
 
         node.addControl(new RabbitControl(gameState, this));

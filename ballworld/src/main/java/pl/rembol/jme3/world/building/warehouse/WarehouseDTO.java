@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.building.warehouse;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.save.UnitDTO;
 
@@ -20,7 +20,7 @@ public class WarehouseDTO extends UnitDTO {
     }
 
     @Override
-    public WithNode produce(GameState gameState) {
+    public WithNode produce(RtsGameState gameState) {
         return new Warehouse(gameState);
     }
 

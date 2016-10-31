@@ -23,11 +23,11 @@ import java.io.InputStream;
 import java.util.EnumSet;
 import java.util.List;
 
-class AssetManagerWrapper implements AssetManager {
+public class AssetManagerWrapper implements AssetManager {
 
     private final AssetManager delegate;
 
-    AssetManagerWrapper(AssetManager delegate) {
+    public AssetManagerWrapper(AssetManager delegate) {
         this.delegate = delegate;
     }
 

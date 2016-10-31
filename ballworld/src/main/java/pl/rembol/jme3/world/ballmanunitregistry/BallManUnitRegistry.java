@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballmanunitregistry;
 
 import com.jme3.math.Vector3f;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.player.Player;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.building.Building;
@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 
 public class BallManUnitRegistry {
 
-    private final GameState gameState;
+    private final RtsGameState gameState;
 
-    public BallManUnitRegistry(GameState gameState) {
+    public BallManUnitRegistry(RtsGameState gameState) {
         this.gameState = gameState;
     }
 

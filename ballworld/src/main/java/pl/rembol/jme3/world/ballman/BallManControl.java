@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman;
 
 import com.jme3.animation.LoopMode;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
@@ -16,7 +16,7 @@ import pl.rembol.jme3.world.resources.deposits.ResourceDeposit;
 public class BallManControl extends ActionQueueControl<BallMan> implements
         DefaultActionControl {
 
-    public BallManControl(GameState gameState, BallMan ballMan) {
+    public BallManControl(RtsGameState gameState, BallMan ballMan) {
 
         super(gameState, ballMan);
     }

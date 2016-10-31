@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.resources.deposits;
 
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.resources.units.ResourceUnit;
 import pl.rembol.jme3.rts.save.UnitDTO;
 import pl.rembol.jme3.world.resources.units.FruitBasket;
@@ -10,7 +10,7 @@ import pl.rembol.jme3.world.smallobject.tools.Tool;
 
 public class FruitBush extends ResourceDeposit {
 
-    public FruitBush(GameState gameState) {
+    public FruitBush(RtsGameState gameState) {
         super(gameState);
     }
 

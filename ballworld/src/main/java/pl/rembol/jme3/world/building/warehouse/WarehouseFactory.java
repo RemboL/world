@@ -1,6 +1,6 @@
 package pl.rembol.jme3.world.building.warehouse;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.resources.Cost;
 import pl.rembol.jme3.world.building.Building;
 import pl.rembol.jme3.world.building.BuildingFactory;
@@ -11,7 +11,7 @@ import static pl.rembol.jme3.world.resources.ResourceTypes.WOOD;
 public class WarehouseFactory extends BuildingFactory {
 
     @Override
-    public Building create(GameState gameState) {
+    public Building create(RtsGameState gameState) {
         return new Warehouse(gameState);
     }
 

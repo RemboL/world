@@ -6,7 +6,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
@@ -50,20 +50,21 @@ public class BallMan extends Unit implements WithOwner, Destructable {
 
     private Inventory inventory = new Inventory();
 
-    private GameState gameState;
+    private RtsGameState gameState;
 
     private BallManUnitRegistry ballManUnitRegistry;
 
-    public BallMan(GameState gameState, Vector2f position, String player) {
+    public BallMan(RtsGameState gameState, Vector2f position, String player) {
         this(gameState, gameState.terrain.getGroundPosition(position), player);
     }
 
-    public BallMan(GameState gameState, Vector3f position, String player) {
+    public BallMan(RtsGameState gameState, Vector3f position, String player) {
         super(gameState, position);
         this.gameState = gameState;
         ballManUnitRegistry = new BallManUnitRegistry(gameState);
 
         NonClippingControl control = new NonClippingControl(gameState, .6f);
+//        CharacterBasedControl control = new CharacterBasedControl(gameState, .6f, 10f, 1);
         gameState.bulletAppState.getPhysicsSpace().add(control);
         node.addControl(control);
 
@@ -81,7 +82,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     }
 
     @Override
-    public void addControls(pl.rembol.jme3.rts.GameState gameState) {
+    public void addControls(RtsGameState gameState) {
     }
 
     @Override
@@ -247,7 +248,7 @@ public class BallMan extends Unit implements WithOwner, Destructable {
     }
 
     @Override
-    protected SelectionIcon createIcon(pl.rembol.jme3.rts.GameState gameState) {
+    protected SelectionIcon createIcon(RtsGameState gameState) {
         return new BallManIcon(gameState, this);
     }
 

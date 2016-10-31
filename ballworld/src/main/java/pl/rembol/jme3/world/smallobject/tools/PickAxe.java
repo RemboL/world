@@ -1,10 +1,10 @@
 package pl.rembol.jme3.world.smallobject.tools;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 
 public class PickAxe extends Tool {
 
-    public PickAxe(GameState gameState) {
+    public PickAxe(RtsGameState gameState) {
         super(gameState);
     }
 

@@ -6,14 +6,14 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballman.action.EatFoodAction;
 import pl.rembol.jme3.world.resources.ResourceTypes;
 
 public class HungerControl extends AbstractControl {
 
-    private GameState gameState;
+    private RtsGameState gameState;
 
     private static final int MAX_HUNGER = 50;
     private float hunger = MAX_HUNGER;
@@ -22,7 +22,7 @@ public class HungerControl extends AbstractControl {
 
     private HungerIndicator hungerIndicator;
 
-    public HungerControl(GameState gameState, BallMan ballMan) {
+    public HungerControl(RtsGameState gameState, BallMan ballMan) {
         this.ballMan = ballMan;
         this.gameState = gameState;
     }

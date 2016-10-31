@@ -2,7 +2,8 @@ apply plugin: 'application'
 mainClassName = 'pl.rembol.jme3.world.Main'
 
 dependencies {
-    compile project(':generic-controls')
+    compile project(':generic-game')
+    compile project(':generic-rts')
     compile "org.jmonkeyengine:jme3-effects:$jmeVersion"
     compile "org.jmonkeyengine:jme3-blender:$jmeVersion"
 }

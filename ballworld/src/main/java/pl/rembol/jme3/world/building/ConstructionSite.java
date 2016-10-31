@@ -4,11 +4,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 
 public class ConstructionSite extends AbstractControl {
 
-    private GameState gameState;
+    private RtsGameState gameState;
     private Building building;
     private float buildingTimeInSeconds;
     private float progress = 0f;
@@ -17,7 +17,7 @@ public class ConstructionSite extends AbstractControl {
     private Vector3f finishedPosition;
     private Vector3f startingPosition;
 
-    public ConstructionSite(GameState gameState, Building building, float buildingTimeInSeconds) {
+    public ConstructionSite(RtsGameState gameState, Building building, float buildingTimeInSeconds) {
         this.gameState = gameState;
         this.building = building;
         this.buildingTimeInSeconds = buildingTimeInSeconds;

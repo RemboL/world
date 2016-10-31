@@ -3,7 +3,7 @@ package pl.rembol.jme3.world.building.house;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.world.ballman.BallMan;
 import pl.rembol.jme3.world.ballmanunitregistry.BallManUnitRegistry;
 import pl.rembol.jme3.world.resources.ResourceTypes;
@@ -15,12 +15,12 @@ public class HouseControl extends AbstractControl {
 
     private static final int MAX_QUEUE_SIZE = 5;
     private List<RecruitQueuedAction> queue = new ArrayList<>();
-    private GameState gameState;
+    private RtsGameState gameState;
     private BallManUnitRegistry ballManUnitRegistry;
     private House house;
     private List<BallMan> ballMenInside = new ArrayList<>();
 
-    public HouseControl(GameState gameState, House house) {
+    public HouseControl(RtsGameState gameState, House house) {
         this.gameState = gameState;
         this.ballManUnitRegistry = new BallManUnitRegistry(gameState);
         this.house = house;

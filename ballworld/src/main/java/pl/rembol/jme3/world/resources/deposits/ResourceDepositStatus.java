@@ -1,13 +1,13 @@
 package pl.rembol.jme3.world.resources.deposits;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gui.status.DefaultStatus;
 
 public class ResourceDepositStatus extends DefaultStatus {
 
     private final ResourceDeposit resourceDeposit;
 
-    public ResourceDepositStatus(ResourceDeposit resourceDeposit, GameState gameState) {
+    public ResourceDepositStatus(ResourceDeposit resourceDeposit, RtsGameState gameState) {
         super(gameState);
 
         this.resourceDeposit = resourceDeposit;

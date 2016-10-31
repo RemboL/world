@@ -3,14 +3,14 @@ package pl.rembol.jme3.world.rabbit;
 import com.jme3.animation.LoopMode;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.action.MoveTowardsLocationAction;
 import pl.rembol.jme3.rts.gameobjects.action.WaitAction;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
 
 public class RabbitControl extends ActionQueueControl<Rabbit> {
 
-    protected RabbitControl(GameState gameState, Rabbit unit) {
+    protected RabbitControl(RtsGameState gameState, Rabbit unit) {
         super(gameState, unit);
     }
 

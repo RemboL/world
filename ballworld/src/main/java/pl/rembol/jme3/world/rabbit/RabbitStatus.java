@@ -1,11 +1,11 @@
 package pl.rembol.jme3.world.rabbit;
 
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gui.status.DefaultStatus;
 
 public class RabbitStatus extends DefaultStatus {
 
-    public RabbitStatus(GameState gameState) {
+    public RabbitStatus(RtsGameState gameState) {
         super(gameState);
     }
 

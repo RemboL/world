@@ -1,7 +1,7 @@
 package pl.rembol.jme3.world.ballman.order;
 
 import com.jme3.math.Vector2f;
-import pl.rembol.jme3.rts.GameState;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.interfaces.WithNode;
 import pl.rembol.jme3.rts.gameobjects.order.Order;
 import pl.rembol.jme3.rts.gameobjects.selection.Selectable;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SmoothenTerrainOrder extends Order<BallMan> {
 
-    public SmoothenTerrainOrder(GameState gameState, List<Selectable> selectableList) {
+    public SmoothenTerrainOrder(RtsGameState gameState, List<Selectable> selectableList) {
         super(gameState, selectableList);
     }
 

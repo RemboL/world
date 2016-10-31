@@ -4,6 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
 import com.jme3.system.AppSettings;
+import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.input.state.Command;
 import pl.rembol.jme3.world.ballman.order.*;
 import pl.rembol.jme3.world.resources.ResourceTypes;
@@ -11,7 +12,7 @@ import pl.rembol.jme3.world.resources.ResourceTypes;
 import static pl.rembol.jme3.rts.input.state.ActionButtonPosition.*;
 import static pl.rembol.jme3.rts.input.state.InputState.*;
 
-public class GameState extends pl.rembol.jme3.rts.GameState {
+public class GameState extends RtsGameState {
 
     public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
         super(simpleApplication, settings, bulletAppState);
