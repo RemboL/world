@@ -3,6 +3,7 @@ package pl.rembol.jme3.rts.gui;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
+import pl.rembol.jme3.game.gui.Clickable;
 import pl.rembol.jme3.rts.RtsGameState;
 
 public class ClickablePictureWrapper extends Node implements Clickable {
