@@ -38,8 +38,7 @@ public class GenericGameState {
         this.settings = settings;
         this.bulletAppState = bulletAppState;
 
-//        assetManager = simpleApplication.getAssetManager();
-        assetManager = new AssetManagerWrapper(simpleApplication.getAssetManager());
+        assetManager = assetManager(simpleApplication);
         rootNode = simpleApplication.getRootNode();
         guiNode = simpleApplication.getGuiNode();
         camera = simpleApplication.getCamera();
@@ -51,6 +50,10 @@ public class GenericGameState {
         defaultInputListener = createInputListener();
 
         this.windowManager = new WindowManager(this);
+    }
+
+    protected AssetManager assetManager(SimpleApplication simpleApplication) {
+        return simpleApplication.getAssetManager();
     }
 
     protected InputListener createInputListener() {

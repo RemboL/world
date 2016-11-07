@@ -1,9 +1,11 @@
 package pl.rembol.jme3.world;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
 import com.jme3.system.AppSettings;
+import pl.rembol.jme3.rts.AssetManagerWrapper;
 import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.input.state.Command;
 import pl.rembol.jme3.world.ballman.order.*;
@@ -21,6 +23,11 @@ public class GameState extends RtsGameState {
         playerService.setResourceTypeList(ResourceTypes.values());
 
         initGuiFrames("wooden");
+    }
+
+    @Override
+    protected AssetManager assetManager(SimpleApplication simpleApplication) {
+        return new AssetManagerWrapper(simpleApplication.getAssetManager());
     }
 
     @Override
