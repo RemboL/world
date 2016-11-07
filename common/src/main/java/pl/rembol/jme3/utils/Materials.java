@@ -37,7 +37,7 @@ public class Materials {
     }
 
     private static void rewriteAlpha(Material material, String colorName, float alpha) {
-        ColorRGBA color = ((ColorRGBA) material.getParam(colorName).getValue());
+        ColorRGBA color = ((ColorRGBA) material.getParam(colorName).getValue()).clone();
         color.a = alpha;
         material.setColor(colorName, color);
     }
