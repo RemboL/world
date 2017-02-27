@@ -8,6 +8,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import pl.rembol.jme3.rts.RtsGameState;
 import pl.rembol.jme3.rts.gameobjects.control.ActionQueueControl;
+import pl.rembol.jme3.rts.gameobjects.control.CharacterBasedControl;
 import pl.rembol.jme3.rts.gameobjects.control.DefaultActionControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingControl;
 import pl.rembol.jme3.rts.gameobjects.control.MovingPhysicsControl;
@@ -63,8 +64,8 @@ public class BallMan extends Unit implements WithOwner, Destructable {
         this.gameState = gameState;
         ballManUnitRegistry = new BallManUnitRegistry(gameState);
 
-        NonClippingControl control = new NonClippingControl(gameState, .6f);
-//        CharacterBasedControl control = new CharacterBasedControl(gameState, .6f, 10f, 1);
+//        NonClippingControl control = new NonClippingControl(gameState, .6f);
+        CharacterBasedControl control = new CharacterBasedControl(gameState, 1f, 10f, 1);
         gameState.bulletAppState.getPhysicsSpace().add(control);
         node.addControl(control);
 
