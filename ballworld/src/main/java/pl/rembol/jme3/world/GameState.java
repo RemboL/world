@@ -16,8 +16,8 @@ import static pl.rembol.jme3.rts.input.state.InputState.*;
 
 public class GameState extends RtsGameState {
 
-    public GameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
-        super(simpleApplication, settings, bulletAppState);
+    public GameState(SimpleApplication simpleApplication, AppSettings settings) {
+        super(simpleApplication, settings);
 
         initResources(ResourceTypes.values());
         playerService.setResourceTypeList(ResourceTypes.values());

@@ -67,11 +67,7 @@ public class GameRunningAppState extends AbstractAppState {
     public void initialize(AppStateManager stateManager, Application app) {
         SimpleApplication simpleApp = (SimpleApplication) app;
 
-        BulletAppState bulletAppState = new BulletAppState();
-        stateManager.attach(bulletAppState);
-        // bulletAppState.setDebugEnabled(true);
-
-        gameState = new GameState(simpleApp, settings, bulletAppState);
+        gameState = new GameState(simpleApp, settings);
 
         initLightAndShadows(gameState, app.getViewPort());
 

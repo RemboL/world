@@ -24,17 +24,16 @@ public class WindowManager {
 
         window.setLocalTranslation(location.x, location.y, getTopWindowOffset());
         windowStack.add(window);
+
+        gameState.inputManager.setCursorVisible(true);
     }
 
     public void addWindowCentered(Window window) {
-        gameState.guiNode.attachChild(window);
-
         Vector2f location = new Vector2f(gameState.settings.getWidth(), gameState.settings.getHeight())
                 .subtract(window.size)
                 .divide(2);
 
-        window.setLocalTranslation(location.x, location.y, getTopWindowOffset());
-        windowStack.add(window);
+        addWindow(window, location);
     }
 
     private Vector2f normalizeWindowLocation(Window window, Vector2f location) {
@@ -58,6 +57,10 @@ public class WindowManager {
     public void closeWindow(Window window) {
         gameState.guiNode.detachChild(window);
         windowStack.remove(window);
+
+        if (gameState.isGrabCursorWhenNoWindowsOpened() && windowStack.isEmpty()) {
+            gameState.inputManager.setCursorVisible(false);
+        }
     }
 
     private int getTopWindowOffset() {

@@ -33,10 +33,15 @@ public class GenericGameState {
 
     public final InputListener defaultInputListener;
 
-    public GenericGameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
+    protected boolean grabCursorWhenNoWindowsOpened = false;
+
+    public GenericGameState(SimpleApplication simpleApplication, AppSettings settings) {
         this.simpleApplication = simpleApplication;
         this.settings = settings;
-        this.bulletAppState = bulletAppState;
+        this.bulletAppState = new BulletAppState();
+        simpleApplication.getStateManager().attach(bulletAppState);
+
+        simpleApplication.getStateManager().attach(new GameCleanupAppState(this));
 
         assetManager = assetManager(simpleApplication);
         rootNode = simpleApplication.getRootNode();
@@ -57,8 +62,12 @@ public class GenericGameState {
     }
 
     protected InputListener createInputListener() {
-        return new InputListener(this) {
+        return new InputListener<GenericGameState>(this) {
         };
+    }
+
+    public boolean isGrabCursorWhenNoWindowsOpened() {
+        return grabCursorWhenNoWindowsOpened;
     }
 
 }

@@ -13,8 +13,14 @@ public class MouseInputManager implements ActionListener, AnalogListener {
 
     public static final String RIGHT_CLICK = "Mouse_rightClick";
 
-    public static final String MOUSE_MOVE = "Mouse_move";
-    
+    public static final String MOUSE_MOVE_UP = "Mouse_moveUp";
+
+    public static final String MOUSE_MOVE_DOWN = "Mouse_moveDown";
+
+    public static final String MOUSE_MOVE_LEFT = "Mouse_moveLeft";
+
+    public static final String MOUSE_MOVE_RIGHT = "Mouse_moveRight";
+
     public static final String MOUSE_SCROLL_UP = "Mouse_scrollUp";
 
     public static final String MOUSE_SCROLL_DOWN = "Mouse_scrollDown";
@@ -32,12 +38,21 @@ public class MouseInputManager implements ActionListener, AnalogListener {
                 new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         gameState.inputManager.addListener(this, RIGHT_CLICK);
 
-        gameState.inputManager.addMapping(MOUSE_MOVE,
-                new MouseAxisTrigger(MouseInput.AXIS_X, false),
-                new MouseAxisTrigger(MouseInput.AXIS_X, true),
-                new MouseAxisTrigger(MouseInput.AXIS_Y, false),
+        gameState.inputManager.addMapping(MOUSE_MOVE_UP,
+                new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+        gameState.inputManager.addListener(this, MOUSE_MOVE_UP);
+
+        gameState.inputManager.addMapping(MOUSE_MOVE_DOWN,
                 new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-        gameState.inputManager.addListener(this, MOUSE_MOVE);
+        gameState.inputManager.addListener(this, MOUSE_MOVE_DOWN);
+
+        gameState.inputManager.addMapping(MOUSE_MOVE_LEFT,
+                new MouseAxisTrigger(MouseInput.AXIS_X, false));
+        gameState.inputManager.addListener(this, MOUSE_MOVE_LEFT);
+
+        gameState.inputManager.addMapping(MOUSE_MOVE_RIGHT,
+                new MouseAxisTrigger(MouseInput.AXIS_X, true));
+        gameState.inputManager.addListener(this, MOUSE_MOVE_RIGHT);
 
         gameState.inputManager.addMapping(MOUSE_SCROLL_UP, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
         gameState.inputManager.addMapping(MOUSE_SCROLL_DOWN, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));

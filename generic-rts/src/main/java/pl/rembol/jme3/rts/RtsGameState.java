@@ -59,8 +59,8 @@ public class RtsGameState extends GenericGameState {
 
     private String themeName = "template";
 
-    public RtsGameState(SimpleApplication simpleApplication, AppSettings settings, BulletAppState bulletAppState) {
-        super(simpleApplication, settings, bulletAppState);
+    public RtsGameState(SimpleApplication simpleApplication, AppSettings settings) {
+        super(simpleApplication, settings);
 
         terrain = new Terrain(simpleApplication, bulletAppState);
         pathfindingService = new PathfindingService(threadManager);
