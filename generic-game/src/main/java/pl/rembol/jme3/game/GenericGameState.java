@@ -1,6 +1,7 @@
 package pl.rembol.jme3.game;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
@@ -14,6 +15,9 @@ import pl.rembol.jme3.game.input.KeyInputManager;
 import pl.rembol.jme3.game.input.MouseInputManager;
 import pl.rembol.jme3.rts.AssetManagerWrapper;
 import pl.rembol.jme3.threads.ThreadManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericGameState {
 
@@ -35,13 +39,14 @@ public class GenericGameState {
 
     protected boolean grabCursorWhenNoWindowsOpened = false;
 
+    private List<AppState> managedAppStates = new ArrayList<>();
+
     public GenericGameState(SimpleApplication simpleApplication, AppSettings settings) {
         this.simpleApplication = simpleApplication;
         this.settings = settings;
         this.bulletAppState = new BulletAppState();
-        simpleApplication.getStateManager().attach(bulletAppState);
-
-        simpleApplication.getStateManager().attach(new GameCleanupAppState(this));
+        attach(bulletAppState);
+        attach(new GameCleanupAppState(this));
 
         assetManager = assetManager(simpleApplication);
         rootNode = simpleApplication.getRootNode();
@@ -66,8 +71,29 @@ public class GenericGameState {
         };
     }
 
+    public void attach(AppState appState) {
+        managedAppStates.add(appState);
+        simpleApplication.getStateManager().attach(appState);
+    }
+
+    public void detach(AppState appState) {
+        if (managedAppStates.contains(appState)) {
+            managedAppStates.remove(appState);
+        }
+        simpleApplication.getStateManager().detach(appState);
+    }
+
     public boolean isGrabCursorWhenNoWindowsOpened() {
         return grabCursorWhenNoWindowsOpened;
+    }
+
+    public void clear() {
+        rootNode.getLocalLightList().clear();
+        rootNode.getChildren().clear();
+        guiNode.getLocalLightList().clear();
+        guiNode.getChildren().clear();
+        managedAppStates.forEach(simpleApplication.getStateManager()::detach);
+        managedAppStates.clear();
     }
 
 }
